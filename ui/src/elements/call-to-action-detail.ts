@@ -1,5 +1,6 @@
 import {
   hashProperty,
+  notifyError,
   sharedStyles,
   wrapPathInSvg,
 } from '@holochain-open-dev/elements';
@@ -16,13 +17,16 @@ import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
-import { LitElement, html } from 'lit';
+import { LitElement, html, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { decode } from '@msgpack/msgpack';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
 import { CallToAction } from '../types.js';
 import './edit-call-to-action.js';
+import './create-promise.js';
+import { CreatePromise } from './create-promise.js';
 
 /**
  * @element call-to-action-detail
@@ -54,6 +58,12 @@ export class CallToActionDetail extends LitElement {
   @state()
   _editing = false;
 
+  amIAuthor(callToAction: EntryRecord<CallToAction>) {
+    return (
+      callToAction.action.author.toString() ===
+      this.assembleStore.client.client.myPubKey.toString()
+    );
+  }
   async deleteCallToAction() {
     try {
       await this.assembleStore.client.deleteCallToAction(this.callToActionHash);
@@ -68,24 +78,20 @@ export class CallToActionDetail extends LitElement {
         })
       );
     } catch (e: any) {
+      notifyError(msg('Error deleting the call to action'));
       console.error(e);
-      const errorAlert = this.shadowRoot?.getElementById(
-        'update-error'
-      ) as SlAlert;
-      errorAlert.toast();
     }
+  }
+
+  renderCustomContent(customContent: any): TemplateResult {
+    return html``;
   }
 
   renderDetail(entryRecord: EntryRecord<CallToAction>) {
     return html`
-      <sl-alert id="update-error" variant="danger" duration="3000">
-        <sl-icon
-          slot="icon"
-          .src=${wrapPathInSvg(mdiAlertCircleOutline)}
-          style="color: red"
-        ></sl-icon>
-        <strong>${msg('Error deleting the call to action')}</strong><br />
-      </sl-alert>
+      <create-promise
+        .callToActionHash=${this.callToActionHash}
+      ></create-promise>
 
       <sl-card>
         <div slot="header" style="display: flex; flex-direction: row">
@@ -93,18 +99,22 @@ export class CallToActionDetail extends LitElement {
             >${msg('Call To Action')}</span
           >
 
-          <sl-icon-button
-            style="margin-left: 8px"
-            .src=${wrapPathInSvg(mdiPencil)}
-            @click=${() => {
-              this._editing = true;
-            }}
-          ></sl-icon-button>
-          <sl-icon-button
-            style="margin-left: 8px"
-            .src=${wrapPathInSvg(mdiDelete)}
-            @click=${() => this.deleteCallToAction()}
-          ></sl-icon-button>
+          ${this.amIAuthor(entryRecord)
+            ? html`
+                <sl-icon-button
+                  style="margin-left: 8px"
+                  .src=${wrapPathInSvg(mdiPencil)}
+                  @click=${() => {
+                    this._editing = true;
+                  }}
+                ></sl-icon-button>
+                <sl-icon-button
+                  style="margin-left: 8px"
+                  .src=${wrapPathInSvg(mdiDelete)}
+                  @click=${() => this.deleteCallToAction()}
+                ></sl-icon-button>
+              `
+            : html``}
         </div>
 
         <div style="display: flex; flex-direction: column">
@@ -119,6 +129,8 @@ export class CallToActionDetail extends LitElement {
             >
           </div>
 
+          ${this.renderCustomContent(decode(entryRecord.entry.custom_content))}
+
           <div
             style="display: flex; flex-direction: column; margin-bottom: 16px"
           >
@@ -126,7 +138,23 @@ export class CallToActionDetail extends LitElement {
               ><strong>${msg('Needs')}:</strong></span
             >
             ${entryRecord.entry.needs.map(
-              el => html`<span style="white-space: pre-line">${el}</span>`
+              (el, i) => html` <div class="row">
+                <span style="white-space: pre-line">${el}</span>
+                ${this.amIAuthor(entryRecord)
+                  ? html``
+                  : html`
+                      <sl-button
+                        @click=${() => {
+                          const createPromise = this.shadowRoot?.querySelector(
+                            'create-promise'
+                          ) as CreatePromise;
+                          createPromise.needIndex = i;
+                          createPromise.show();
+                        }}
+                        >${msg('Promise to Help')}</sl-button
+                      >
+                    `}
+              </div>`
             )}
           </div>
         </div>

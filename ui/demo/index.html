@@ -39,7 +39,8 @@
       import { sharedStyles } from '@holochain-open-dev/elements';
       import '../src/elements/assemble-context.ts';
       import '../src/elements/all-calls-to-action.ts';
-      import '../src/elements/create-call-to-action.ts';
+      import { CreateCallToAction } from '../src/elements/create-call-to-action.ts';
+      import { CallToActionDetail } from '../src/elements/call-to-action-detail.ts';
       import { AssembleStore, AssembleClient } from '../src/index.ts';
       import '@holochain-open-dev/elements/elements/display-error.js';
       import {
@@ -49,6 +50,28 @@
       } from '@holochain-open-dev/profiles';
       import '@holochain-open-dev/profiles/elements/profile-prompt.js';
       import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+
+      customElements.define(
+        'create-call-to-action-with-distance',
+        class extends CreateCallToAction {
+          renderCustomContentFormFields() {
+            return html`<sl-input
+              name="distance"
+              required
+              label="Distance"
+            ></sl-input>`;
+          }
+        }
+      );
+
+      customElements.define(
+        'call-to-action-detail-with-distance',
+        class extends CallToActionDetail {
+          renderCustomContent({ distance }) {
+            return html`<span>${distance}</span>`;
+          }
+        }
+      );
 
       export class DemoApp extends LitElement {
         constructor() {
@@ -80,8 +103,21 @@
         renderContent() {
           return html`
             <assemble-context .store=${this._assembleStore}>
-              <all-calls-to-action></all-calls-to-action>
-              <create-call-to-action></create-call-to-action>
+              <create-call-to-action-with-distance>
+              </create-call-to-action-with-distance>
+              <all-calls-to-action
+                @call-to-action-selected=${e => {
+                  this._selectedCallToActionHash = e.detail.callToActionHash;
+                  this.requestUpdate();
+                }}
+              ></all-calls-to-action>
+              ${this._selectedCallToActionHash
+                ? html`
+                    <call-to-action-detail-with-distance
+                      .callToActionHash=${this._selectedCallToActionHash}
+                    ></call-to-action-detail-with-distance>
+                  `
+                : html``}
             </assemble-context>
           `;
         }
