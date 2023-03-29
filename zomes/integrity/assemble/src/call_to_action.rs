@@ -4,7 +4,7 @@ use hdi::prelude::*;
 pub struct CallToAction {
     pub parent_call_to_action_hash: Option<ActionHash>,
     pub title: String,
-    pub custom_content: String,
+    pub custom_content: SerializedBytes,
     pub needs: Vec<String>,
 }
 pub fn validate_create_call_to_action(

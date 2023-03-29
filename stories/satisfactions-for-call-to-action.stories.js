@@ -1,9 +1,9 @@
 
 import { html } from "lit-html";
-import "@holochain-open-dev/assemble/elements/satisfactions-for-call-to-action.js";
-import "@holochain-open-dev/assemble/elements/assemble-context.js";
-import { AssembleZomeMock, sampleSatisfaction } from "@holochain-open-dev/assemble/mocks";
-import { AssembleStore, AssembleClient } from "@holochain-open-dev/assemble";
+import "@darksoil/assemble/elements/satisfactions-for-call-to-action.js";
+import "@darksoil/assemble/elements/assemble-context.js";
+import { AssembleZomeMock, sampleSatisfaction } from "@darksoil/assemble/mocks";
+import { AssembleStore, AssembleClient } from "@darksoil/assemble";
 
 const mock = new AssembleZomeMock();
 

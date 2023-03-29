@@ -1,9 +1,9 @@
 
 import { html } from "lit-html";
-import "@holochain-open-dev/assemble/elements/collective-commitments-for-satisfaction.js";
-import "@holochain-open-dev/assemble/elements/assemble-context.js";
-import { AssembleZomeMock, sampleCollectiveCommitment } from "@holochain-open-dev/assemble/mocks";
-import { AssembleStore, AssembleClient } from "@holochain-open-dev/assemble";
+import "@darksoil/assemble/elements/collective-commitments-for-satisfaction.js";
+import "@darksoil/assemble/elements/assemble-context.js";
+import { AssembleZomeMock, sampleCollectiveCommitment } from "@darksoil/assemble/mocks";
+import { AssembleStore, AssembleClient } from "@darksoil/assemble";
 
 const mock = new AssembleZomeMock();
 

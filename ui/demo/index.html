@@ -8,7 +8,7 @@
     />
     <meta name="Description" content="Put your description here." />
     <base href="/" />
-    
+
     <style>
       html,
       body {
@@ -19,11 +19,10 @@
         height: 100%;
         width: 100%;
       }
-      
+
       body {
         display: flex;
       }
-
     </style>
     <title>Assemble</title>
   </head>
@@ -32,84 +31,90 @@
     <demo-app></demo-app>
 
     <script type="module">
-import '@shoelace-style/shoelace/dist/themes/light.css';
-import { ContextProvider } from '@lit-labs/context';
-import { LitElement, css, html } from 'lit';
-import { AppAgentWebsocket } from '@holochain/client';
-import { StoreSubscriber } from '@holochain-open-dev/stores';
-import { sharedStyles } from '@holochain-open-dev/elements';
-import '../src/elements/assemble-context.ts';
-import { AssembleStore, AssembleClient } from '../src/index.ts';
-import '@holochain-open-dev/elements/elements/display-error.js';
-import {
-  ProfilesClient,
-  ProfilesStore,
-  profilesStoreContext
-} from '@holochain-open-dev/profiles';
-import '@holochain-open-dev/profiles/elements/profile-prompt.js';
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+      import '@shoelace-style/shoelace/dist/themes/light.css';
+      import { ContextProvider } from '@lit-labs/context';
+      import { LitElement, css, html } from 'lit';
+      import { AppAgentWebsocket } from '@holochain/client';
+      import { StoreSubscriber } from '@holochain-open-dev/stores';
+      import { sharedStyles } from '@holochain-open-dev/elements';
+      import '../src/elements/assemble-context.ts';
+      import '../src/elements/all-calls-to-action.ts';
+      import '../src/elements/create-call-to-action.ts';
+      import { AssembleStore, AssembleClient } from '../src/index.ts';
+      import '@holochain-open-dev/elements/elements/display-error.js';
+      import {
+        ProfilesClient,
+        ProfilesStore,
+        profilesStoreContext,
+      } from '@holochain-open-dev/profiles';
+      import '@holochain-open-dev/profiles/elements/profile-prompt.js';
+      import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 
-export class DemoApp extends LitElement {
+      export class DemoApp extends LitElement {
+        constructor() {
+          super();
+          this._loading = true;
+          this._view = { view: 'main' };
+        }
 
-  constructor() {
-    super();
-    this._loading = true;
-    this._view = { view: 'main' };
-  }
+        async firstUpdated() {
+          this._client = await AppAgentWebsocket.connect('', 'assemble');
 
-  async firstUpdated() {
-    this._client = await AppAgentWebsocket.connect('', 'assemble');
+          await this.initStores(this._client);
 
-    await this.initStores(this._client);
+          this._loading = false;
+          this.requestUpdate();
+        }
 
-    this._loading = false;
-    this.requestUpdate();
-  }
+        async initStores(appAgentClient) {
+          const profilesStore = new ProfilesStore(
+            new ProfilesClient(appAgentClient, 'assemble_test')
+          );
+          new ContextProvider(this, profilesStoreContext, profilesStore);
 
-  async initStores(appAgentClient) {
-    const profilesStore = new ProfilesStore(new ProfilesClient(appAgentClient, 'assemble_test'));
-    new ContextProvider(this, profilesStoreContext, profilesStore);
-    
-    this._assembleStore = new AssembleStore(new AssembleClient(appAgentClient, 'assemble_test'));
-  }
+          this._assembleStore = new AssembleStore(
+            new AssembleClient(appAgentClient, 'assemble_test')
+          );
+        }
 
-  renderContent() {
-    return html`
-      <assemble-context .store=${this._assembleStore}>
-        <!-- TODO: add here the content of your application -->
-      <assemble-context>
-    `;
-  }
+        renderContent() {
+          return html`
+            <assemble-context .store=${this._assembleStore}>
+              <all-calls-to-action></all-calls-to-action>
+              <create-call-to-action></create-call-to-action>
+            </assemble-context>
+          `;
+        }
 
-  render() {
-    if (this._loading)
-      return html`<div
-        class="row"
-        style="flex: 1; height: 100%; align-items: center; justify-content: center;"
-      >
-        <sl-spinner></sl-spinner>
-      </div>`;
+        render() {
+          if (this._loading)
+            return html`<div
+              class="row"
+              style="flex: 1; height: 100%; align-items: center; justify-content: center;"
+            >
+              <sl-spinner></sl-spinner>
+            </div>`;
 
-    return html`
-        <div class="fill row" style="width: 100vw; height: 100%;">
-          <profile-prompt style="flex: 1;">
-            ${this.renderContent()}
-          </profile-prompt>
-        </div>
-    `;
-  }
+          return html`
+            <div class="fill row" style="width: 100vw; height: 100%;">
+              <profile-prompt style="flex: 1;">
+                ${this.renderContent()}
+              </profile-prompt>
+            </div>
+          `;
+        }
 
-  static styles = [
-    css`
-      :host {
-        display: flex;
-        flex: 1;
+        static styles = [
+          css`
+            :host {
+              display: flex;
+              flex: 1;
+            }
+          `,
+          sharedStyles,
+        ];
       }
-    `,
-    sharedStyles,
-  ];
-}
-      
+
       customElements.define('demo-app', DemoApp);
     </script>
   </body>

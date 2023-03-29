@@ -1,5 +1,5 @@
 {
-  "name": "@holochain-open-dev/assemble",
+  "name": "@darksoil/assemble",
   "version": "0.1.0",
   "scripts": {
     "start": "vite --clearScreen false --port $UI_PORT",

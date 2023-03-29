@@ -1,25 +1,37 @@
-import { LitElement, html } from 'lit';
-import { keyed } from "lit/directives/keyed.js";
-import { state, property, query, customElement } from 'lit/decorators.js';
-import { ActionHash, Record, DnaHash, AgentPubKey, EntryHash } from '@holochain/client';
+import {
+  hashProperty,
+  hashState,
+  notifyError,
+  onSubmit,
+  sharedStyles,
+  wrapPathInSvg,
+} from '@holochain-open-dev/elements';
+import '@holochain-open-dev/elements/elements/display-error.js';
 import { EntryRecord } from '@holochain-open-dev/utils';
-import { hashProperty, notifyError, hashState, sharedStyles, onSubmit, wrapPathInSvg } from '@holochain-open-dev/elements';
+import {
+  ActionHash,
+  AgentPubKey,
+  DnaHash,
+  EntryHash,
+  Record,
+} from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import { mdiAlertCircleOutline, mdiDelete } from "@mdi/js";
-
-import '@shoelace-style/shoelace/dist/components/textarea/textarea.js';
+import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@holochain-open-dev/elements/elements/display-error.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
-
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/textarea/textarea.js';
+import { LitElement, html } from 'lit';
+import { customElement, property, query, state } from 'lit/decorators.js';
+import { keyed } from 'lit/directives/keyed.js';
+
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Promise } from '../types.js';
+import { CallPromise } from '../types.js';
 
 /**
  * @element create-promise
@@ -35,7 +47,6 @@ export class CreatePromise extends LitElement {
   // REQUIRED. The need index for this Promise
   @property()
   needIndex!: number;
-
 
   /**
    * @internal
@@ -55,12 +66,17 @@ export class CreatePromise extends LitElement {
   @query('#create-form')
   form!: HTMLFormElement;
 
-
   async createPromise(fields: any) {
-    if (this.callToActionHash === undefined) throw new Error('Cannot create a new Promise without its call_to_action_hash field');
-    if (this.needIndex === undefined) throw new Error('Cannot create a new Promise without its need_index field');
-  
-    const promise: Promise = {
+    if (this.callToActionHash === undefined)
+      throw new Error(
+        'Cannot create a new Promise without its call_to_action_hash field'
+      );
+    if (this.needIndex === undefined)
+      throw new Error(
+        'Cannot create a new Promise without its need_index field'
+      );
+
+    const promise: CallPromise = {
       call_to_action_hash: this.callToActionHash,
       description: fields.description,
       need_index: this.needIndex,
@@ -68,46 +84,50 @@ export class CreatePromise extends LitElement {
 
     try {
       this.committing = true;
-      const record: EntryRecord<Promise> = await this.assembleStore.client.createPromise(promise);
+      const record: EntryRecord<CallPromise> =
+        await this.assembleStore.client.createPromise(promise);
 
-      this.dispatchEvent(new CustomEvent('promise-created', {
-        composed: true,
-        bubbles: true,
-        detail: {
-          promiseHash: record.actionHash
-        }
-      }));
-      
+      this.dispatchEvent(
+        new CustomEvent('promise-created', {
+          composed: true,
+          bubbles: true,
+          detail: {
+            promiseHash: record.actionHash,
+          },
+        })
+      );
+
       this.form.reset();
     } catch (e: any) {
       console.error(e);
-      notifyError(msg("Error creating the promise"));
+      notifyError(msg('Error creating the promise'));
     }
     this.committing = false;
   }
 
   render() {
-    return html`
-      <sl-card style="flex: 1;">
-        <span slot="header">${msg("Create Promise")}</span>
+    return html` <sl-card style="flex: 1;">
+      <span slot="header">${msg('Create Promise')}</span>
 
-        <form 
-          id="create-form"
-          style="display: flex; flex: 1; flex-direction: column;"
-          ${onSubmit(fields => this.createPromise(fields))}
-        >  
-          <div style="margin-bottom: 16px;">
-          <sl-textarea name="description" .label=${msg("Description")}  required></sl-textarea>          </div>
+      <form
+        id="create-form"
+        style="display: flex; flex: 1; flex-direction: column;"
+        ${onSubmit(fields => this.createPromise(fields))}
+      >
+        <div style="margin-bottom: 16px;">
+          <sl-textarea
+            name="description"
+            .label=${msg('Description')}
+            required
+          ></sl-textarea>
+        </div>
 
-
-          <sl-button
-            variant="primary"
-            type="submit"
-            .loading=${this.committing}
-          >${msg("Create Promise")}</sl-button>
-        </form> 
-      </sl-card>`;
+        <sl-button variant="primary" type="submit" .loading=${this.committing}
+          >${msg('Create Promise')}</sl-button
+        >
+      </form>
+    </sl-card>`;
   }
-  
+
   static styles = [sharedStyles];
 }

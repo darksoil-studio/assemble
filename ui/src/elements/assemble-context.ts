@@ -1,9 +1,9 @@
-import { css, html, LitElement } from 'lit';
 import { provide } from '@lit-labs/context';
+import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { assembleStoreContext } from '../context.js';
 import { AssembleStore } from '../assemble-store.js';
+import { assembleStoreContext } from '../context.js';
 
 @customElement('assemble-context')
 export class AssembleContext extends LitElement {
