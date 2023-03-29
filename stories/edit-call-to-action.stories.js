@@ -1,12 +1,12 @@
 import { html } from "lit-html";
-import "@darksoil/assemble/elements/edit-call.js";
-import "@darksoil/assemble/elements/assemble-context.js";
-import { AssembleZomeMock, sampleCall } from "@darksoil/assemble/mocks";
-import { AssembleStore, AssembleClient } from "@darksoil/assemble";
+import "@holochain-open-dev/assemble/elements/edit-call-to-action.js";
+import "@holochain-open-dev/assemble/elements/assemble-context.js";
+import { AssembleZomeMock, sampleCallToAction } from "@holochain-open-dev/assemble/mocks";
+import { AssembleStore, AssembleClient } from "@holochain-open-dev/assemble";
 
 const mock = new AssembleZomeMock();
 
-const record = await mock.create_call(sampleCall());
+const record = await mock.create_call_to_action(sampleCallToAction());
 
 const store = new AssembleStore(new AssembleClient(mock));
 
@@ -19,7 +19,7 @@ export default {
     html` <assemble-context
       .store=${store}
     >
-      <edit-assemble .originalCallHash=${record.signed_action.hashed.hash} .currentRecord=${record}></edit-assemble>
+      <edit-assemble .originalCallToActionHash=${record.signed_action.hashed.hash} .currentRecord=${record}></edit-assemble>
     </assemble-context>`,
 };
 

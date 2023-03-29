@@ -8,29 +8,29 @@ import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
-
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
+import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import { Call } from '../types';
+import { CallToAction } from '../types';
 
 /**
- * @element edit-call
- * @fires call-updated: detail will contain { previousCallHash, updatedCallHash }
+ * @element edit-call-to-action
+ * @fires call-to-action-updated: detail will contain { previousCallToActionHash, updatedCallToActionHash }
  */
 @localized()
-@customElement('edit-call')
-export class EditCall extends LitElement {
+@customElement('edit-call-to-action')
+export class EditCallToAction extends LitElement {
 
   
-  // REQUIRED. The current Call record that should be updated
+  // REQUIRED. The current CallToAction record that should be updated
   @property()
-  currentRecord!: EntryRecord<Call>;
+  currentRecord!: EntryRecord<CallToAction>;
   
   /**
    * @internal
@@ -54,9 +54,9 @@ export class EditCall extends LitElement {
     this.shadowRoot?.querySelector('form')!.reset();
   }
 
-  async updateCall(fields: any) {  
-    const call: Call = { 
-      parent_call_hash: this.currentRecord.entry.parent_call_hash,
+  async updateCallToAction(fields: any) {  
+    const callToAction: CallToAction = { 
+      parent_call_to_action_hash: this.currentRecord.entry.parent_call_to_action_hash,
       title: fields.title,
       custom_content: this.currentRecord.entry.custom_content,
       needs: (Array.isArray(fields.needs) ? fields.needs : [fields.needs]).map((el: any) => el),
@@ -64,22 +64,22 @@ export class EditCall extends LitElement {
 
     try {
       this.committing = true;
-      const updateRecord = await this.assembleStore.client.updateCall(
+      const updateRecord = await this.assembleStore.client.updateCallToAction(
         this.currentRecord.actionHash,
-        call
+        callToAction
       );
   
-      this.dispatchEvent(new CustomEvent('call-updated', {
+      this.dispatchEvent(new CustomEvent('call-to-action-updated', {
         composed: true,
         bubbles: true,
         detail: {
-          previousCallHash: this.currentRecord.actionHash,
-          updatedCallHash: updateRecord.actionHash
+          previousCallToActionHash: this.currentRecord.actionHash,
+          updatedCallToActionHash: updateRecord.actionHash
         }
       }));
     } catch (e: any) {
       console.error(e);
-      notifyError(msg("Error creating the call"));
+      notifyError(msg("Error creating the call to action"));
     }
     
     this.committing = false;
@@ -88,11 +88,11 @@ export class EditCall extends LitElement {
   render() {
     return html`
       <sl-card>
-        <span slot="header">${msg("Edit Call")}</span>
+        <span slot="header">${msg("Edit Call To Action")}</span>
 
         <form 
           style="display: flex; flex: 1; flex-direction: column;"
-          ${onSubmit(fields => this.updateCall(fields))}
+          ${onSubmit(fields => this.updateCallToAction(fields))}
         >  
           <div style="margin-bottom: 16px">
         <sl-input name="title" .label=${msg("Title")}  required .defaultValue=${ this.currentRecord.entry.title }></sl-input>          </div>

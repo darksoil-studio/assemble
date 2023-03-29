@@ -2,16 +2,16 @@ use hdi::prelude::*;
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq)]
 pub struct Promise {
-    pub call_hash: ActionHash,
-    pub need_index: u32,
+    pub call_to_action_hash: ActionHash,
     pub description: String,
+    pub need_index: u32,
 }
 pub fn validate_create_promise(
     _action: EntryCreationAction,
     promise: Promise,
 ) -> ExternResult<ValidateCallbackResult> {
-    let record = must_get_valid_record(promise.call_hash.clone())?;
-    let _call: crate::Call = record
+    let record = must_get_valid_record(promise.call_to_action_hash.clone())?;
+    let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -37,7 +37,7 @@ pub fn validate_delete_promise(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(String::from("Promises cannot be deleted")))
 }
-pub fn validate_create_link_call_to_promises(
+pub fn validate_create_link_call_to_action_to_promises(
     _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -45,7 +45,7 @@ pub fn validate_create_link_call_to_promises(
 ) -> ExternResult<ValidateCallbackResult> {
     let action_hash = ActionHash::from(base_address);
     let record = must_get_valid_record(action_hash)?;
-    let _call: crate::Call = record
+    let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -67,7 +67,7 @@ pub fn validate_create_link_call_to_promises(
         )?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_call_to_promises(
+pub fn validate_delete_link_call_to_action_to_promises(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -76,7 +76,7 @@ pub fn validate_delete_link_call_to_promises(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("CallToPromises links cannot be deleted"),
+            String::from("CallToActionToPromises links cannot be deleted"),
         ),
     )
 }

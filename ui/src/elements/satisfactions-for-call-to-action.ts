@@ -20,15 +20,15 @@ import { Satisfaction } from '../types.js';
 import './satisfaction-summary.js';
 
 /**
- * @element satisfactions-for-call
+ * @element satisfactions-for-call-to-action
  */
 @localized()
-@customElement('satisfactions-for-call')
-export class SatisfactionsForCall extends LitElement {
+@customElement('satisfactions-for-call-to-action')
+export class SatisfactionsForCallToAction extends LitElement {
 
-  // REQUIRED. The CallHash for which the Satisfactions should be fetched
-  @property(hashProperty('call-hash'))
-  callHash!: ActionHash;
+  // REQUIRED. The CallToActionHash for which the Satisfactions should be fetched
+  @property(hashProperty('call-to-action-hash'))
+  callToActionHash!: ActionHash;
 
   /**
    * @internal
@@ -40,7 +40,7 @@ export class SatisfactionsForCall extends LitElement {
    * @internal
    */
   _satisfactions = new StoreSubscriber(this, () =>
-    this.assembleStore.satisfactionsForCall.get(this.callHash)
+    this.assembleStore.satisfactionsForCallToAction.get(this.callToActionHash)
   );
 
   renderList(hashes: Array<ActionHash>) {
@@ -50,7 +50,7 @@ export class SatisfactionsForCall extends LitElement {
           style="color: grey; height: 64px; width: 64px; margin-bottom: 16px"
           .src=${wrapPathInSvg(mdiInformationOutline)}
         ></sl-icon>
-        <span class="placeholder">${msg("No satisfactions found for this call")}</span>
+        <span class="placeholder">${msg("No satisfactions found for this call to action")}</span>
       </div>`;
 
     return html`

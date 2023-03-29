@@ -2,7 +2,7 @@ use hdi::prelude::*;
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq)]
 pub struct Satisfaction {
-    pub call_hash: ActionHash,
+    pub call_to_action_hash: ActionHash,
     pub need_index: u32,
     pub promises_hashes: Vec<ActionHash>,
 }
@@ -10,8 +10,8 @@ pub fn validate_create_satisfaction(
     _action: EntryCreationAction,
     satisfaction: Satisfaction,
 ) -> ExternResult<ValidateCallbackResult> {
-    let record = must_get_valid_record(satisfaction.call_hash.clone())?;
-    let _call: crate::Call = record
+    let record = must_get_valid_record(satisfaction.call_to_action_hash.clone())?;
+    let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -49,7 +49,7 @@ pub fn validate_delete_satisfaction(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(String::from("Satisfactions cannot be deleted")))
 }
-pub fn validate_create_link_call_to_satisfactions(
+pub fn validate_create_link_call_to_action_to_satisfactions(
     _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -57,7 +57,7 @@ pub fn validate_create_link_call_to_satisfactions(
 ) -> ExternResult<ValidateCallbackResult> {
     let action_hash = ActionHash::from(base_address);
     let record = must_get_valid_record(action_hash)?;
-    let _call: crate::Call = record
+    let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -79,7 +79,7 @@ pub fn validate_create_link_call_to_satisfactions(
         )?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_call_to_satisfactions(
+pub fn validate_delete_link_call_to_action_to_satisfactions(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -88,7 +88,7 @@ pub fn validate_delete_link_call_to_satisfactions(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("CallToSatisfactions links cannot be deleted"),
+            String::from("CallToActionToSatisfactions links cannot be deleted"),
         ),
     )
 }

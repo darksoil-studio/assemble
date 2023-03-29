@@ -4,7 +4,7 @@ import { Satisfaction } from './types.js';
 
 import { Promise } from './types.js';
 
-import { Call } from './types.js';
+import { CallToAction } from './types.js';
 
 import {
   AgentPubKeyMap,
@@ -41,70 +41,70 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   ) {
     super("assemble_test", "assemble", myPubKey);
   }
-  /** Call */
-  call = new RecordBag<Call>();
-  callsForCall = new HoloHashMap<ActionHash, ActionHash[]>();
+  /** Call To Action */
+  callToAction = new RecordBag<Call To Action>();
+  callToActionsForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
 
-  async create_call(call: Call): Promise<Record> {
-    const record = fakeRecord(fakeCreateAction(hash(call, HashType.ENTRY)), fakeEntry(call));
+  async create_call_to_action(callToAction: CallToAction): Promise<Record> {
+    const record = fakeRecord(fakeCreateAction(hash(callToAction, HashType.ENTRY)), fakeEntry(callToAction));
     
-    this.call.add([record]);
+    this.callToAction.add([record]);
   
-    if (call.parent_call_hash) {
-      const existingParentCallHash = this.callsForCall.get(call.parent_call_hash) || [];
-      this.callsForCall.set(call.parent_call_hash, [...existingParentCallHash, record.signed_action.hashed.hash]);
+    if (callToAction.parent_call_to_action_hash) {
+      const existingParentCallToActionHash = this.callToActionsForCallToAction.get(callToAction.parent_call_to_action_hash) || [];
+      this.callToActionsForCallToAction.set(callToAction.parent_call_to_action_hash, [...existingParentCallToActionHash, record.signed_action.hashed.hash]);
     }
 
     return record;
   }
   
-  async get_call(callHash: ActionHash): Promise<Record | undefined> {
-    const state = entryState(this.call, callHash);
+  async get_call_to_action(callToActionHash: ActionHash): Promise<Record | undefined> {
+    const state = entryState(this.callToAction, callToActionHash);
     
     if (!state || state.deleted) return undefined;
     
     return state.lastUpdate?.record;
   }
 
-  async delete_call(original_call_hash: ActionHash): Promise<ActionHash> {
-    const record = fakeRecord(fakeDeleteEntry(original_call_hash));
+  async delete_call_to_action(original_call_to_action_hash: ActionHash): Promise<ActionHash> {
+    const record = fakeRecord(fakeDeleteEntry(original_call_to_action_hash));
     
-    this.call.add([record]);
+    this.callToAction.add([record]);
     
     return record.signed_action.hashed.hash;
   }
 
-  async update_call(input: { previous_call_hash: ActionHash; updated_call: Call; }): Promise<Record> {
-    const record = fakeRecord(fakeUpdateEntry(input.previous_call_hash, fakeEntry(input.updated_call)), fakeEntry(input.updated_call));
+  async update_call_to_action(input: { previous_call_to_action_hash: ActionHash; updated_call_to_action: CallToAction; }): Promise<Record> {
+    const record = fakeRecord(fakeUpdateEntry(input.previous_call_to_action_hash, fakeEntry(input.updated_call_to_action)), fakeEntry(input.updated_call_to_action));
     
-    this.call.add([record]);
+    this.callToAction.add([record]);
     
-    const call = input.updated_call;
+    const callToAction = input.updated_call_to_action;
     
-    if (call.parent_call_hash) {
-      const existingParentCallHash = this.callsForCall.get(call.parent_call_hash) || [];
-      this.callsForCall.set(call.parent_call_hash, [...existingParentCallHash, record.signed_action.hashed.hash]);
+    if (callToAction.parent_call_to_action_hash) {
+      const existingParentCallToActionHash = this.callToActionsForCallToAction.get(callToAction.parent_call_to_action_hash) || [];
+      this.callToActionsForCallToAction.set(callToAction.parent_call_to_action_hash, [...existingParentCallToActionHash, record.signed_action.hashed.hash]);
     }
     
     return record;
   }
   
-  async get_calls_for_call(callHash: ActionHash): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] = this.callsForCall.get(callHash) || [];
+  async get_call_to_actions_for_call_to_action(callToActionHash: ActionHash): Promise<Array<Record>> {
+    const actionHashes: ActionHash[] = this.callToActionsForCallToAction.get(callToActionHash) || [];
     
-    return actionHashes.map(actionHash => this.call.entryRecord(actionHash)?.record).filter(r => !!r) as Record[];
+    return actionHashes.map(actionHash => this.callToAction.entryRecord(actionHash)?.record).filter(r => !!r) as Record[];
   }
   /** Promise */
   promise = new RecordBag<Promise>();
-  promisesForCall = new HoloHashMap<ActionHash, ActionHash[]>();
+  promisesForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_promise(promise: Promise): Promise<Record> {
     const record = fakeRecord(fakeCreateAction(hash(promise, HashType.ENTRY)), fakeEntry(promise));
     
     this.promise.add([record]);
   
-    const existingCallHash = this.promisesForCall.get(promise.call_hash) || [];
-    this.promisesForCall.set(promise.call_hash, [...existingCallHash, record.signed_action.hashed.hash]);
+    const existingCallToActionHash = this.promisesForCallToAction.get(promise.call_to_action_hash) || [];
+    this.promisesForCallToAction.set(promise.call_to_action_hash, [...existingCallToActionHash, record.signed_action.hashed.hash]);
 
     return record;
   }
@@ -119,14 +119,14 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
 
 
   
-  async get_promises_for_call(callHash: ActionHash): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] = this.promisesForCall.get(callHash) || [];
+  async get_promises_for_call_to_action(callToActionHash: ActionHash): Promise<Array<Record>> {
+    const actionHashes: ActionHash[] = this.promisesForCallToAction.get(callToActionHash) || [];
     
     return actionHashes.map(actionHash => this.promise.entryRecord(actionHash)?.record).filter(r => !!r) as Record[];
   }
   /** Satisfaction */
   satisfaction = new RecordBag<Satisfaction>();
-  satisfactionsForCall = new HoloHashMap<ActionHash, ActionHash[]>();
+  satisfactionsForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
   satisfactionsForPromise = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_satisfaction(satisfaction: Satisfaction): Promise<Record> {
@@ -134,8 +134,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     
     this.satisfaction.add([record]);
   
-    const existingCallHash = this.satisfactionsForCall.get(satisfaction.call_hash) || [];
-    this.satisfactionsForCall.set(satisfaction.call_hash, [...existingCallHash, record.signed_action.hashed.hash]);
+    const existingCallToActionHash = this.satisfactionsForCallToAction.get(satisfaction.call_to_action_hash) || [];
+    this.satisfactionsForCallToAction.set(satisfaction.call_to_action_hash, [...existingCallToActionHash, record.signed_action.hashed.hash]);
     for (const promises_hashes of satisfaction.promises_hashes) {
       const existingPromisesHashes = this.satisfactionsForPromise.get(promises_hashes) || [];
       this.satisfactionsForPromise.set(promises_hashes, [...existingPromisesHashes, record.signed_action.hashed.hash]);
@@ -160,8 +160,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     
     const satisfaction = input.updated_satisfaction;
     
-    const existingCallHash = this.satisfactionsForCall.get(satisfaction.call_hash) || [];
-    this.satisfactionsForCall.set(satisfaction.call_hash, [...existingCallHash, record.signed_action.hashed.hash]);
+    const existingCallToActionHash = this.satisfactionsForCallToAction.get(satisfaction.call_to_action_hash) || [];
+    this.satisfactionsForCallToAction.set(satisfaction.call_to_action_hash, [...existingCallToActionHash, record.signed_action.hashed.hash]);
     for (const promises_hashes of satisfaction.promises_hashes) {
       const existingPromisesHashes = this.satisfactionsForPromise.get(promises_hashes) || [];
       this.satisfactionsForPromise.set(promises_hashes, [...existingPromisesHashes, record.signed_action.hashed.hash]);
@@ -170,8 +170,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     return record;
   }
   
-  async get_satisfactions_for_call(callHash: ActionHash): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] = this.satisfactionsForCall.get(callHash) || [];
+  async get_satisfactions_for_call_to_action(callToActionHash: ActionHash): Promise<Array<Record>> {
+    const actionHashes: ActionHash[] = this.satisfactionsForCallToAction.get(callToActionHash) || [];
     
     return actionHashes.map(actionHash => this.satisfaction.entryRecord(actionHash)?.record).filter(r => !!r) as Record[];
   }
@@ -183,7 +183,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   }
   /** Collective Commitment */
   collectiveCommitment = new RecordBag<Collective Commitment>();
-  collectiveCommitmentsForCall = new HoloHashMap<ActionHash, ActionHash[]>();
+  collectiveCommitmentsForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
   collectiveCommitmentsForSatisfaction = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_collective_commitment(collectiveCommitment: CollectiveCommitment): Promise<Record> {
@@ -191,8 +191,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     
     this.collectiveCommitment.add([record]);
   
-    const existingCallHash = this.collectiveCommitmentsForCall.get(collectiveCommitment.call_hash) || [];
-    this.collectiveCommitmentsForCall.set(collectiveCommitment.call_hash, [...existingCallHash, record.signed_action.hashed.hash]);
+    const existingCallToActionHash = this.collectiveCommitmentsForCallToAction.get(collectiveCommitment.call_to_action_hash) || [];
+    this.collectiveCommitmentsForCallToAction.set(collectiveCommitment.call_to_action_hash, [...existingCallToActionHash, record.signed_action.hashed.hash]);
     for (const satisfactions_hashes of collectiveCommitment.satisfactions_hashes) {
       const existingSatisfactionsHashes = this.collectiveCommitmentsForSatisfaction.get(satisfactions_hashes) || [];
       this.collectiveCommitmentsForSatisfaction.set(satisfactions_hashes, [...existingSatisfactionsHashes, record.signed_action.hashed.hash]);
@@ -211,8 +211,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
 
 
   
-  async get_collective_commitments_for_call(callHash: ActionHash): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] = this.collectiveCommitmentsForCall.get(callHash) || [];
+  async get_collective_commitments_for_call_to_action(callToActionHash: ActionHash): Promise<Array<Record>> {
+    const actionHashes: ActionHash[] = this.collectiveCommitmentsForCallToAction.get(callToActionHash) || [];
     
     return actionHashes.map(actionHash => this.collectiveCommitment.entryRecord(actionHash)?.record).filter(r => !!r) as Record[];
   }
@@ -222,13 +222,20 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     
     return actionHashes.map(actionHash => this.collectiveCommitment.entryRecord(actionHash)?.record).filter(r => !!r) as Record[];
   }
-
+  
+  async get_all_calls_to_action(_: any): Promise<Array<Record>> {
+    return this.callToAction.entryRecords.map(er => er?.record).filter(r => !!r) as Record[];   
+  }
+  
+  async get_all_collective_commitments(_: any): Promise<Array<Record>> {
+    return this.collectiveCommitment.entryRecords.map(er => er?.record).filter(r => !!r) as Record[];   
+  }
 
 }
 
-export function sampleCall(): Call {
+export function sampleCallToAction(): CallToAction {
   return {
-          parent_call_hash: undefined,
+          parent_call_to_action_hash: undefined,
 	  title: "Lorem ipsum 2",
 	  custom_content: "Lorem ipsum 2",
 	  needs: ["Lorem ipsum 2"],
@@ -238,16 +245,16 @@ export function sampleCall(): Call {
 
 export function samplePromise(): Promise {
   return {
-          call_hash: fakeActionHash(),
-	  need_index: 3,
+          call_to_action_hash: fakeActionHash(),
 	  description: "Lorem ipsum 2",
+	  need_index: 3,
     }
 }
 
 
 export function sampleSatisfaction(): Satisfaction {
   return {
-          call_hash: fakeActionHash(),
+          call_to_action_hash: fakeActionHash(),
 	  need_index: 3,
           promises_hashes: [fakeActionHash()],
     }
@@ -256,7 +263,7 @@ export function sampleSatisfaction(): Satisfaction {
 
 export function sampleCollectiveCommitment(): CollectiveCommitment {
   return {
-          call_hash: fakeActionHash(),
+          call_to_action_hash: fakeActionHash(),
           satisfactions_hashes: [fakeActionHash()],
     }
 }

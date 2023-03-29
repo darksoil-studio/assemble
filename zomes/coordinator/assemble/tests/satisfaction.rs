@@ -13,7 +13,7 @@ use hc_zome_assemble_coordinator::satisfaction::UpdateSatisfactionInput;
 mod common;
 use common::{create_satisfaction, sample_satisfaction_1, sample_satisfaction_2};
 
-use common::{create_call, sample_call_1, sample_call_2};
+use common::{create_call_to_action, sample_call_to_action_1, sample_call_to_action_2};
 use common::{create_promise, sample_promise_1, sample_promise_2};
 
 #[tokio::test(flavor = "multi_thread")]

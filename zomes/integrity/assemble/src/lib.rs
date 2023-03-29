@@ -4,15 +4,15 @@ pub mod satisfaction;
 pub use satisfaction::*;
 pub mod promise;
 pub use promise::*;
-pub mod call;
-pub use call::*;
+pub mod call_to_action;
+pub use call_to_action::*;
 use hdi::prelude::*;
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
 #[hdk_entry_defs]
 #[unit_enum(UnitEntryTypes)]
 pub enum EntryTypes {
-    Call(Call),
+    CallToAction(CallToAction),
     Promise(Promise),
     Satisfaction(Satisfaction),
     CollectiveCommitment(CollectiveCommitment),
@@ -20,12 +20,14 @@ pub enum EntryTypes {
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
 pub enum LinkTypes {
-    CallToCalls,
-    CallToPromises,
-    CallToSatisfactions,
+    CallToActionToCallToActions,
+    CallToActionToPromises,
+    CallToActionToSatisfactions,
     PromiseToSatisfactions,
-    CallToCollectiveCommitments,
+    CallToActionToCollectiveCommitments,
     SatisfactionToCollectiveCommitments,
+    AllCallsToAction,
+    AllCollectiveCommitments,
 }
 #[hdk_extern]
 pub fn genesis_self_check(
@@ -46,10 +48,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
             match store_entry {
                 OpEntry::CreateEntry { app_entry, action } => {
                     match app_entry {
-                        EntryTypes::Call(call) => {
-                            validate_create_call(
+                        EntryTypes::CallToAction(call_to_action) => {
+                            validate_create_call_to_action(
                                 EntryCreationAction::Create(action),
-                                call,
+                                call_to_action,
                             )
                         }
                         EntryTypes::Promise(promise) => {
@@ -74,10 +76,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 }
                 OpEntry::UpdateEntry { app_entry, action, .. } => {
                     match app_entry {
-                        EntryTypes::Call(call) => {
-                            validate_create_call(
+                        EntryTypes::CallToAction(call_to_action) => {
+                            validate_create_call_to_action(
                                 EntryCreationAction::Update(action),
-                                call,
+                                call_to_action,
                             )
                         }
                         EntryTypes::Promise(promise) => {
@@ -147,12 +149,15 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 original_promise,
                             )
                         }
-                        (EntryTypes::Call(call), EntryTypes::Call(original_call)) => {
-                            validate_update_call(
+                        (
+                            EntryTypes::CallToAction(call_to_action),
+                            EntryTypes::CallToAction(original_call_to_action),
+                        ) => {
+                            validate_update_call_to_action(
                                 action,
-                                call,
+                                call_to_action,
                                 original_action,
-                                original_call,
+                                original_call_to_action,
                             )
                         }
                         _ => {
@@ -172,8 +177,12 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
             match delete_entry {
                 OpDelete::Entry { original_action, original_app_entry, action } => {
                     match original_app_entry {
-                        EntryTypes::Call(call) => {
-                            validate_delete_call(action, original_action, call)
+                        EntryTypes::CallToAction(call_to_action) => {
+                            validate_delete_call_to_action(
+                                action,
+                                original_action,
+                                call_to_action,
+                            )
                         }
                         EntryTypes::Promise(promise) => {
                             validate_delete_promise(action, original_action, promise)
@@ -205,24 +214,24 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
             action,
         } => {
             match link_type {
-                LinkTypes::CallToCalls => {
-                    validate_create_link_call_to_calls(
+                LinkTypes::CallToActionToCallToActions => {
+                    validate_create_link_call_to_action_to_call_to_actions(
                         action,
                         base_address,
                         target_address,
                         tag,
                     )
                 }
-                LinkTypes::CallToPromises => {
-                    validate_create_link_call_to_promises(
+                LinkTypes::CallToActionToPromises => {
+                    validate_create_link_call_to_action_to_promises(
                         action,
                         base_address,
                         target_address,
                         tag,
                     )
                 }
-                LinkTypes::CallToSatisfactions => {
-                    validate_create_link_call_to_satisfactions(
+                LinkTypes::CallToActionToSatisfactions => {
+                    validate_create_link_call_to_action_to_satisfactions(
                         action,
                         base_address,
                         target_address,
@@ -237,8 +246,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::CallToCollectiveCommitments => {
-                    validate_create_link_call_to_collective_commitments(
+                LinkTypes::CallToActionToCollectiveCommitments => {
+                    validate_create_link_call_to_action_to_collective_commitments(
                         action,
                         base_address,
                         target_address,
@@ -247,6 +256,22 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 }
                 LinkTypes::SatisfactionToCollectiveCommitments => {
                     validate_create_link_satisfaction_to_collective_commitments(
+                        action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
+                LinkTypes::AllCallsToAction => {
+                    validate_create_link_all_calls_to_action(
+                        action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
+                LinkTypes::AllCollectiveCommitments => {
+                    validate_create_link_all_collective_commitments(
                         action,
                         base_address,
                         target_address,
@@ -264,8 +289,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
             action,
         } => {
             match link_type {
-                LinkTypes::CallToCalls => {
-                    validate_delete_link_call_to_calls(
+                LinkTypes::CallToActionToCallToActions => {
+                    validate_delete_link_call_to_action_to_call_to_actions(
                         action,
                         original_action,
                         base_address,
@@ -273,8 +298,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::CallToPromises => {
-                    validate_delete_link_call_to_promises(
+                LinkTypes::CallToActionToPromises => {
+                    validate_delete_link_call_to_action_to_promises(
                         action,
                         original_action,
                         base_address,
@@ -282,8 +307,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::CallToSatisfactions => {
-                    validate_delete_link_call_to_satisfactions(
+                LinkTypes::CallToActionToSatisfactions => {
+                    validate_delete_link_call_to_action_to_satisfactions(
                         action,
                         original_action,
                         base_address,
@@ -300,8 +325,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::CallToCollectiveCommitments => {
-                    validate_delete_link_call_to_collective_commitments(
+                LinkTypes::CallToActionToCollectiveCommitments => {
+                    validate_delete_link_call_to_action_to_collective_commitments(
                         action,
                         original_action,
                         base_address,
@@ -318,16 +343,34 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
+                LinkTypes::AllCallsToAction => {
+                    validate_delete_link_all_calls_to_action(
+                        action,
+                        original_action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
+                LinkTypes::AllCollectiveCommitments => {
+                    validate_delete_link_all_collective_commitments(
+                        action,
+                        original_action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
             }
         }
         OpType::StoreRecord(store_record) => {
             match store_record {
                 OpRecord::CreateEntry { app_entry, action } => {
                     match app_entry {
-                        EntryTypes::Call(call) => {
-                            validate_create_call(
+                        EntryTypes::CallToAction(call_to_action) => {
+                            validate_create_call_to_action(
                                 EntryCreationAction::Create(action),
-                                call,
+                                call_to_action,
                             )
                         }
                         EntryTypes::Promise(promise) => {
@@ -371,18 +414,18 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                     };
                     match app_entry {
-                        EntryTypes::Call(call) => {
-                            let result = validate_create_call(
+                        EntryTypes::CallToAction(call_to_action) => {
+                            let result = validate_create_call_to_action(
                                 EntryCreationAction::Update(action.clone()),
-                                call.clone(),
+                                call_to_action.clone(),
                             )?;
                             if let ValidateCallbackResult::Valid = result {
-                                let original_call: Option<Call> = original_record
+                                let original_call_to_action: Option<CallToAction> = original_record
                                     .entry()
                                     .to_app_option()
                                     .map_err(|e| wasm_error!(e))?;
-                                let original_call = match original_call {
-                                    Some(call) => call,
+                                let original_call_to_action = match original_call_to_action {
+                                    Some(call_to_action) => call_to_action,
                                     None => {
                                         return Ok(
                                             ValidateCallbackResult::Invalid(
@@ -392,11 +435,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                         );
                                     }
                                 };
-                                validate_update_call(
+                                validate_update_call_to_action(
                                     action,
-                                    call,
+                                    call_to_action,
                                     original_action,
-                                    original_call,
+                                    original_call_to_action,
                                 )
                             } else {
                                 Ok(result)
@@ -551,8 +594,12 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                     };
                     match original_app_entry {
-                        EntryTypes::Call(original_call) => {
-                            validate_delete_call(action, original_action, original_call)
+                        EntryTypes::CallToAction(original_call_to_action) => {
+                            validate_delete_call_to_action(
+                                action,
+                                original_action,
+                                original_call_to_action,
+                            )
                         }
                         EntryTypes::Promise(original_promise) => {
                             validate_delete_promise(
@@ -587,24 +634,24 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     action,
                 } => {
                     match link_type {
-                        LinkTypes::CallToCalls => {
-                            validate_create_link_call_to_calls(
+                        LinkTypes::CallToActionToCallToActions => {
+                            validate_create_link_call_to_action_to_call_to_actions(
                                 action,
                                 base_address,
                                 target_address,
                                 tag,
                             )
                         }
-                        LinkTypes::CallToPromises => {
-                            validate_create_link_call_to_promises(
+                        LinkTypes::CallToActionToPromises => {
+                            validate_create_link_call_to_action_to_promises(
                                 action,
                                 base_address,
                                 target_address,
                                 tag,
                             )
                         }
-                        LinkTypes::CallToSatisfactions => {
-                            validate_create_link_call_to_satisfactions(
+                        LinkTypes::CallToActionToSatisfactions => {
+                            validate_create_link_call_to_action_to_satisfactions(
                                 action,
                                 base_address,
                                 target_address,
@@ -619,8 +666,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 tag,
                             )
                         }
-                        LinkTypes::CallToCollectiveCommitments => {
-                            validate_create_link_call_to_collective_commitments(
+                        LinkTypes::CallToActionToCollectiveCommitments => {
+                            validate_create_link_call_to_action_to_collective_commitments(
                                 action,
                                 base_address,
                                 target_address,
@@ -629,6 +676,22 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                         LinkTypes::SatisfactionToCollectiveCommitments => {
                             validate_create_link_satisfaction_to_collective_commitments(
+                                action,
+                                base_address,
+                                target_address,
+                                tag,
+                            )
+                        }
+                        LinkTypes::AllCallsToAction => {
+                            validate_create_link_all_calls_to_action(
+                                action,
+                                base_address,
+                                target_address,
+                                tag,
+                            )
+                        }
+                        LinkTypes::AllCollectiveCommitments => {
+                            validate_create_link_all_collective_commitments(
                                 action,
                                 base_address,
                                 target_address,
@@ -660,8 +723,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                     };
                     match link_type {
-                        LinkTypes::CallToCalls => {
-                            validate_delete_link_call_to_calls(
+                        LinkTypes::CallToActionToCallToActions => {
+                            validate_delete_link_call_to_action_to_call_to_actions(
                                 action,
                                 create_link.clone(),
                                 base_address,
@@ -669,8 +732,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 create_link.tag,
                             )
                         }
-                        LinkTypes::CallToPromises => {
-                            validate_delete_link_call_to_promises(
+                        LinkTypes::CallToActionToPromises => {
+                            validate_delete_link_call_to_action_to_promises(
                                 action,
                                 create_link.clone(),
                                 base_address,
@@ -678,8 +741,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 create_link.tag,
                             )
                         }
-                        LinkTypes::CallToSatisfactions => {
-                            validate_delete_link_call_to_satisfactions(
+                        LinkTypes::CallToActionToSatisfactions => {
+                            validate_delete_link_call_to_action_to_satisfactions(
                                 action,
                                 create_link.clone(),
                                 base_address,
@@ -696,8 +759,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                 create_link.tag,
                             )
                         }
-                        LinkTypes::CallToCollectiveCommitments => {
-                            validate_delete_link_call_to_collective_commitments(
+                        LinkTypes::CallToActionToCollectiveCommitments => {
+                            validate_delete_link_call_to_action_to_collective_commitments(
                                 action,
                                 create_link.clone(),
                                 base_address,
@@ -707,6 +770,24 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         }
                         LinkTypes::SatisfactionToCollectiveCommitments => {
                             validate_delete_link_satisfaction_to_collective_commitments(
+                                action,
+                                create_link.clone(),
+                                base_address,
+                                create_link.target_address,
+                                create_link.tag,
+                            )
+                        }
+                        LinkTypes::AllCallsToAction => {
+                            validate_delete_link_all_calls_to_action(
+                                action,
+                                create_link.clone(),
+                                base_address,
+                                create_link.target_address,
+                                create_link.tag,
+                            )
+                        }
+                        LinkTypes::AllCollectiveCommitments => {
+                            validate_delete_link_all_collective_commitments(
                                 action,
                                 create_link.clone(),
                                 base_address,

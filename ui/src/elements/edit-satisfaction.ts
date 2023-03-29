@@ -8,12 +8,12 @@ import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 
-
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
+
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
 import { Satisfaction } from '../types';
@@ -50,7 +50,7 @@ export class EditSatisfaction extends LitElement {
 
   async updateSatisfaction(fields: any) {  
     const satisfaction: Satisfaction = { 
-      call_hash: this.currentRecord.entry.call_hash,
+      call_to_action_hash: this.currentRecord.entry.call_to_action_hash,
       need_index: this.currentRecord.entry.need_index,
       promises_hashes: this.currentRecord.entry.promises_hashes,
     };

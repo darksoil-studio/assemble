@@ -8,25 +8,25 @@ import { consume } from '@lit-labs/context';
 
 import { localized, msg } from '@lit/localize';
 
-import '@holochain-open-dev/elements/elements/display-error.js';
-import '@shoelace-style/shoelace/dist/components/card/card.js';
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@holochain-open-dev/elements/elements/display-error.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import { Call } from '../types';
+import { CallToAction } from '../types';
 
 /**
- * @element call-summary
- * @fires call-selected: detail will contain { callHash }
+ * @element call-to-action-summary
+ * @fires call-to-action-selected: detail will contain { callToActionHash }
  */
 @localized()
-@customElement('call-summary')
-export class CallSummary extends LitElement {
+@customElement('call-to-action-summary')
+export class CallToActionSummary extends LitElement {
 
-  // REQUIRED. The hash of the Call to show
-  @property(hashProperty('call-hash'))
-  callHash!: ActionHash;
+  // REQUIRED. The hash of the CallToAction to show
+  @property(hashProperty('call-to-action-hash'))
+  callToActionHash!: ActionHash;
 
   /**
    * @internal
@@ -37,9 +37,9 @@ export class CallSummary extends LitElement {
   /**
    * @internal
    */
-  _call = new StoreSubscriber(this, () => this.assembleStore.calls.get(this.callHash));
+  _callToAction = new StoreSubscriber(this, () => this.assembleStore.callToActions.get(this.callToActionHash));
 
-  renderSummary(entryRecord: EntryRecord<Call>) {
+  renderSummary(entryRecord: EntryRecord<CallToAction>) {
     return html`
       <div style="display: flex; flex-direction: column">
 
@@ -56,8 +56,8 @@ export class CallSummary extends LitElement {
     `;
   }
   
-  renderCall() {
-    switch (this._call.value.status) {
+  renderCallToAction() {
+    switch (this._callToAction.value.status) {
       case "pending":
         return html`<div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
@@ -65,26 +65,26 @@ export class CallSummary extends LitElement {
             <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case "complete":
-        if (!this._call.value.value) return html`<span>${msg("The requested call doesn't exist")}</span>`;
+        if (!this._callToAction.value.value) return html`<span>${msg("The requested call to action doesn't exist")}</span>`;
 
-        return this.renderSummary(this._call.value.value);
+        return this.renderSummary(this._callToAction.value.value);
       case "error":
         return html`<display-error
-          .headline=${msg("Error fetching the call")}
-          .error=${this._call.value.error.data.data}
+          .headline=${msg("Error fetching the call to action")}
+          .error=${this._callToAction.value.error.data.data}
         ></display-error>`;
     }
   }
   
   render() {
-    return html`<sl-card style="flex: 1; cursor: grab;" @click=${() => this.dispatchEvent(new CustomEvent('call-selected', {
+    return html`<sl-card style="flex: 1; cursor: grab;" @click=${() => this.dispatchEvent(new CustomEvent('call-to-action-selected', {
           composed: true,
           bubbles: true,
           detail: {
-            callHash: this.callHash
+            callToActionHash: this.callToActionHash
           }
         }))}>
-        ${this.renderCall()}
+        ${this.renderCallToAction()}
     </sl-card>`;
   }
 

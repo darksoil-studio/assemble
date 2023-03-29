@@ -15,20 +15,20 @@ import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Promise } from '../types.js';
+import { CollectiveCommitment } from '../types.js';
 
-import './promise-summary.js';
+import './collective-commitment-summary.js';
 
 /**
- * @element promises-for-call
+ * @element collective-commitments-for-call-to-action
  */
 @localized()
-@customElement('promises-for-call')
-export class PromisesForCall extends LitElement {
+@customElement('collective-commitments-for-call-to-action')
+export class CollectiveCommitmentsForCallToAction extends LitElement {
 
-  // REQUIRED. The CallHash for which the Promises should be fetched
-  @property(hashProperty('call-hash'))
-  callHash!: ActionHash;
+  // REQUIRED. The CallToActionHash for which the CollectiveCommitments should be fetched
+  @property(hashProperty('call-to-action-hash'))
+  callToActionHash!: ActionHash;
 
   /**
    * @internal
@@ -39,8 +39,8 @@ export class PromisesForCall extends LitElement {
   /**
    * @internal
    */
-  _promises = new StoreSubscriber(this, () =>
-    this.assembleStore.promisesForCall.get(this.callHash)
+  _collectiveCommitments = new StoreSubscriber(this, () =>
+    this.assembleStore.collectiveCommitmentsForCallToAction.get(this.callToActionHash)
   );
 
   renderList(hashes: Array<ActionHash>) {
@@ -50,20 +50,20 @@ export class PromisesForCall extends LitElement {
           style="color: grey; height: 64px; width: 64px; margin-bottom: 16px"
           .src=${wrapPathInSvg(mdiInformationOutline)}
         ></sl-icon>
-        <span class="placeholder">${msg("No promises found for this call")}</span>
+        <span class="placeholder">${msg("No collective commitments found for this call to action")}</span>
       </div>`;
 
     return html`
       <div style="display: flex; flex-direction: column">
         ${hashes.map(hash =>
-          html`<promise-summary .promiseHash=${hash}></promise-summary>`
+          html`<collective-commitment-summary .collectiveCommitmentHash=${hash}></collective-commitment-summary>`
         )}
       </div>
     `;
   }
 
   render() {
-    switch (this._promises.value.status) {
+    switch (this._collectiveCommitments.value.status) {
       case "pending":
         return html`<div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
@@ -71,11 +71,11 @@ export class PromisesForCall extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case "complete": 
-        return this.renderList(this._promises.value.value);
+        return this.renderList(this._collectiveCommitments.value.value);
       case "error":
         return html`<display-error 
-          .headline=${msg("Error fetching the promises")}
-          .error=${this._promises.value.error.data.data}
+          .headline=${msg("Error fetching the collective commitments")}
+          .error=${this._collectiveCommitments.value.error.data.data}
         ></display-error>`;
     }
   }

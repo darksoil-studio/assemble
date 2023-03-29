@@ -4,9 +4,9 @@ use assemble_integrity::*;
 pub fn create_promise(promise: Promise) -> ExternResult<Record> {
     let promise_hash = create_entry(&EntryTypes::Promise(promise.clone()))?;
     create_link(
-        promise.call_hash.clone(),
+        promise.call_to_action_hash.clone(),
         promise_hash.clone(),
-        LinkTypes::CallToPromises,
+        LinkTypes::CallToActionToPromises,
         (),
     )?;
     let record = get(promise_hash.clone(), GetOptions::default())?
@@ -22,8 +22,10 @@ pub fn get_promise(promise_hash: ActionHash) -> ExternResult<Option<Record>> {
     get(promise_hash, GetOptions::default())
 }
 #[hdk_extern]
-pub fn get_promises_for_call(call_hash: ActionHash) -> ExternResult<Vec<Record>> {
-    let links = get_links(call_hash, LinkTypes::CallToPromises, None)?;
+pub fn get_promises_for_call_to_action(
+    call_to_action_hash: ActionHash,
+) -> ExternResult<Vec<Record>> {
+    let links = get_links(call_to_action_hash, LinkTypes::CallToActionToPromises, None)?;
     let get_input: Vec<GetInput> = links
         .into_iter()
         .map(|link| GetInput::new(

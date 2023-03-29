@@ -8,10 +8,10 @@ import { consume } from '@lit-labs/context';
 
 import { localized, msg } from '@lit/localize';
 
-import '@holochain-open-dev/elements/elements/display-error.js';
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 
+import '@holochain-open-dev/elements/elements/display-error.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
 import { Promise } from '../types';

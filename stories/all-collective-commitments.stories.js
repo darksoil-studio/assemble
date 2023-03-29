@@ -1,25 +1,27 @@
 import { html } from "lit-html";
-import "@holochain-open-dev/assemble/elements/collective-commitment-detail.js";
+import "@holochain-open-dev/assemble/elements/all-collective-commitments.js";
 import "@holochain-open-dev/assemble/elements/assemble-context.js";
 import { AssembleZomeMock, sampleCollectiveCommitment } from "@holochain-open-dev/assemble/mocks";
 import { AssembleStore, AssembleClient } from "@holochain-open-dev/assemble";
 
 const mock = new AssembleZomeMock();
 
-const record = await mock.create_collective_commitment(sampleCollectiveCommitment());
+const collectiveCommitment = sampleCollectiveCommitment();
+
+const record = await mock.create_collective_commitment(collectiveCommitment);
 
 const store = new AssembleStore(new AssembleClient(mock));
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/web-components/writing-stories/introduction
 export default {
-  title: "Frontend/Elements/collective-commitment-detail",
+  title: "Frontend/Elements/all-collective-commitments",
   tags: ["autodocs"],
-  component: "collective-commitment-detail",
+  component: "all-collective-commitments",
   render: (args) =>
     html` <assemble-context
       .store=${store}
     >
-      <collective-commitment-detail .collectiveCommitmentHash=${record.signed_action.hashed.hash}></collective-commitment-detail>
+      <all-collective-commitments ></all-collective-commitments>
     </assemble-context>`,
 };
 

@@ -39,12 +39,12 @@ export type EntryTypes =
  | ({ type: 'CollectiveCommitment'; } & CollectiveCommitment)
  | ({ type: 'Satisfaction'; } & Satisfaction)
  | ({ type: 'Promise'; } & Promise)
- | ({  type: 'Call'; } & Call);
+ | ({  type: 'CallToAction'; } & CallToAction);
 
 
 
-export interface Call { 
-  parent_call_hash: ActionHash | undefined;
+export interface CallToAction { 
+  parent_call_to_action_hash: ActionHash | undefined;
 
   title: string;
 
@@ -57,18 +57,18 @@ export interface Call {
 
 
 export interface Promise { 
-  call_hash: ActionHash;
-
-  need_index: number;
+  call_to_action_hash: ActionHash;
 
   description: string;
+
+  need_index: number;
 }
 
 
 
 
 export interface Satisfaction { 
-  call_hash: ActionHash;
+  call_to_action_hash: ActionHash;
 
   need_index: number;
 
@@ -79,7 +79,7 @@ export interface Satisfaction {
 
 
 export interface CollectiveCommitment { 
-  call_hash: ActionHash;
+  call_to_action_hash: ActionHash;
 
   satisfactions_hashes: Array<ActionHash>;
 }

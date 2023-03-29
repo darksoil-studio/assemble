@@ -11,13 +11,13 @@ import { Meta } from '@storybook/addon-docs';
 1. Install this module and its necessary dependencies with:
 
 ```bash
-npm install @darksoil/assemble
+npm install @holochain-open-dev/assemble
 ```
 
 Careful! If you are using NPM workspaces (which is the case for the apps generated with the holochain scaffolding tool (`hc scaffold`), you need to specify which workspace you want to install those dependencies to, and run the command from the root folder of the repository. In the case of the apps generated with the scaffolding tool:
 
 ```bash
-npm install @darksoil/assemble -w ui
+npm install @holochain-open-dev/assemble -w ui
 ```
 
 2. Connect to Holochain with the `AppAgentClient`, and create the `AssembleStore` with it:
@@ -34,18 +34,18 @@ async function setupAssembleStore() {
 }
 ```
 
-3. Import the `<assemble-context>` element and add it to your html **wrapping the whole section of your page in which you are going to be placing** the other elements from `@darksoil/assemble`:
+3. Import the `<assemble-context>` element and add it to your html **wrapping the whole section of your page in which you are going to be placing** the other elements from `@holochain-open-dev/assemble`:
 
 ```js
 // This can be placed in the index.js, at the top level of your web-app.
-import "@darksoil/assemble/definitions/assemble-context.js";
+import "@holochain-open-dev/assemble/definitions/assemble-context.js";
 ```
 
 And then add the `<assemble-context>` element in your html:
 
 ```html
 <assemble-context>
-  <!-- Add here other elements from @darksoil/assemble -->
+  <!-- Add here other elements from @holochain-open-dev/assemble -->
 </assemble-context>
 ```
 
@@ -88,7 +88,7 @@ contextElement.store = store;
 5. [Choose which elements you need](?path=/docs/frontend-elements) and import them like this:
 
 ```js
-import "@darksoil/assemble/elements/assemble-context.js";
+import "@holochain-open-dev/assemble/elements/assemble-context.js";
 ```
 
 And then they are ready be used inside the `<assemble-context>` just like any other HTML tag.

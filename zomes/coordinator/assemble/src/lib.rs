@@ -1,7 +1,9 @@
+pub mod all_collective_commitments;
+pub mod all_calls_to_action;
 pub mod collective_commitment;
 pub mod satisfaction;
 pub mod promise;
-pub mod call;
+pub mod call_to_action;
 use hdk::prelude::*;
 use assemble_integrity::*;
 #[hdk_extern]

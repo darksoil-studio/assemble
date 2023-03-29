@@ -8,15 +8,15 @@ import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from "@mdi/js";
 
-import '@shoelace-style/shoelace/dist/components/card/card.js';
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/textarea/textarea.js';
-
-import '@holochain-open-dev/elements/elements/display-error.js';
 import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@holochain-open-dev/elements/elements/display-error.js';
+import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
 import { Promise } from '../types.js';
@@ -28,9 +28,9 @@ import { Promise } from '../types.js';
 @localized()
 @customElement('create-promise')
 export class CreatePromise extends LitElement {
-  // REQUIRED. The call hash for this Promise
-  @property(hashProperty('call-hash'))
-  callHash!: ActionHash;
+  // REQUIRED. The call to action hash for this Promise
+  @property(hashProperty('call-to-action-hash'))
+  callToActionHash!: ActionHash;
 
   // REQUIRED. The need index for this Promise
   @property()
@@ -57,13 +57,13 @@ export class CreatePromise extends LitElement {
 
 
   async createPromise(fields: any) {
-    if (this.callHash === undefined) throw new Error('Cannot create a new Promise without its call_hash field');
+    if (this.callToActionHash === undefined) throw new Error('Cannot create a new Promise without its call_to_action_hash field');
     if (this.needIndex === undefined) throw new Error('Cannot create a new Promise without its need_index field');
   
     const promise: Promise = {
-      call_hash: this.callHash,
-      need_index: this.needIndex,
+      call_to_action_hash: this.callToActionHash,
       description: fields.description,
+      need_index: this.needIndex,
     };
 
     try {

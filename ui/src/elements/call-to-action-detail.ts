@@ -8,31 +8,31 @@ import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiPencil, mdiDelete } from '@mdi/js';
 
+import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@holochain-open-dev/elements/elements/display-error.js';
-import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
-
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
-import '@shoelace-style/shoelace/dist/components/card/card.js';
-import './edit-call.js';
+import './edit-call-to-action.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Call } from '../types.js';
+import { CallToAction } from '../types.js';
 
 /**
- * @element call-detail
- * @fires call-deleted: detail will contain { callHash }
+ * @element call-to-action-detail
+ * @fires call-to-action-deleted: detail will contain { callToActionHash }
  */
 @localized()
-@customElement('call-detail')
-export class CallDetail extends LitElement {
+@customElement('call-to-action-detail')
+export class CallToActionDetail extends LitElement {
 
-  // REQUIRED. The hash of the Call to show
-  @property(hashProperty('call-hash'))
-  callHash!: ActionHash;
+  // REQUIRED. The hash of the CallToAction to show
+  @property(hashProperty('call-to-action-hash'))
+  callToActionHash!: ActionHash;
 
   /**
    * @internal
@@ -43,7 +43,7 @@ export class CallDetail extends LitElement {
   /**
    * @internal
    */
-   _call = new StoreSubscriber(this, () => this.assembleStore.calls.get(this.callHash));
+   _callToAction = new StoreSubscriber(this, () => this.assembleStore.callToActions.get(this.callToActionHash));
 
   /**
    * @internal
@@ -51,15 +51,15 @@ export class CallDetail extends LitElement {
   @state()
   _editing = false;
 
-  async deleteCall() {
+  async deleteCallToAction() {
     try {
-      await this.assembleStore.client.deleteCall(this.callHash);
+      await this.assembleStore.client.deleteCallToAction(this.callToActionHash);
  
-      this.dispatchEvent(new CustomEvent('call-deleted', {
+      this.dispatchEvent(new CustomEvent('call-to-action-deleted', {
         bubbles: true,
         composed: true,
         detail: {
-          callHash: this.callHash
+          callToActionHash: this.callToActionHash
         }
       }));
     } catch (e: any) {
@@ -69,19 +69,19 @@ export class CallDetail extends LitElement {
     }
   }
 
-  renderDetail(entryRecord: EntryRecord<Call>) {
+  renderDetail(entryRecord: EntryRecord<CallToAction>) {
     return html`
       <sl-alert id="update-error" variant="danger" duration="3000">
         <sl-icon slot="icon" .src=${wrapPathInSvg(mdiAlertCircleOutline)} style="color: red"></sl-icon>
-        <strong>${msg("Error deleting the call")}</strong><br />
+        <strong>${msg("Error deleting the call to action")}</strong><br />
       </sl-alert>
 
       <sl-card>
       	<div slot="header" style="display: flex; flex-direction: row">
-          <span style="font-size: 18px; flex: 1;">${msg("Call")}</span>
+          <span style="font-size: 18px; flex: 1;">${msg("Call To Action")}</span>
 
           <sl-icon-button style="margin-left: 8px" .src=${wrapPathInSvg(mdiPencil)} @click=${() => { this._editing = true; } }></sl-icon-button>
-          <sl-icon-button style="margin-left: 8px" .src=${wrapPathInSvg(mdiDelete)} @click=${() => this.deleteCall()}></sl-icon-button>
+          <sl-icon-button style="margin-left: 8px" .src=${wrapPathInSvg(mdiDelete)} @click=${() => this.deleteCallToAction()}></sl-icon-button>
         </div>
 
         <div style="display: flex; flex-direction: column">
@@ -101,7 +101,7 @@ export class CallDetail extends LitElement {
   }
   
   render() {
-    switch (this._call.value.status) {
+    switch (this._callToAction.value.status) {
       case "pending":
         return html`<sl-card>
           <div
@@ -111,25 +111,25 @@ export class CallDetail extends LitElement {
           </div>
         </sl-card>`;
       case "complete":
-        const call = this._call.value.value;
+        const callToAction = this._callToAction.value.value;
         
-        if (!call) return html`<span>${msg("The requested call doesn't exist")}</span>`;
+        if (!callToAction) return html`<span>${msg("The requested call to action doesn't exist")}</span>`;
     
         if (this._editing) {
-    	  return html`<edit-call
-    	    .currentRecord=${ call }
-            @call-updated=${async () => { this._editing = false; } }
+    	  return html`<edit-call-to-action
+    	    .currentRecord=${ callToAction }
+            @call-to-action-updated=${async () => { this._editing = false; } }
       	    @edit-canceled=${() => { this._editing = false; } }
     	    style="display: flex; flex: 1;"
-    	  ></edit-call>`;
+    	  ></edit-call-to-action>`;
       }
 
-        return this.renderDetail(call);
+        return this.renderDetail(callToAction);
       case "error":
         return html`<sl-card>
           <display-error
-            .headline=${msg("Error fetching the call")}
-            .error=${this._call.value.error.data.data}
+            .headline=${msg("Error fetching the call to action")}
+            .error=${this._callToAction.value.error.data.data}
           ></display-error>
         </sl-card>`;
     }

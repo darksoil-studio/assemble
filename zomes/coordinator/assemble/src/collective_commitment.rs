@@ -8,9 +8,9 @@ pub fn create_collective_commitment(
         &EntryTypes::CollectiveCommitment(collective_commitment.clone()),
     )?;
     create_link(
-        collective_commitment.call_hash.clone(),
+        collective_commitment.call_to_action_hash.clone(),
         collective_commitment_hash.clone(),
-        LinkTypes::CallToCollectiveCommitments,
+        LinkTypes::CallToActionToCollectiveCommitments,
         (),
     )?;
     for base in collective_commitment.satisfactions_hashes.clone() {
@@ -27,6 +27,13 @@ pub fn create_collective_commitment(
                 WasmErrorInner::Guest(String::from("Could not find the newly created CollectiveCommitment"))
             ),
         )?;
+    let path = Path::from("all_collective_commitments");
+    create_link(
+        path.path_entry_hash()?,
+        collective_commitment_hash.clone(),
+        LinkTypes::AllCollectiveCommitments,
+        (),
+    )?;
     Ok(record)
 }
 #[hdk_extern]
@@ -36,10 +43,14 @@ pub fn get_collective_commitment(
     get(collective_commitment_hash, GetOptions::default())
 }
 #[hdk_extern]
-pub fn get_collective_commitments_for_call(
-    call_hash: ActionHash,
+pub fn get_collective_commitments_for_call_to_action(
+    call_to_action_hash: ActionHash,
 ) -> ExternResult<Vec<Record>> {
-    let links = get_links(call_hash, LinkTypes::CallToCollectiveCommitments, None)?;
+    let links = get_links(
+        call_to_action_hash,
+        LinkTypes::CallToActionToCollectiveCommitments,
+        None,
+    )?;
     let get_input: Vec<GetInput> = links
         .into_iter()
         .map(|link| GetInput::new(

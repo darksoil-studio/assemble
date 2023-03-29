@@ -8,14 +8,14 @@ import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from "@mdi/js";
 
-
 import '@holochain-open-dev/elements/elements/display-error.js';
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
-import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+
+import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
 import { Satisfaction } from '../types.js';
@@ -27,9 +27,9 @@ import { Satisfaction } from '../types.js';
 @localized()
 @customElement('create-satisfaction')
 export class CreateSatisfaction extends LitElement {
-  // REQUIRED. The call hash for this Satisfaction
-  @property(hashProperty('call-hash'))
-  callHash!: ActionHash;
+  // REQUIRED. The call to action hash for this Satisfaction
+  @property(hashProperty('call-to-action-hash'))
+  callToActionHash!: ActionHash;
 
   // REQUIRED. The need index for this Satisfaction
   @property()
@@ -60,12 +60,12 @@ export class CreateSatisfaction extends LitElement {
 
 
   async createSatisfaction(fields: any) {
-    if (this.callHash === undefined) throw new Error('Cannot create a new Satisfaction without its call_hash field');
+    if (this.callToActionHash === undefined) throw new Error('Cannot create a new Satisfaction without its call_to_action_hash field');
     if (this.needIndex === undefined) throw new Error('Cannot create a new Satisfaction without its need_index field');
     if (this.promisesHashes === undefined) throw new Error('Cannot create a new Satisfaction without its promises_hashes field');
   
     const satisfaction: Satisfaction = {
-      call_hash: this.callHash,
+      call_to_action_hash: this.callToActionHash,
       need_index: this.needIndex,
       promises_hashes: this.promisesHashes,
     };
