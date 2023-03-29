@@ -1,0 +1,111 @@
+import { Meta } from '@storybook/addon-docs';
+
+<Meta title="Frontend/Setting up the frontend" />
+
+# Seting Up the Frontend
+
+> This guide assumes you are building a web application written in JS or TS, using NPM as the package manager.
+
+> [Go here](https://holochain-open-dev.github.io/reusable-modules/frontend/frameworks/) to look at examples of integration of this module in different frontend frameworks (Vue, Svelte, etc.).
+
+1. Install this module and its necessary dependencies with:
+
+```bash
+npm install @darksoil/assemble
+```
+
+Careful! If you are using NPM workspaces (which is the case for the apps generated with the holochain scaffolding tool (`hc scaffold`), you need to specify which workspace you want to install those dependencies to, and run the command from the root folder of the repository. In the case of the apps generated with the scaffolding tool:
+
+```bash
+npm install @darksoil/assemble -w ui
+```
+
+2. Connect to Holochain with the `AppAgentClient`, and create the `AssembleStore` with it:
+
+```js
+import { AssembleStore, AssembleClient } from "@holochain-open-dev/profiles";
+import { AppAgentWebsocket } from "@holochain/client";
+
+async function setupAssembleStore() {
+  const client = await AppAgentWebsocket.connect('', '')
+
+  // TODO: change "MY_CELL_ROLE" for the roleId that you can find in your "happ.yaml"
+  return new AssembleStore(new AssembleClient(client, '<MY_CELL_ROLE>'));
+}
+```
+
+3. Import the `<assemble-context>` element and add it to your html **wrapping the whole section of your page in which you are going to be placing** the other elements from `@darksoil/assemble`:
+
+```js
+// This can be placed in the index.js, at the top level of your web-app.
+import "@darksoil/assemble/definitions/assemble-context.js";
+```
+
+And then add the `<assemble-context>` element in your html:
+
+```html
+<assemble-context>
+  <!-- Add here other elements from @darksoil/assemble -->
+</assemble-context>
+```
+
+4. Attach the `assembleStore` to the `<assemble-context>` element:
+
+- Go to [this page](https://holochain-open-dev.github.io/reusable-modules/frontend/frameworks/), select the framework you are using, and follow its example.
+
+You need to set the `store` property of it to your already instantiated `AssembleStore` object:
+
+- If you **are using some JS framework**:
+
+```html
+<!-- React -->
+<assemble-context store={ assembleStore}><!-- ... --></assemble-context>
+
+<!-- Angular -->
+<assemble-context [store]="assembleStore"><!-- ... --></assemble-context>
+
+<!-- Vue -->
+<assemble-context :store="assembleStore"><!-- ... --></assemble-context>
+
+<!-- Svelte -->
+<assemble-context store={ assembleStore}><!-- ... --></assemble-context>
+
+<!-- Lit -->
+<assemble-context .store=${ assembleStore}><!-- ... --></assemble-context>
+```
+
+OR
+
+- If you **are not using any framework**:
+
+```js
+const contextElement = document.querySelector("assemble-context");
+contextElement.store = store;
+```
+
+> You can read more about the context pattern [here](https://holochain-open-dev.github.io/reusable-modules/frontend/using/#context).
+
+5. [Choose which elements you need](?path=/docs/frontend-elements) and import them like this:
+
+```js
+import "@darksoil/assemble/elements/assemble-context.js";
+```
+
+And then they are ready be used inside the `<assemble-context>` just like any other HTML tag.
+
+This will define all the elements from this module in the global `CustomElementsRegistry`. You can read more about Custom Elements [here](https://developers.google.com/web/fundamentals/web-components/customelements).
+
+6. Add your preferred shoelace theme in your `<head>` tag:
+
+```html
+  <head>
+    <link rel="stylesheet" href="path/to/shoelace/dist/themes/light.css" />
+  </head>
+```
+
+You can read more about how to initialize the shoelace theme [here](https://shoelace.style/getting-started/themes?id=activating-themes).
+
+# Demo
+
+You can see a full working example of the UI working in [here](https://github.com/holochain-open-dev/assemble/blob/main/ui/demo/index.html).
+

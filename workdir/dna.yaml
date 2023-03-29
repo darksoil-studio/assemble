@@ -1,0 +1,28 @@
+---
+manifest_version: "1"
+name: assemble_test
+integrity:
+  network_seed: ~
+  properties: ~
+  origin_time: 1676140846503210
+  zomes:
+    - name: assemble_integrity
+      hash: ~
+      bundled: "../target/wasm32-unknown-unknown/release/hc_zome_assemble_integrity.wasm"
+      dependencies: ~    
+    - name: profiles_integrity
+      hash: ~
+      bundled: "../target/wasm32-unknown-unknown/release/profiles_integrity.wasm"
+      dependencies: ~
+coordinator:
+  zomes:
+    - name: assemble
+      hash: ~
+      bundled: "../target/wasm32-unknown-unknown/release/hc_zome_assemble_coordinator.wasm"
+      dependencies:
+        - name: assemble_integrity    
+    - name: profiles
+      hash: ~
+      bundled: "../target/wasm32-unknown-unknown/release/profiles.wasm"
+      dependencies:
+        - name: profiles_integrity
