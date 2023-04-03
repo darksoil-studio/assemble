@@ -39,10 +39,28 @@ export class CollectiveCommitmentSummary extends LitElement {
   );
 
   renderSummary(entryRecord: EntryRecord<CollectiveCommitment>) {
-    return html` <div style="display: flex; flex-direction: column"></div> `;
+    return html`
+      <div style="display: flex; flex-direction: column">
+        <call-to-action-summary
+          .callToActionHash=${entryRecord.entry.call_to_action_hash}
+          @call-to-action-selected=${(e: CustomEvent) => {
+            e.stopPropagation();
+            this.dispatchEvent(
+              new CustomEvent('collective-commitment-selected', {
+                composed: true,
+                bubbles: true,
+                detail: {
+                  collectiveCommitmentHash: this.collectiveCommitmentHash,
+                },
+              })
+            );
+          }}
+        ></call-to-action-summary>
+      </div>
+    `;
   }
 
-  renderCollectiveCommitment() {
+  render() {
     switch (this._collectiveCommitment.value.status) {
       case 'pending':
         return html`<div
@@ -63,24 +81,6 @@ export class CollectiveCommitmentSummary extends LitElement {
           .error=${this._collectiveCommitment.value.error.data.data}
         ></display-error>`;
     }
-  }
-
-  render() {
-    return html`<sl-card
-      style="flex: 1; cursor: grab;"
-      @click=${() =>
-        this.dispatchEvent(
-          new CustomEvent('collective-commitment-selected', {
-            composed: true,
-            bubbles: true,
-            detail: {
-              collectiveCommitmentHash: this.collectiveCommitmentHash,
-            },
-          })
-        )}
-    >
-      ${this.renderCollectiveCommitment()}
-    </sl-card>`;
   }
 
   static styles = [sharedStyles];

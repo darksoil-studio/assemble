@@ -53,15 +53,22 @@ export interface CallToAction {
 
   custom_content: Uint8Array;
 
-  needs: Array<string>;
+  needs: Array<Need>;
+}
+
+export interface Need {
+  min_necessary: number;
+  max_possible: number | undefined;
+  description: string;
 }
 
 export interface CallPromise {
   call_to_action_hash: ActionHash;
 
-  description: string;
-
   need_index: number;
+
+  comment: string;
+  amount: number;
 }
 
 export interface Satisfaction {

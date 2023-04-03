@@ -9,6 +9,7 @@ import '@holochain-open-dev/elements/elements/display-error.js';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
+import { repeat } from 'lit/directives/repeat.js';
 import { localized, msg } from '@lit/localize';
 import { mdiDelete } from '@mdi/js';
 import { encode } from '@msgpack/msgpack';
@@ -30,7 +31,9 @@ import { CallToAction } from '../types.js';
  * @element create-call-to-action
  * @fires call-to-action-created: detail will contain { callToActionHash }
  */
-export abstract class CreateCallToAction extends LitElement {
+@localized()
+@customElement('create-call-to-action')
+export class CreateCallToAction extends LitElement {
   // REQUIRED. The parent call to action hash for this CallToAction
   @property(hashProperty('parent-call-to-action-hash'))
   parentCallToActionHash!: ActionHash;
@@ -64,6 +67,7 @@ export abstract class CreateCallToAction extends LitElement {
   _needsFields = [0];
 
   async createCallToAction(fields: any) {
+    if (this.committing) return;
     let customContent = this.customContent;
 
     if (!this.customContent) {
@@ -76,13 +80,27 @@ export abstract class CreateCallToAction extends LitElement {
 
     const custom_content = encode(customContent);
 
+    const needsDescriptions: string[] = Array.isArray(fields.needs_description)
+      ? fields.needs_description
+      : [fields.needs_description];
+    const needsMins = (
+      Array.isArray(fields.needs_min) ? fields.needs_min : [fields.needs_min]
+    ).map((i: string) => parseInt(i));
+    const needsMaxs = (
+      Array.isArray(fields.needs_max) ? fields.needs_max : [fields.needs_max]
+    ).map((i: string) => parseInt(i));
+
+    const needs = needsDescriptions.map((description, i) => ({
+      description,
+      min_necessary: needsMins[i],
+      max_possible: needsMaxs[i],
+    }));
+
     const callToAction: CallToAction = {
       parent_call_to_action_hash: this.parentCallToActionHash,
       title: fields.title,
       custom_content,
-      needs: (Array.isArray(fields.needs) ? fields.needs : [fields.needs]).map(
-        (el: any) => el
-      ),
+      needs,
     };
 
     try {
@@ -113,6 +131,46 @@ export abstract class CreateCallToAction extends LitElement {
     return html``;
   }
 
+  renderNeedFields(index: number) {
+    return html`<div class="row" style="align-items: center; margin-top: 8px">
+      <sl-input
+        name="needs_description"
+        required
+        .placeholder=${msg('Description')}
+      ></sl-input>
+
+      <sl-input
+        name="needs_min"
+        type="number"
+        id="inputmin${index}"
+        value="1"
+        min="0"
+        required
+        style="width: 5rem; margin-left: 8px"
+        .placeholder=${msg('Min.')}
+        @input=${() => this.requestUpdate()}
+      ></sl-input>
+
+      <sl-input
+        name="needs_max"
+        type="number"
+        .min=${(this.shadowRoot?.getElementById(`inputmin${index}`) as any)
+          ?.value || 1}
+        style="width: 5rem; margin-left: 8px"
+        value="1"
+        .placeholder=${msg('Max.')}
+      ></sl-input>
+
+      <sl-icon-button
+        .src=${wrapPathInSvg(mdiDelete)}
+        .disabled=${this._needsFields.length === 1}
+        @click=${() => {
+          this._needsFields = this._needsFields.filter(i => i !== index);
+        }}
+      ></sl-icon-button>
+    </div>`;
+  }
+
   render() {
     return html` <sl-card style="flex: 1;">
       <span slot="header">${msg('Create Call To Action')}</span>
@@ -130,31 +188,12 @@ export abstract class CreateCallToAction extends LitElement {
 
         <div style="margin-bottom: 16px; margin-top: 16px;">
           <div style="display: flex; flex-direction: column">
-            <span>${msg('Needs')}</span>
+            <span style="font-size: 18px">${msg('Needs')}</span>
 
-            ${this._needsFields.map(index =>
-              keyed(
-                index,
-                html`<div
-                  id="div${index}"
-                  class="row"
-                  style="align-items: center; margin-top: 8px"
-                >
-                  <sl-input
-                    id="input${index}"
-                    name="needs"
-                    .label=${msg('')}
-                  ></sl-input>
-                  <sl-icon-button
-                    .src=${wrapPathInSvg(mdiDelete)}
-                    @click=${() => {
-                      this._needsFields = this._needsFields.filter(
-                        i => i !== index
-                      );
-                    }}
-                  ></sl-icon-button>
-                </div>`
-              )
+            ${repeat(
+              this._needsFields,
+              i => i,
+              index => this.renderNeedFields(index)
             )}
             <sl-button
               style="margin-top: 8px"
@@ -164,7 +203,7 @@ export abstract class CreateCallToAction extends LitElement {
                   Math.max(...this._needsFields) + 1,
                 ];
               }}
-              >${msg('Add Needs')}</sl-button
+              >${msg('Add Need')}</sl-button
             >
           </div>
         </div>

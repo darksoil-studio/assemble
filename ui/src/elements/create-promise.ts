@@ -26,13 +26,14 @@ import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import '@shoelace-style/shoelace/dist/components/input/input.js';
 import '@shoelace-style/shoelace/dist/components/textarea/textarea.js';
 import { LitElement, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallPromise } from '../types.js';
+import { CallPromise, CallToAction } from '../types.js';
 
 /**
  * @element create-promise
@@ -42,12 +43,12 @@ import { CallPromise } from '../types.js';
 @customElement('create-promise')
 export class CreatePromise extends LitElement {
   // REQUIRED. The call to action hash for this Promise
-  @property(hashProperty('call-to-action-hash'))
-  callToActionHash!: ActionHash;
+  @property()
+  callToAction!: EntryRecord<CallToAction>;
 
   // REQUIRED. The need index for this Promise
   @property()
-  needIndex!: number;
+  needIndex: number | undefined;
 
   /**
    * @internal
@@ -62,7 +63,6 @@ export class CreatePromise extends LitElement {
   committing = false;
 
   show() {
-    this.form.reset();
     this.dialog.show();
   }
 
@@ -81,7 +81,7 @@ export class CreatePromise extends LitElement {
   async createPromise(fields: any) {
     if (this.committing) return;
 
-    if (this.callToActionHash === undefined)
+    if (this.callToAction.actionHash === undefined)
       throw new Error(
         'Cannot create a new Promise without its call_to_action_hash field'
       );
@@ -91,8 +91,9 @@ export class CreatePromise extends LitElement {
       );
 
     const promise: CallPromise = {
-      call_to_action_hash: this.callToActionHash,
-      description: fields.description,
+      call_to_action_hash: this.callToAction.actionHash,
+      comment: fields.comments,
+      amount: fields.amount ? parseInt(fields.amount) : 1,
       need_index: this.needIndex,
     };
 
@@ -113,6 +114,7 @@ export class CreatePromise extends LitElement {
 
       this.dialog.hide();
       this.form.reset();
+      this.needIndex = undefined;
     } catch (e: any) {
       console.error(e);
       notifyError(msg('Error creating the promise'));
@@ -121,24 +123,49 @@ export class CreatePromise extends LitElement {
   }
 
   render() {
-    return html` <sl-dialog style="flex: 1;" .label=${msg('Create Promise')}>
-      <form
-        id="create-form"
-        style="display: flex; flex: 1; flex-direction: column;"
-        ${onSubmit(fields => this.createPromise(fields))}
-      >
-        <div style="margin-bottom: 16px;">
-          <sl-textarea
-            name="description"
-            .label=${msg('Description')}
-            required
-          ></sl-textarea>
-        </div>
+    return html` <sl-dialog
+      style="flex: 1;"
+      .label=${msg('Promise to Contribute')}
+    >
+      ${this.needIndex !== undefined
+        ? html`
+            <form
+              id="create-form"
+              style="display: flex; flex: 1; flex-direction: column;"
+              ${onSubmit(fields => this.createPromise(fields))}
+            >
+              ${this.callToAction.entry.needs[this.needIndex].min_necessary !==
+                1 &&
+              this.callToAction.entry.needs[this.needIndex].max_possible !== 1
+                ? html`
+                    <sl-input
+                      name="amount"
+                      type="number"
+                      .label=${msg('Amount')}
+                      value="1"
+                      min="1"
+                      .max=${this.callToAction.entry.needs[this.needIndex]
+                        .max_possible}
+                      style="margin-bottom: 16px;"
+                      required
+                    ></sl-input>
+                  `
+                : html``}
+              <sl-textarea
+                style="margin-bottom: 16px;"
+                name="comment"
+                .label=${msg('Comment')}
+              ></sl-textarea>
 
-        <sl-button variant="primary" type="submit" .loading=${this.committing}
-          >${msg('Create Promise')}</sl-button
-        >
-      </form>
+              <sl-button
+                variant="primary"
+                type="submit"
+                .loading=${this.committing}
+                >${msg('Promise')}</sl-button
+              >
+            </form>
+          `
+        : html``}
     </sl-dialog>`;
   }
 

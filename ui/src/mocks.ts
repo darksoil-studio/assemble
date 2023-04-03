@@ -370,15 +370,22 @@ export function sampleCallToAction(): CallToAction {
     parent_call_to_action_hash: undefined,
     title: 'Lorem ipsum 2',
     custom_content: encode({}),
-    needs: ['Lorem ipsum 2'],
+    needs: [
+      {
+        description: 'Lorem ipsum 2',
+        min_necessary: 1,
+        max_possible: 5,
+      },
+    ],
   };
 }
 
 export function samplePromise(): CallPromise {
   return {
     call_to_action_hash: fakeActionHash(),
-    description: 'Lorem ipsum 2',
+    comment: 'Lorem ipsum 2',
     need_index: 3,
+    amount: 1,
   };
 }
 

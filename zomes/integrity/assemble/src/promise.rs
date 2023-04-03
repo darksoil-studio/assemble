@@ -3,7 +3,8 @@ use hdi::prelude::*;
 #[derive(Clone, PartialEq)]
 pub struct Promise {
     pub call_to_action_hash: ActionHash,
-    pub description: String,
+    pub amount: u32,
+    pub comment: Option<String>,
     pub need_index: u32,
 }
 pub fn validate_create_promise(
@@ -15,11 +16,9 @@ pub fn validate_create_promise(
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Dependant action must be accompanied by an entry"))
-            ),
-        )?;
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Dependant action must be accompanied by an entry"
+        ))))?;
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_update_promise(
@@ -28,14 +27,18 @@ pub fn validate_update_promise(
     _original_action: EntryCreationAction,
     _original_promise: Promise,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(ValidateCallbackResult::Invalid(String::from("Promises cannot be updated")))
+    Ok(ValidateCallbackResult::Invalid(String::from(
+        "Promises cannot be updated",
+    )))
 }
 pub fn validate_delete_promise(
     _action: Delete,
     _original_action: EntryCreationAction,
     _original_promise: Promise,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(ValidateCallbackResult::Invalid(String::from("Promises cannot be deleted")))
+    Ok(ValidateCallbackResult::Invalid(String::from(
+        "Promises cannot be deleted",
+    )))
 }
 pub fn validate_create_link_call_to_action_to_promises(
     _action: CreateLink,
@@ -49,22 +52,18 @@ pub fn validate_create_link_call_to_action_to_promises(
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
-            ),
-        )?;
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Linked action must reference an entry"
+        ))))?;
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
     let _promise: crate::Promise = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
-            ),
-        )?;
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Linked action must reference an entry"
+        ))))?;
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_call_to_action_to_promises(
@@ -74,9 +73,7 @@ pub fn validate_delete_link_call_to_action_to_promises(
     _target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(
-        ValidateCallbackResult::Invalid(
-            String::from("CallToActionToPromises links cannot be deleted"),
-        ),
-    )
+    Ok(ValidateCallbackResult::Invalid(String::from(
+        "CallToActionToPromises links cannot be deleted",
+    )))
 }

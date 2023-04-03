@@ -46,7 +46,7 @@ export class PromiseSummary extends LitElement {
             ><strong>${msg('Description')}:</strong></span
           >
           <span style="white-space: pre-line"
-            >${entryRecord.entry.description}</span
+            >${entryRecord.entry.comment}</span
           >
         </div>
       </div>

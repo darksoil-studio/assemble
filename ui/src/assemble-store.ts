@@ -45,10 +45,7 @@ export class AssembleStore {
   promisesForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
-        const records = await this.client.getPromisesForCallToAction(
-          callToActionHash
-        );
-        return records.map(r => r.actionHash);
+        return this.client.getPromisesForCallToAction(callToActionHash);
       }, 4000)
   );
 
@@ -64,10 +61,7 @@ export class AssembleStore {
   satisfactionsForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
-        const records = await this.client.getSatisfactionsForCallToAction(
-          callToActionHash
-        );
-        return records.map(r => r.actionHash);
+        return this.client.getSatisfactionsForCallToAction(callToActionHash);
       }, 4000)
   );
 

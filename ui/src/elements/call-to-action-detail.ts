@@ -5,14 +5,20 @@ import {
   wrapPathInSvg,
 } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/elements/display-error.js';
-import { StoreSubscriber } from '@holochain-open-dev/stores';
-import { EntryRecord } from '@holochain-open-dev/utils';
+import {
+  AsyncReadable,
+  StoreSubscriber,
+  join,
+} from '@holochain-open-dev/stores';
+import { EntryRecord, LazyHoloHashMap } from '@holochain-open-dev/utils';
 import { ActionHash, EntryHash, Record } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete, mdiPencil } from '@mdi/js';
 import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
@@ -23,7 +29,7 @@ import { decode } from '@msgpack/msgpack';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallToAction } from '../types.js';
+import { CallToAction, CallPromise, Satisfaction, Need } from '../types.js';
 import './edit-call-to-action.js';
 import './create-promise.js';
 import { CreatePromise } from './create-promise.js';
@@ -50,6 +56,22 @@ export class CallToActionDetail extends LitElement {
    */
   _callToAction = new StoreSubscriber(this, () =>
     this.assembleStore.callToActions.get(this.callToActionHash)
+  );
+
+  /**
+   * @internal
+   */
+  _promisesAndSatisfactionsForCall = new StoreSubscriber(
+    this,
+    () =>
+      join([
+        this.assembleStore.promisesForCallToAction.get(this.callToActionHash),
+        this.assembleStore.satisfactionsForCallToAction.get(
+          this.callToActionHash
+        ),
+      ]) as AsyncReadable<
+        [Array<EntryRecord<CallPromise>>, Array<EntryRecord<Satisfaction>>]
+      >
   );
 
   /**
@@ -87,22 +109,266 @@ export class CallToActionDetail extends LitElement {
     return html``;
   }
 
+  async acceptPromise(
+    lastNeed: boolean,
+    satisfactions: Array<EntryRecord<Satisfaction>>,
+    needIndex: number,
+    promises_hashes: Array<ActionHash>
+  ) {
+    try {
+      const satisfaction = await this.assembleStore.client.createSatisfaction({
+        call_to_action_hash: this.callToActionHash,
+        need_index: needIndex,
+        promises_hashes,
+      });
+      if (lastNeed) {
+        await this.assembleStore.client.createCollectiveCommitment({
+          call_to_action_hash: this.callToActionHash,
+          satisfactions_hashes: [
+            satisfaction.actionHash,
+            ...satisfactions.map(s => s.actionHash),
+          ],
+        });
+      }
+    } catch (e) {
+      notifyError(msg('Error accepting the promise'));
+      console.error(e);
+    }
+  }
+
+  renderPromisesForNeed(
+    needIndex: number,
+    promises: Array<EntryRecord<CallPromise>>,
+    satisfactions: Array<EntryRecord<Satisfaction>>,
+    lastNeed: boolean
+  ) {
+    const promisesForThisNeed = promises.filter(
+      p => p.entry.need_index === needIndex
+    );
+
+    if (promisesForThisNeed.length === 0)
+      return html`<span class="placeholder" style="margin-top: 8px"
+        >${msg('No one has contributed to this need yet')}</span
+      >`;
+
+    return html`<div class="column">
+      ${promisesForThisNeed.map(
+        promise => html`
+          <div class="row" style="align-items: center; margin-top: 8px">
+            <agent-avatar .agentPubKey=${promise.action.author}></agent-avatar>
+            <span style="margin-left: 8px"
+              >${promise.entry.comment || msg('No comment')}</span
+            >
+          </div>
+        `
+      )}
+    </div>`;
+  }
+
+  renderUnmetNeeds(
+    callToAction: EntryRecord<CallToAction>,
+    needs: Array<[Need, number]>,
+    promises: Array<EntryRecord<CallPromise>>,
+    satisfactions: Array<EntryRecord<Satisfaction>>
+  ) {
+    if (needs.length === 0)
+      return html`<span
+        >${msg(
+          'There are no unmet needs! This call to action has succeeded.'
+        )}</span
+      >`;
+
+    return needs.map(
+      ([need, i]) => html`
+        <div class="column" style="margin-bottom: 16px;">
+          <span style="white-space: pre-line; margin-bottom: 8px"
+            >${need.description}</span
+          >
+          ${need.min_necessary !== 1 && need.max_possible !== 1
+            ? html`<div class="row">
+                <sl-progress-bar
+                  style="flex: 1"
+                  .value=${(100 *
+                    promises
+                      .filter(p => p.entry.need_index === i)
+                      .reduce((count, p) => count + p.entry.amount, 0)) /
+                  need.min_necessary}
+                >
+                </sl-progress-bar
+                ><span style="margin-left: 8px">
+                  ${promises
+                    .filter(p => p.entry.need_index === i)
+                    .reduce((count, p) => count + p.entry.amount, 0)}
+                  ${msg('of')} ${need.min_necessary}
+                </span>
+              </div>`
+            : html``}
+          ${this.renderPromisesForNeed(
+            i,
+            promises,
+            satisfactions,
+            needs.length === 1
+          )}
+          <sl-button
+            style="margin-top: 16px"
+            @click=${() => {
+              const createPromise = this.shadowRoot?.querySelector(
+                'create-promise'
+              ) as CreatePromise;
+              createPromise.needIndex = i;
+              createPromise.show();
+            }}
+            >${msg('Contribute')}</sl-button
+          >
+
+          ${this.amIAuthor(callToAction)
+            ? html``
+            : html`
+                <sl-button
+                  style="margin-top: 8px"
+                  @click=${() =>
+                    this.acceptPromise(
+                      needs.length === 1,
+                      satisfactions,
+                      i,
+                      promises
+                        .filter(p => p.entry.need_index === i)
+                        .map(p => p.actionHash)
+                    )}
+                  >${msg('Declare as Satisfied')}</sl-button
+                >
+              `}
+        </div>
+        ${i < needs.length - 1 ? html` <sl-divider></sl-divider> ` : html``}
+      `
+    );
+  }
+
+  renderMetNeeds(
+    callToAction: EntryRecord<CallToAction>,
+    needs: Array<[Need, number]>,
+    promises: Array<EntryRecord<CallPromise>>,
+    satisfactions: Array<EntryRecord<Satisfaction>>
+  ) {
+    return needs.map(
+      ([need, i]) => html`
+        <div class="column">
+          <span style="white-space: pre-line; margin-bottom: 8px"
+            >${need.description}</span
+          >
+          ${promises
+            .filter(p =>
+              satisfactions.find(
+                s =>
+                  s.entry.need_index === i &&
+                  s.entry.promises_hashes.find(
+                    ph => ph.toString() === p.actionHash.toString()
+                  )
+              )
+            )
+            .map(
+              promise => html` <div class="row" style="align-items: center">
+                <agent-avatar
+                  .agentPubKey=${promise.action.author}
+                ></agent-avatar>
+                <span style="margin-left: 8px"
+                  >${promise.entry.comment || msg('No comment')}</span
+                >
+              </div>`
+            )}
+          <sl-button
+            @click=${() => {
+              const createPromise = this.shadowRoot?.querySelector(
+                'create-promise'
+              ) as CreatePromise;
+              createPromise.needIndex = i;
+              createPromise.show();
+            }}
+            >${msg('Contribute')}</sl-button
+          >
+        </div>
+
+        ${i < needs.length - 1 ? html` <sl-divider></sl-divider> ` : html``}
+      `
+    );
+  }
+
+  renderNeeds(callToAction: EntryRecord<CallToAction>) {
+    switch (this._promisesAndSatisfactionsForCall.value.status) {
+      case 'pending':
+        return html`
+          <div class="column">
+            <sl-skeleton></sl-skeleton>
+            <sl-skeleton style="margin-top: 8px"></sl-skeleton>
+            <sl-skeleton style="margin-top: 8px"></sl-skeleton>
+          </div>
+        `;
+      case 'complete':
+        const promises = this._promisesAndSatisfactionsForCall.value.value[0];
+        const satisfactions =
+          this._promisesAndSatisfactionsForCall.value.value[1];
+
+        const unmetNeeds = callToAction.entry.needs
+          .map((need, i) => [need, i])
+          .filter(
+            ([need, i]) => !satisfactions.find(s => s.entry.need_index === i)
+          ) as Array<[Need, number]>;
+        const metNeeds = callToAction.entry.needs
+          .map((need, i) => [need, i])
+          .filter(
+            ([need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
+          ) as Array<[Need, number]>;
+        return html`
+          <span style="margin-bottom: 8px"
+            ><strong>${msg('Unmet Needs')}</strong></span
+          >
+          ${this.renderUnmetNeeds(
+            callToAction,
+            unmetNeeds,
+            promises,
+            satisfactions
+          )}
+          ${metNeeds.length > 0
+            ? html`
+                <span style="margin-bottom: 8px; margin-top: 16px"
+                  ><strong>${msg('Satisfied Needs')}</strong></span
+                >
+                ${this.renderMetNeeds(
+                  callToAction,
+                  metNeeds,
+                  promises,
+                  satisfactions
+                )}
+              `
+            : html``}
+        `;
+      case 'error':
+        return html`<display-error
+          .headline=${msg(
+            'Error fetching the promises for this call to action'
+          )}
+          .error=${this._promisesAndSatisfactionsForCall.value.error.data.data}
+        ></display-error>`;
+    }
+  }
+
   renderDetail(entryRecord: EntryRecord<CallToAction>) {
     return html`
-      <create-promise
-        .callToActionHash=${this.callToActionHash}
-      ></create-promise>
+      <create-promise .callToAction=${entryRecord}></create-promise>
 
       <sl-card>
-        <div slot="header" style="display: flex; flex-direction: row">
+        <div
+          slot="header"
+          style="display: flex; flex-direction: row; align-items: center"
+        >
           <span style="font-size: 18px; flex: 1;"
-            >${msg('Call To Action')}</span
+            >${entryRecord.entry.title}</span
           >
 
           ${this.amIAuthor(entryRecord)
             ? html`
                 <sl-icon-button
-                  style="margin-left: 8px"
+                  style="margin-left: 8px; display: none;"
                   .src=${wrapPathInSvg(mdiPencil)}
                   @click=${() => {
                     this._editing = true;
@@ -118,44 +384,23 @@ export class CallToActionDetail extends LitElement {
         </div>
 
         <div style="display: flex; flex-direction: column">
-          <div
-            style="display: flex; flex-direction: column; margin-bottom: 16px"
-          >
-            <span style="margin-bottom: 8px"
-              ><strong>${msg('Title')}:</strong></span
-            >
-            <span style="white-space: pre-line"
-              >${entryRecord.entry.title}</span
-            >
+          <div class="row" style="align-items: center; margin-bottom: 16px">
+            <span>${msg('Created by')}</span>
+            <agent-avatar
+              .agentPubKey=${entryRecord.action.author}
+              style="margin-left: 8px;"
+            ></agent-avatar>
+            <sl-relative-time
+              style="margin-left: 8px;"
+              .date=${entryRecord.action.timestamp}
+            ></sl-relative-time>
           </div>
-
           ${this.renderCustomContent(decode(entryRecord.entry.custom_content))}
 
           <div
             style="display: flex; flex-direction: column; margin-bottom: 16px"
           >
-            <span style="margin-bottom: 8px"
-              ><strong>${msg('Needs')}:</strong></span
-            >
-            ${entryRecord.entry.needs.map(
-              (el, i) => html` <div class="row">
-                <span style="white-space: pre-line">${el}</span>
-                ${this.amIAuthor(entryRecord)
-                  ? html``
-                  : html`
-                      <sl-button
-                        @click=${() => {
-                          const createPromise = this.shadowRoot?.querySelector(
-                            'create-promise'
-                          ) as CreatePromise;
-                          createPromise.needIndex = i;
-                          createPromise.show();
-                        }}
-                        >${msg('Promise to Help')}</sl-button
-                      >
-                    `}
-              </div>`
-            )}
+            ${this.renderNeeds(entryRecord)}
           </div>
         </div>
       </sl-card>
