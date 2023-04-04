@@ -248,6 +248,8 @@ export class CallToActionDetail extends LitElement {
     promises: Array<EntryRecord<CallPromise>>,
     satisfactions: Array<EntryRecord<Satisfaction>>
   ) {
+    if (needs.length === 0)
+      return html`<span>${msg('There are no satisfied needs yet.')}</span>`;
     return needs.map(
       ([need, i]) => html`
         <div class="column">
@@ -326,39 +328,43 @@ export class CallToActionDetail extends LitElement {
             ([need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
           ) as Array<[Need, number]>;
         return html`
-          <create-satisfaction
-            .callToAction=${callToAction}
-            @satisfaction-created=${async (e: CustomEvent) => {
-              if (unmetNeeds.length === 1) {
-                await this.createCollectiveCommitment([
-                  ...satisfactions.map(s => s.actionHash),
-                  e.detail.satisfactionHash,
-                ]);
-              }
-            }}
-          ></create-satisfaction>
-          <span style="margin-bottom: 8px"
-            ><strong>${msg('Unmet Needs')}</strong></span
-          >
-          ${this.renderUnmetNeeds(
-            callToAction,
-            unmetNeeds,
-            promises,
-            satisfactions
-          )}
-          ${metNeeds.length > 0
-            ? html`
-                <span style="margin-bottom: 8px; margin-top: 16px"
-                  ><strong>${msg('Satisfied Needs')}</strong></span
-                >
-                ${this.renderMetNeeds(
-                  callToAction,
-                  metNeeds,
-                  promises,
-                  satisfactions
-                )}
-              `
-            : html``}
+          <div class="row" style="flex: 1">
+            <create-satisfaction
+              .callToAction=${callToAction}
+              @satisfaction-created=${async (e: CustomEvent) => {
+                if (unmetNeeds.length === 1) {
+                  await this.createCollectiveCommitment([
+                    ...satisfactions.map(s => s.actionHash),
+                    e.detail.satisfactionHash,
+                  ]);
+                }
+              }}
+            ></create-satisfaction>
+            <div class="column" style="flex: 1">
+              <span style="margin-bottom: 8px"
+                ><strong>${msg('Unmet Needs')}</strong></span
+              >
+              ${this.renderUnmetNeeds(
+                callToAction,
+                unmetNeeds,
+                promises,
+                satisfactions
+              )}
+            </div>
+            <sl-divider vertical></sl-divider>
+
+            <div class="column" style="flex: 1; margin-left: 16px">
+              <span style="margin-bottom: 8px; "
+                ><strong>${msg('Satisfied Needs')}</strong></span
+              >
+              ${this.renderMetNeeds(
+                callToAction,
+                metNeeds,
+                promises,
+                satisfactions
+              )}
+            </div>
+          </div>
         `;
       case 'error':
         return html`<display-error

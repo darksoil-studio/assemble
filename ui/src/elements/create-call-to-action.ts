@@ -21,7 +21,6 @@ import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
 import { LitElement, html, TemplateResult } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { keyed } from 'lit/directives/keyed.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
@@ -138,6 +137,7 @@ export class CreateCallToAction extends LitElement {
         required
         .placeholder=${msg('Description')}
       ></sl-input>
+      <span style="margin-left: 8px">${msg('Min.')}</span>
 
       <sl-input
         name="needs_min"
@@ -147,10 +147,10 @@ export class CreateCallToAction extends LitElement {
         min="0"
         required
         style="width: 5rem; margin-left: 8px"
-        .placeholder=${msg('Min.')}
         @input=${() => this.requestUpdate()}
       ></sl-input>
 
+      <span style="margin-left: 8px">${msg('Max.')}</span>
       <sl-input
         name="needs_max"
         type="number"
@@ -158,7 +158,6 @@ export class CreateCallToAction extends LitElement {
           ?.value || 1}
         style="width: 5rem; margin-left: 8px"
         value="1"
-        .placeholder=${msg('Max.')}
       ></sl-input>
 
       <sl-icon-button

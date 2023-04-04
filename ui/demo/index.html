@@ -106,16 +106,18 @@
             <assemble-context .store=${this._assembleStore}>
               <div class="column" style="flex: 1">
                 <span>CallsToAction</span>
-                <div class="row">
-                  <create-call-to-action-with-distance>
-                  </create-call-to-action-with-distance>
-                  <all-calls-to-action
-                    @call-to-action-selected=${e => {
-                      this._selectedCallToActionHash =
-                        e.detail.callToActionHash;
-                      this.requestUpdate();
-                    }}
-                  ></all-calls-to-action>
+                <div class="column" style="flex: 1">
+                  <div class="row">
+                    <create-call-to-action-with-distance>
+                    </create-call-to-action-with-distance>
+                    <all-calls-to-action
+                      @call-to-action-selected=${e => {
+                        this._selectedCallToActionHash =
+                          e.detail.callToActionHash;
+                        this.requestUpdate();
+                      }}
+                    ></all-calls-to-action>
+                  </div>
                   ${this._selectedCallToActionHash
                     ? html`
                         <call-to-action-detail-with-distance

@@ -92,7 +92,7 @@ export class CreatePromise extends LitElement {
 
     const promise: CallPromise = {
       call_to_action_hash: this.callToAction.actionHash,
-      comment: fields.comments,
+      comment: fields.comment,
       amount: fields.amount ? parseInt(fields.amount) : 1,
       need_index: this.needIndex,
     };
