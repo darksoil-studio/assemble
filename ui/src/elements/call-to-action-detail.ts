@@ -10,12 +10,11 @@ import {
   StoreSubscriber,
   join,
 } from '@holochain-open-dev/stores';
-import { EntryRecord, LazyHoloHashMap } from '@holochain-open-dev/utils';
-import { ActionHash, EntryHash, Record } from '@holochain/client';
+import { EntryRecord } from '@holochain-open-dev/utils';
+import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import { mdiAlertCircleOutline, mdiDelete, mdiPencil } from '@mdi/js';
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import { mdiDelete, mdiPencil } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
@@ -126,9 +125,7 @@ export class CallToActionDetail extends LitElement {
   renderPromisesForNeed(
     callToAction: EntryRecord<CallToAction>,
     needIndex: number,
-    promises: Array<EntryRecord<CallPromise>>,
-    satisfactions: Array<EntryRecord<Satisfaction>>,
-    lastNeed: boolean
+    promises: Array<EntryRecord<CallPromise>>
   ) {
     const promisesForThisNeed = promises.filter(
       p => p.entry.need_index === needIndex
@@ -164,8 +161,7 @@ export class CallToActionDetail extends LitElement {
   renderUnmetNeeds(
     callToAction: EntryRecord<CallToAction>,
     needs: Array<[Need, number]>,
-    promises: Array<EntryRecord<CallPromise>>,
-    satisfactions: Array<EntryRecord<Satisfaction>>
+    promises: Array<EntryRecord<CallPromise>>
   ) {
     if (needs.length === 0)
       return html`<span
@@ -199,13 +195,7 @@ export class CallToActionDetail extends LitElement {
                 </span>
               </div>`
             : html``}
-          ${this.renderPromisesForNeed(
-            callToAction,
-            i,
-            promises,
-            satisfactions,
-            needs.length === 1
-          )}
+          ${this.renderPromisesForNeed(callToAction, i, promises)}
           <sl-button
             style="margin-top: 16px"
             @click=${() => {
@@ -320,12 +310,12 @@ export class CallToActionDetail extends LitElement {
         const unmetNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
           .filter(
-            ([need, i]) => !satisfactions.find(s => s.entry.need_index === i)
+            ([_need, i]) => !satisfactions.find(s => s.entry.need_index === i)
           ) as Array<[Need, number]>;
         const metNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
           .filter(
-            ([need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
+            ([_need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
           ) as Array<[Need, number]>;
         return html`
           <div class="row" style="flex: 1">
@@ -344,12 +334,7 @@ export class CallToActionDetail extends LitElement {
               <span style="margin-bottom: 8px"
                 ><strong>${msg('Unmet Needs')}</strong></span
               >
-              ${this.renderUnmetNeeds(
-                callToAction,
-                unmetNeeds,
-                promises,
-                satisfactions
-              )}
+              ${this.renderUnmetNeeds(callToAction, unmetNeeds, promises)}
             </div>
             <sl-divider vertical></sl-divider>
 
