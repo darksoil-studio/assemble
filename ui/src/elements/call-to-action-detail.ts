@@ -32,7 +32,9 @@ import { assembleStoreContext } from '../context.js';
 import { CallToAction, CallPromise, Satisfaction, Need } from '../types.js';
 import './edit-call-to-action.js';
 import './create-promise.js';
+import './create-satisfaction.js';
 import { CreatePromise } from './create-promise.js';
+import { CreateSatisfaction } from './create-satisfaction.js';
 
 /**
  * @element call-to-action-detail
@@ -109,27 +111,12 @@ export class CallToActionDetail extends LitElement {
     return html``;
   }
 
-  async acceptPromise(
-    lastNeed: boolean,
-    satisfactions: Array<EntryRecord<Satisfaction>>,
-    needIndex: number,
-    promises_hashes: Array<ActionHash>
-  ) {
+  async createCollectiveCommitment(satisfactions_hashes: Array<ActionHash>) {
     try {
-      const satisfaction = await this.assembleStore.client.createSatisfaction({
+      await this.assembleStore.client.createCollectiveCommitment({
         call_to_action_hash: this.callToActionHash,
-        need_index: needIndex,
-        promises_hashes,
+        satisfactions_hashes,
       });
-      if (lastNeed) {
-        await this.assembleStore.client.createCollectiveCommitment({
-          call_to_action_hash: this.callToActionHash,
-          satisfactions_hashes: [
-            satisfaction.actionHash,
-            ...satisfactions.map(s => s.actionHash),
-          ],
-        });
-      }
     } catch (e) {
       notifyError(msg('Error accepting the promise'));
       console.error(e);
@@ -137,6 +124,7 @@ export class CallToActionDetail extends LitElement {
   }
 
   renderPromisesForNeed(
+    callToAction: EntryRecord<CallToAction>,
     needIndex: number,
     promises: Array<EntryRecord<CallPromise>>,
     satisfactions: Array<EntryRecord<Satisfaction>>,
@@ -156,9 +144,17 @@ export class CallToActionDetail extends LitElement {
         promise => html`
           <div class="row" style="align-items: center; margin-top: 8px">
             <agent-avatar .agentPubKey=${promise.action.author}></agent-avatar>
-            <span style="margin-left: 8px"
-              >${promise.entry.comment || msg('No comment')}</span
-            >
+            <div class="column" style="margin-left: 8px">
+              <span>${promise.entry.comment || msg('No comment')}</span>
+              ${callToAction.entry.needs[needIndex].min_necessary === 1 &&
+              callToAction.entry.needs[needIndex].max_possible === 1
+                ? html``
+                : html`
+                    <span style="margin-top: 8px"
+                      >${msg('Amount')}: ${promise.entry.amount}</span
+                    >
+                  `}
+            </div>
           </div>
         `
       )}
@@ -204,6 +200,7 @@ export class CallToActionDetail extends LitElement {
               </div>`
             : html``}
           ${this.renderPromisesForNeed(
+            callToAction,
             i,
             promises,
             satisfactions,
@@ -222,22 +219,23 @@ export class CallToActionDetail extends LitElement {
           >
 
           ${this.amIAuthor(callToAction)
-            ? html``
-            : html`
+            ? html`
                 <sl-button
                   style="margin-top: 8px"
-                  @click=${() =>
-                    this.acceptPromise(
-                      needs.length === 1,
-                      satisfactions,
-                      i,
-                      promises
-                        .filter(p => p.entry.need_index === i)
-                        .map(p => p.actionHash)
-                    )}
-                  >${msg('Declare as Satisfied')}</sl-button
+                  @click=${() => {
+                    const createSatisfaction = this.shadowRoot?.querySelector(
+                      'create-satisfaction'
+                    ) as CreateSatisfaction;
+                    createSatisfaction.needIndex = i;
+                    createSatisfaction.promises = promises.filter(
+                      p => p.entry.need_index === i
+                    );
+                    createSatisfaction.show();
+                  }}
+                  >${msg('Need is satisfied')}</sl-button
                 >
-              `}
+              `
+            : html``}
         </div>
         ${i < needs.length - 1 ? html` <sl-divider></sl-divider> ` : html``}
       `
@@ -271,12 +269,21 @@ export class CallToActionDetail extends LitElement {
                 <agent-avatar
                   .agentPubKey=${promise.action.author}
                 ></agent-avatar>
-                <span style="margin-left: 8px"
-                  >${promise.entry.comment || msg('No comment')}</span
-                >
+                ${promise.entry.comment
+                  ? html`
+                      <span style="margin-left: 8px"
+                        >${promise.entry.comment}</span
+                      >
+                    `
+                  : html`
+                      <span class="placeholder" style="margin-left: 8px"
+                        >${msg('No comment')}</span
+                      >
+                    `}
               </div>`
             )}
           <sl-button
+            style="margin-top: 16px"
             @click=${() => {
               const createPromise = this.shadowRoot?.querySelector(
                 'create-promise'
@@ -319,6 +326,17 @@ export class CallToActionDetail extends LitElement {
             ([need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
           ) as Array<[Need, number]>;
         return html`
+          <create-satisfaction
+            .callToAction=${callToAction}
+            @satisfaction-created=${async (e: CustomEvent) => {
+              if (unmetNeeds.length === 1) {
+                await this.createCollectiveCommitment([
+                  ...satisfactions.map(s => s.actionHash),
+                  e.detail.satisfactionHash,
+                ]);
+              }
+            }}
+          ></create-satisfaction>
           <span style="margin-bottom: 8px"
             ><strong>${msg('Unmet Needs')}</strong></span
           >

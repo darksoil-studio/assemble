@@ -54,22 +54,36 @@ export class CallToActionSummary extends LitElement {
   /**
    * @internal
    */
-  _promisesForCall = new StoreSubscriber(this, () =>
-    this.assembleStore.promisesForCallToAction.get(this.callToActionHash)
+  _promisesAndSatisfactionsForCall = new StoreSubscriber(
+    this,
+    () =>
+      join([
+        this.assembleStore.promisesForCallToAction.get(this.callToActionHash),
+        this.assembleStore.satisfactionsForCallToAction.get(
+          this.callToActionHash
+        ),
+      ]) as AsyncReadable<
+        [Array<EntryRecord<CallPromise>>, Array<EntryRecord<Satisfaction>>]
+      >
   );
 
   renderProgress(callToAction: EntryRecord<CallToAction>) {
-    const needsCount = callToAction.entry.needs.reduce(
-      (count, need) => count + need.min_necessary,
-      0
-    );
-    switch (this._promisesForCall.value.status) {
+    switch (this._promisesAndSatisfactionsForCall.value.status) {
       case 'pending':
         return html`<sl-skeleton></sl-skeleton>`;
       case 'complete':
+        const promises = this._promisesAndSatisfactionsForCall.value.value[0];
+        const satisfactions =
+          this._promisesAndSatisfactionsForCall.value.value[1];
+        const needsCount = callToAction.entry.needs
+          .filter(
+            (_, index) => !satisfactions.find(s => s.entry.need_index === index)
+          )
+          .reduce((count, need) => count + need.min_necessary, 0);
+
         return html` <sl-progress-bar
           .value=${(100 *
-            this._promisesForCall.value.value.reduce(
+            promises.reduce(
               (count, promise) => count + promise.entry.amount,
               0
             )) /
@@ -78,7 +92,7 @@ export class CallToActionSummary extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the progress of the call')}
-          .error=${this._promisesForCall.value.error.data.data}
+          .error=${this._promisesAndSatisfactionsForCall.value.error.data.data}
         ></display-error>`;
     }
   }

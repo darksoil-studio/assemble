@@ -62,10 +62,6 @@ export class CreatePromise extends LitElement {
   @state()
   committing = false;
 
-  show() {
-    this.dialog.show();
-  }
-
   /**
    * @internal
    */
@@ -77,6 +73,10 @@ export class CreatePromise extends LitElement {
    */
   @query('sl-dialog')
   dialog!: SlDialog;
+
+  show() {
+    this.dialog.show();
+  }
 
   async createPromise(fields: any) {
     if (this.committing) return;
@@ -154,6 +154,7 @@ export class CreatePromise extends LitElement {
               <sl-textarea
                 style="margin-bottom: 16px;"
                 name="comment"
+                required
                 .label=${msg('Comment')}
               ></sl-textarea>
 

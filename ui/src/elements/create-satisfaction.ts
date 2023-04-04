@@ -14,23 +14,26 @@ import {
   DnaHash,
   EntryHash,
   Record,
+  decodeHashFromBase64,
+  encodeHashToBase64,
 } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
+import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import { LitElement, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
-import { keyed } from 'lit/directives/keyed.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Satisfaction } from '../types.js';
+import { CallPromise, CallToAction, Satisfaction } from '../types.js';
+import { SlDialog } from '@shoelace-style/shoelace';
 
 /**
  * @element create-satisfaction
@@ -40,8 +43,8 @@ import { Satisfaction } from '../types.js';
 @customElement('create-satisfaction')
 export class CreateSatisfaction extends LitElement {
   // REQUIRED. The call to action hash for this Satisfaction
-  @property(hashProperty('call-to-action-hash'))
-  callToActionHash!: ActionHash;
+  @property()
+  callToAction!: EntryRecord<CallToAction>;
 
   // REQUIRED. The need index for this Satisfaction
   @property()
@@ -49,7 +52,7 @@ export class CreateSatisfaction extends LitElement {
 
   // REQUIRED. The promises hashes for this Satisfaction
   @property()
-  promisesHashes!: Array<ActionHash>;
+  promises: Array<EntryRecord<CallPromise>> | undefined;
 
   /**
    * @internal
@@ -69,8 +72,18 @@ export class CreateSatisfaction extends LitElement {
   @query('#create-form')
   form!: HTMLFormElement;
 
+  /**
+   * @internal
+   */
+  @query('sl-dialog')
+  dialog!: SlDialog;
+
+  show() {
+    this.dialog.show();
+  }
+
   async createSatisfaction(fields: any) {
-    if (this.callToActionHash === undefined)
+    if (this.callToAction === undefined)
       throw new Error(
         'Cannot create a new Satisfaction without its call_to_action_hash field'
       );
@@ -78,15 +91,19 @@ export class CreateSatisfaction extends LitElement {
       throw new Error(
         'Cannot create a new Satisfaction without its need_index field'
       );
-    if (this.promisesHashes === undefined)
+    if (this.promises === undefined)
       throw new Error(
         'Cannot create a new Satisfaction without its promises_hashes field'
       );
 
+    const promises_hashes = Object.entries(fields)
+      .filter(([_key, value]) => value === 'on')
+      .map(([key, _value]) => decodeHashFromBase64(key));
+
     const satisfaction: Satisfaction = {
-      call_to_action_hash: this.callToActionHash,
+      call_to_action_hash: this.callToAction.actionHash,
       need_index: this.needIndex,
-      promises_hashes: this.promisesHashes,
+      promises_hashes,
     };
 
     try {
@@ -105,6 +122,8 @@ export class CreateSatisfaction extends LitElement {
       );
 
       this.form.reset();
+      this.dialog.hide();
+      this.promises = undefined;
     } catch (e: any) {
       console.error(e);
       notifyError(msg('Error creating the satisfaction'));
@@ -112,20 +131,73 @@ export class CreateSatisfaction extends LitElement {
     this.committing = false;
   }
 
-  render() {
-    return html` <sl-card style="flex: 1;">
-      <span slot="header">${msg('Create Satisfaction')}</span>
+  renderAmount(promise: EntryRecord<CallPromise>) {
+    if (
+      this.callToAction.entry.needs[this.needIndex].min_necessary === 1 &&
+      this.callToAction.entry.needs[this.needIndex].max_possible === 1
+    )
+      return html``;
 
-      <form
-        id="create-form"
-        style="display: flex; flex: 1; flex-direction: column;"
-        ${onSubmit(fields => this.createSatisfaction(fields))}
-      >
-        <sl-button variant="primary" type="submit" .loading=${this.committing}
-          >${msg('Create Satisfaction')}</sl-button
-        >
-      </form>
-    </sl-card>`;
+    return html`${msg('Amount')}: ${promise.entry.amount}`;
+  }
+
+  render() {
+    return html` <sl-dialog .label=${msg('Satisfy Need')}>
+      ${this.promises
+        ? html`
+            <form
+              id="create-form"
+              style="display: flex; flex: 1; flex-direction: column;"
+              ${onSubmit(fields => this.createSatisfaction(fields))}
+            >
+              ${this.promises.length === 0
+                ? html`
+                    <span style="margin-bottom: 16px"
+                      >${msg(
+                        'Are you sure? There are no promises to contribute to this need yet.'
+                      )}</span
+                    >
+                  `
+                : html`
+                    <span style="margin-bottom: 16px"
+                      >${msg(
+                        'Select the promises that satisfy this need.'
+                      )}</span
+                    >
+                  `}
+              ${this.promises.map(
+                p =>
+                  html`<sl-checkbox
+                    style="margin-bottom: 16px"
+                    name="${encodeHashToBase64(p.actionHash)}"
+                    .checked=${true}
+                  >
+                    <div class="column">
+                      <div
+                        class="row"
+                        style="align-items: center; margin-bottom: 16px"
+                      >
+                        <agent-avatar
+                          .agentPubKey=${p.action.author}
+                          style="margin-right: 8px"
+                        ></agent-avatar>
+                        ${p.entry.comment || msg('No comment')}.
+                      </div>
+                      ${this.renderAmount(p)}
+                    </div>
+                  </sl-checkbox>`
+              )}
+
+              <sl-button
+                variant="primary"
+                type="submit"
+                .loading=${this.committing}
+                >${msg('Satisfy Need')}</sl-button
+              >
+            </form>
+          `
+        : html``}
+    </sl-dialog>`;
   }
 
   static styles = [sharedStyles];
