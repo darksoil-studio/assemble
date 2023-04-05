@@ -15,25 +15,25 @@ import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiDelete, mdiPencil } from '@mdi/js';
+import { decode } from '@msgpack/msgpack';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
+import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
-import { LitElement, html, TemplateResult } from 'lit';
+import { LitElement, TemplateResult, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { decode } from '@msgpack/msgpack';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallToAction, CallPromise, Satisfaction, Need } from '../types.js';
-import './edit-call-to-action.js';
+import { CallPromise, CallToAction, Need, Satisfaction } from '../types.js';
 import './create-promise.js';
-import './create-satisfaction.js';
 import { CreatePromise } from './create-promise.js';
+import './create-satisfaction.js';
 import { CreateSatisfaction } from './create-satisfaction.js';
+import './edit-call-to-action.js';
 
 /**
  * @element call-to-action-detail
@@ -87,6 +87,7 @@ export class CallToActionDetail extends LitElement {
       this.assembleStore.client.client.myPubKey.toString()
     );
   }
+
   async deleteCallToAction() {
     try {
       await this.assembleStore.client.deleteCallToAction(this.callToActionHash);

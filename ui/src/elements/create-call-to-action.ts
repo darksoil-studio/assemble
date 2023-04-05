@@ -9,7 +9,6 @@ import '@holochain-open-dev/elements/elements/display-error.js';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
-import { repeat } from 'lit/directives/repeat.js';
 import { localized, msg } from '@lit/localize';
 import { mdiDelete } from '@mdi/js';
 import { encode } from '@msgpack/msgpack';
@@ -19,8 +18,9 @@ import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
-import { LitElement, html, TemplateResult } from 'lit';
+import { LitElement, TemplateResult, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
@@ -84,10 +84,10 @@ export class CreateCallToAction extends LitElement {
       : [fields.needs_description];
     const needsMins = (
       Array.isArray(fields.needs_min) ? fields.needs_min : [fields.needs_min]
-    ).map((i: string) => parseInt(i));
+    ).map((i: string) => parseInt(i, 10));
     const needsMaxs = (
       Array.isArray(fields.needs_max) ? fields.needs_max : [fields.needs_max]
-    ).map((i: string) => parseInt(i));
+    ).map((i: string) => parseInt(i, 10));
 
     const needs = needsDescriptions.map((description, i) => ({
       description,

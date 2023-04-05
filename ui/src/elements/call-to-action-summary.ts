@@ -1,5 +1,6 @@
 import { hashProperty, sharedStyles } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/elements/display-error.js';
+import '@holochain-open-dev/profiles/elements/agent-avatar.js';
 import {
   AsyncReadable,
   StoreSubscriber,
@@ -11,10 +12,8 @@ import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/relative-time/relative-time.js';
-
-import '@holochain-open-dev/profiles/elements/agent-avatar.js';
+import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { LitElement, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 

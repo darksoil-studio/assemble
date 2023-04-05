@@ -1,18 +1,8 @@
-import { AsyncReadable, lazyLoadAndPoll } from '@holochain-open-dev/stores';
-import { EntryRecord, LazyHoloHashMap } from '@holochain-open-dev/utils';
-import {
-  ActionHash,
-  AgentPubKey,
-  EntryHash,
-  NewEntryAction,
-  Record,
-} from '@holochain/client';
+import { lazyLoadAndPoll } from '@holochain-open-dev/stores';
+import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+import { ActionHash } from '@holochain/client';
 
 import { AssembleClient } from './assemble-client';
-import { CollectiveCommitment } from './types';
-import { Satisfaction } from './types';
-import { CallPromise } from './types';
-import { CallToAction } from './types';
 
 export class AssembleStore {
   constructor(public client: AssembleClient) {}
@@ -44,9 +34,10 @@ export class AssembleStore {
 
   promisesForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
-      lazyLoadAndPoll(async () => {
-        return this.client.getPromisesForCallToAction(callToActionHash);
-      }, 4000)
+      lazyLoadAndPoll(
+        async () => this.client.getPromisesForCallToAction(callToActionHash),
+        4000
+      )
   );
 
   /** Satisfaction */
@@ -60,9 +51,11 @@ export class AssembleStore {
 
   satisfactionsForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
-      lazyLoadAndPoll(async () => {
-        return this.client.getSatisfactionsForCallToAction(callToActionHash);
-      }, 4000)
+      lazyLoadAndPoll(
+        async () =>
+          this.client.getSatisfactionsForCallToAction(callToActionHash),
+        4000
+      )
   );
 
   satisfactionsForPromise = new LazyHoloHashMap((promiseHash: ActionHash) =>

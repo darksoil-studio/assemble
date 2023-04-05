@@ -1,0 +1,2759 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/assemble-client.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "AssembleClient",
+          "members": [
+            {
+              "kind": "method",
+              "name": "createCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<CallToAction>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "CallToAction"
+                  }
+                }
+              ],
+              "description": "Call To Action"
+            },
+            {
+              "kind": "method",
+              "name": "getCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<CallToAction> | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "deleteCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<ActionHash>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "originalCallToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "updateCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<CallToAction>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "previousCallToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                },
+                {
+                  "name": "updatedCallToAction",
+                  "type": {
+                    "text": "CallToAction"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getCallToActionsForCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<EntryRecord<CallToAction>>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "createPromise",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<CallPromise>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "promise",
+                  "type": {
+                    "text": "CallPromise"
+                  }
+                }
+              ],
+              "description": "Promise"
+            },
+            {
+              "kind": "method",
+              "name": "getPromise",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<CallPromise> | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "promiseHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getPromisesForCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<EntryRecord<CallPromise>>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "createSatisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<Satisfaction>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "satisfaction",
+                  "type": {
+                    "text": "Satisfaction"
+                  }
+                }
+              ],
+              "description": "Satisfaction"
+            },
+            {
+              "kind": "method",
+              "name": "getSatisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<Satisfaction> | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "satisfactionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "updateSatisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<Satisfaction>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "previousSatisfactionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                },
+                {
+                  "name": "updatedSatisfaction",
+                  "type": {
+                    "text": "Satisfaction"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getSatisfactionsForCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<EntryRecord<Satisfaction>>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getSatisfactionsForPromise",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<EntryRecord<Satisfaction>>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "promiseHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "createCollectiveCommitment",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<CollectiveCommitment>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "collectiveCommitment",
+                  "type": {
+                    "text": "CollectiveCommitment"
+                  }
+                }
+              ],
+              "description": "Collective Commitment"
+            },
+            {
+              "kind": "method",
+              "name": "getCollectiveCommitment",
+              "return": {
+                "type": {
+                  "text": "Promise<EntryRecord<CollectiveCommitment> | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "collectiveCommitmentHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getCollectiveCommitmentsForCallToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<EntryRecord<CollectiveCommitment>>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getCollectiveCommitmentsForSatisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<EntryRecord<CollectiveCommitment>>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "satisfactionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getAllCallsToAction",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<EntryRecord<CallToAction>>>"
+                }
+              },
+              "description": "All Calls To Action"
+            },
+            {
+              "kind": "method",
+              "name": "getAllCollectiveCommitments",
+              "return": {
+                "type": {
+                  "text": "Promise<\n    Array<EntryRecord<CollectiveCommitment>>\n  >"
+                }
+              },
+              "description": "All Collective Commitments"
+            }
+          ],
+          "superclass": {
+            "name": "ZomeClient",
+            "package": "@holochain-open-dev/utils"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AssembleClient",
+          "declaration": {
+            "name": "AssembleClient",
+            "module": "src/assemble-client.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/assemble-store.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "AssembleStore",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActions",
+              "default": "new LazyHoloHashMap((callToActionHash: ActionHash) =>\n    lazyLoadAndPoll(\n      async () => this.client.getCallToAction(callToActionHash),\n      4000\n    )\n  )",
+              "description": "Call To Action"
+            },
+            {
+              "kind": "field",
+              "name": "callToActionsForCallToAction",
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records = await this.client.getCallToActionsForCallToAction(\n          callToActionHash\n        );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
+            },
+            {
+              "kind": "field",
+              "name": "promises",
+              "default": "new LazyHoloHashMap((promiseHash: ActionHash) =>\n    lazyLoadAndPoll(async () => this.client.getPromise(promiseHash), 4000)\n  )",
+              "description": "Promise"
+            },
+            {
+              "kind": "field",
+              "name": "promisesForCallToAction",
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () => this.client.getPromisesForCallToAction(callToActionHash),\n        4000\n      )\n  )"
+            },
+            {
+              "kind": "field",
+              "name": "satisfactions",
+              "default": "new LazyHoloHashMap((satisfactionHash: ActionHash) =>\n    lazyLoadAndPoll(\n      async () => this.client.getSatisfaction(satisfactionHash),\n      4000\n    )\n  )",
+              "description": "Satisfaction"
+            },
+            {
+              "kind": "field",
+              "name": "satisfactionsForCallToAction",
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getSatisfactionsForCallToAction(callToActionHash),\n        4000\n      )\n  )"
+            },
+            {
+              "kind": "field",
+              "name": "satisfactionsForPromise",
+              "default": "new LazyHoloHashMap((promiseHash: ActionHash) =>\n    lazyLoadAndPoll(async () => {\n      const records = await this.client.getSatisfactionsForPromise(promiseHash);\n      return records.map(r => r.actionHash);\n    }, 4000)\n  )"
+            },
+            {
+              "kind": "field",
+              "name": "collectiveCommitments",
+              "default": "new LazyHoloHashMap(\n    (collectiveCommitmentHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getCollectiveCommitment(collectiveCommitmentHash),\n        4000\n      )\n  )",
+              "description": "Collective Commitment"
+            },
+            {
+              "kind": "field",
+              "name": "collectiveCommitmentsForCallToAction",
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getCollectiveCommitmentsForCallToAction(\n            callToActionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
+            },
+            {
+              "kind": "field",
+              "name": "collectiveCommitmentsForSatisfaction",
+              "default": "new LazyHoloHashMap(\n    (satisfactionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getCollectiveCommitmentsForSatisfaction(\n            satisfactionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
+            },
+            {
+              "kind": "field",
+              "name": "allCallsToAction",
+              "description": "All Calls To Action"
+            },
+            {
+              "kind": "field",
+              "name": "allCollectiveCommitments",
+              "description": "All Collective Commitments"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AssembleStore",
+          "declaration": {
+            "name": "AssembleStore",
+            "module": "src/assemble-store.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/context.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "assembleStoreContext"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "assembleStoreContext",
+          "declaration": {
+            "name": "assembleStoreContext",
+            "module": "src/context.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./assemble-store"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./assemble-client"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./context"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./types"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/mocks.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "AssembleZomeMock",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToAction",
+              "default": "new RecordBag<CallToAction>()",
+              "description": "Call To Action"
+            },
+            {
+              "kind": "field",
+              "name": "callToActionsForCallToAction",
+              "default": "new HoloHashMap<ActionHash, ActionHash[]>()"
+            },
+            {
+              "kind": "method",
+              "name": "create_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Record>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "CallToAction"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Record | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "delete_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<ActionHash>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "original_call_to_action_hash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "update_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Record>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "{\n    previous_call_to_action_hash: ActionHash;\n    updated_call_to_action: CallToAction;\n  }"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_call_to_actions_for_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "promise",
+              "default": "new RecordBag<CallPromise>()",
+              "description": "Promise"
+            },
+            {
+              "kind": "field",
+              "name": "promisesForCallToAction",
+              "default": "new HoloHashMap<ActionHash, ActionHash[]>()"
+            },
+            {
+              "kind": "method",
+              "name": "create_promise",
+              "return": {
+                "type": {
+                  "text": "Promise<Record>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "promise",
+                  "type": {
+                    "text": "CallPromise"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_promise",
+              "return": {
+                "type": {
+                  "text": "Promise<Record | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "promiseHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_promises_for_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "satisfaction",
+              "default": "new RecordBag<Satisfaction>()",
+              "description": "Satisfaction"
+            },
+            {
+              "kind": "field",
+              "name": "satisfactionsForCallToAction",
+              "default": "new HoloHashMap<ActionHash, ActionHash[]>()"
+            },
+            {
+              "kind": "field",
+              "name": "satisfactionsForPromise",
+              "default": "new HoloHashMap<ActionHash, ActionHash[]>()"
+            },
+            {
+              "kind": "method",
+              "name": "create_satisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<Record>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "satisfaction",
+                  "type": {
+                    "text": "Satisfaction"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_satisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<Record | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "satisfactionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "update_satisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<Record>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "{\n    previous_satisfaction_hash: ActionHash;\n    updated_satisfaction: Satisfaction;\n  }"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_satisfactions_for_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_satisfactions_for_promise",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "promiseHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "collectiveCommitment",
+              "default": "new RecordBag<CollectiveCommitment>()",
+              "description": "Collective Commitment"
+            },
+            {
+              "kind": "field",
+              "name": "collectiveCommitmentsForCallToAction",
+              "default": "new HoloHashMap<\n    ActionHash,\n    ActionHash[]\n  >()"
+            },
+            {
+              "kind": "field",
+              "name": "collectiveCommitmentsForSatisfaction",
+              "default": "new HoloHashMap<\n    ActionHash,\n    ActionHash[]\n  >()"
+            },
+            {
+              "kind": "method",
+              "name": "create_collective_commitment",
+              "return": {
+                "type": {
+                  "text": "Promise<Record>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "collectiveCommitment",
+                  "type": {
+                    "text": "CollectiveCommitment"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_collective_commitment",
+              "return": {
+                "type": {
+                  "text": "Promise<Record | undefined>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "collectiveCommitmentHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_collective_commitments_for_call_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "callToActionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_collective_commitments_for_satisfaction",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "satisfactionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_all_calls_to_action",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "_",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "get_all_collective_commitments",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<Record>>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "_",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "ZomeMock",
+            "package": "@holochain-open-dev/utils"
+          }
+        },
+        {
+          "kind": "function",
+          "name": "sampleCallToAction",
+          "return": {
+            "type": {
+              "text": "CallToAction"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "samplePromise",
+          "return": {
+            "type": {
+              "text": "CallPromise"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "sampleSatisfaction",
+          "return": {
+            "type": {
+              "text": "Satisfaction"
+            }
+          }
+        },
+        {
+          "kind": "function",
+          "name": "sampleCollectiveCommitment",
+          "return": {
+            "type": {
+              "text": "CollectiveCommitment"
+            }
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AssembleZomeMock",
+          "declaration": {
+            "name": "AssembleZomeMock",
+            "module": "src/mocks.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "sampleCallToAction",
+          "declaration": {
+            "name": "sampleCallToAction",
+            "module": "src/mocks.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "samplePromise",
+          "declaration": {
+            "name": "samplePromise",
+            "module": "src/mocks.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "sampleSatisfaction",
+          "declaration": {
+            "name": "sampleSatisfaction",
+            "module": "src/mocks.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "sampleCollectiveCommitment",
+          "declaration": {
+            "name": "sampleCollectiveCommitment",
+            "module": "src/mocks.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/types.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/all-calls-to-action.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "AllCallsToAction",
+          "members": [
+            {
+              "kind": "method",
+              "name": "renderList",
+              "parameters": [
+                {
+                  "name": "hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "all-calls-to-action",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AllCallsToAction",
+          "declaration": {
+            "name": "AllCallsToAction",
+            "module": "src/elements/all-calls-to-action.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "all-calls-to-action",
+          "declaration": {
+            "name": "AllCallsToAction",
+            "module": "src/elements/all-calls-to-action.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/all-collective-commitments.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "AllCollectiveCommitments",
+          "members": [
+            {
+              "kind": "method",
+              "name": "renderList",
+              "parameters": [
+                {
+                  "name": "hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "all-collective-commitments",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AllCollectiveCommitments",
+          "declaration": {
+            "name": "AllCollectiveCommitments",
+            "module": "src/elements/all-collective-commitments.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "all-collective-commitments",
+          "declaration": {
+            "name": "AllCollectiveCommitments",
+            "module": "src/elements/all-collective-commitments.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/assemble-context.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "AssembleContext",
+          "members": [
+            {
+              "kind": "field",
+              "name": "store",
+              "type": {
+                "text": "AssembleStore"
+              },
+              "attribute": "store"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "store",
+              "type": {
+                "text": "AssembleStore"
+              },
+              "fieldName": "store"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "assemble-context",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AssembleContext",
+          "declaration": {
+            "name": "AssembleContext",
+            "module": "src/elements/assemble-context.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "assemble-context",
+          "declaration": {
+            "name": "AssembleContext",
+            "module": "src/elements/assemble-context.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/call-to-action-detail.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionDetail",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "method",
+              "name": "amIAuthor",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "deleteCallToAction"
+            },
+            {
+              "kind": "method",
+              "name": "renderCustomContent",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "customContent",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "createCollectiveCommitment",
+              "parameters": [
+                {
+                  "name": "satisfactions_hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderPromisesForNeed",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                },
+                {
+                  "name": "needIndex",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "promises",
+                  "type": {
+                    "text": "Array<EntryRecord<CallPromise>>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderUnmetNeeds",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                },
+                {
+                  "name": "needs",
+                  "type": {
+                    "text": "Array<[Need, number]>"
+                  }
+                },
+                {
+                  "name": "promises",
+                  "type": {
+                    "text": "Array<EntryRecord<CallPromise>>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderMetNeeds",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                },
+                {
+                  "name": "needs",
+                  "type": {
+                    "text": "Array<[Need, number]>"
+                  }
+                },
+                {
+                  "name": "promises",
+                  "type": {
+                    "text": "Array<EntryRecord<CallPromise>>"
+                  }
+                },
+                {
+                  "name": "satisfactions",
+                  "type": {
+                    "text": "Array<EntryRecord<Satisfaction>>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderNeeds",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderDetail",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "call-to-action-deleted",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { callToActionHash }",
+              "name": "call-to-action-deleted:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-action-detail",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionDetail",
+          "declaration": {
+            "name": "CallToActionDetail",
+            "module": "src/elements/call-to-action-detail.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-action-detail",
+          "declaration": {
+            "name": "CallToActionDetail",
+            "module": "src/elements/call-to-action-detail.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/call-to-action-summary.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionSummary",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderProgress",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderSummary",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderCallToAction"
+            }
+          ],
+          "events": [
+            {
+              "name": "call-to-action-selected",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { callToActionHash }",
+              "name": "call-to-action-selected:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-action-summary",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionSummary",
+          "declaration": {
+            "name": "CallToActionSummary",
+            "module": "src/elements/call-to-action-summary.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-action-summary",
+          "declaration": {
+            "name": "CallToActionSummary",
+            "module": "src/elements/call-to-action-summary.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/call-to-actions-for-call-to-action.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionsForCallToAction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderList",
+              "parameters": [
+                {
+                  "name": "hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-actions-for-call-to-action",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionsForCallToAction",
+          "declaration": {
+            "name": "CallToActionsForCallToAction",
+            "module": "src/elements/call-to-actions-for-call-to-action.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-actions-for-call-to-action",
+          "declaration": {
+            "name": "CallToActionsForCallToAction",
+            "module": "src/elements/call-to-actions-for-call-to-action.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/collective-commitment-detail.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CollectiveCommitmentDetail",
+          "members": [
+            {
+              "kind": "field",
+              "name": "collectiveCommitmentHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "collectiveCommitmentHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderDetail",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<CollectiveCommitment>"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "detail will contain { collectiveCommitmentHash }",
+              "name": "collective-commitment-deleted:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "collectiveCommitmentHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "collectiveCommitmentHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "collective-commitment-detail",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CollectiveCommitmentDetail",
+          "declaration": {
+            "name": "CollectiveCommitmentDetail",
+            "module": "src/elements/collective-commitment-detail.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "collective-commitment-detail",
+          "declaration": {
+            "name": "CollectiveCommitmentDetail",
+            "module": "src/elements/collective-commitment-detail.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/collective-commitment-summary.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CollectiveCommitmentSummary",
+          "members": [
+            {
+              "kind": "field",
+              "name": "collectiveCommitmentHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "collectiveCommitmentHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderSummary",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<CollectiveCommitment>"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "collective-commitment-selected",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { collectiveCommitmentHash }",
+              "name": "collective-commitment-selected:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "collectiveCommitmentHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "collectiveCommitmentHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "collective-commitment-summary",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CollectiveCommitmentSummary",
+          "declaration": {
+            "name": "CollectiveCommitmentSummary",
+            "module": "src/elements/collective-commitment-summary.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "collective-commitment-summary",
+          "declaration": {
+            "name": "CollectiveCommitmentSummary",
+            "module": "src/elements/collective-commitment-summary.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/collective-commitments-for-call-to-action.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CollectiveCommitmentsForCallToAction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderList",
+              "parameters": [
+                {
+                  "name": "hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "collective-commitments-for-call-to-action",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CollectiveCommitmentsForCallToAction",
+          "declaration": {
+            "name": "CollectiveCommitmentsForCallToAction",
+            "module": "src/elements/collective-commitments-for-call-to-action.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "collective-commitments-for-call-to-action",
+          "declaration": {
+            "name": "CollectiveCommitmentsForCallToAction",
+            "module": "src/elements/collective-commitments-for-call-to-action.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/collective-commitments-for-satisfaction.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CollectiveCommitmentsForSatisfaction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "satisfactionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "satisfactionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderList",
+              "parameters": [
+                {
+                  "name": "hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "satisfactionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "satisfactionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "collective-commitments-for-satisfaction",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CollectiveCommitmentsForSatisfaction",
+          "declaration": {
+            "name": "CollectiveCommitmentsForSatisfaction",
+            "module": "src/elements/collective-commitments-for-satisfaction.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "collective-commitments-for-satisfaction",
+          "declaration": {
+            "name": "CollectiveCommitmentsForSatisfaction",
+            "module": "src/elements/collective-commitments-for-satisfaction.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/create-call-to-action.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CreateCallToAction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "parentCallToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "parentCallToActionHash"
+            },
+            {
+              "kind": "field",
+              "name": "customContent",
+              "type": {
+                "text": "any | undefined"
+              },
+              "attribute": "customContent"
+            },
+            {
+              "kind": "method",
+              "name": "createCallToAction",
+              "parameters": [
+                {
+                  "name": "fields",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderCustomContentFormFields",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "renderNeedFields",
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "call-to-action-created",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { callToActionHash }",
+              "name": "call-to-action-created:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "parentCallToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "parentCallToActionHash"
+            },
+            {
+              "name": "customContent",
+              "type": {
+                "text": "any | undefined"
+              },
+              "fieldName": "customContent"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "create-call-to-action",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CreateCallToAction",
+          "declaration": {
+            "name": "CreateCallToAction",
+            "module": "src/elements/create-call-to-action.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "create-call-to-action",
+          "declaration": {
+            "name": "CreateCallToAction",
+            "module": "src/elements/create-call-to-action.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/create-collective-commitment.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CreateCollectiveCommitment",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "field",
+              "name": "satisfactionsHashes",
+              "type": {
+                "text": "Array<ActionHash>"
+              },
+              "attribute": "satisfactionsHashes"
+            },
+            {
+              "kind": "method",
+              "name": "createCollectiveCommitment",
+              "parameters": [
+                {
+                  "name": "fields",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "collective-commitment-created",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { collectiveCommitmentHash }",
+              "name": "collective-commitment-created:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            },
+            {
+              "name": "satisfactionsHashes",
+              "type": {
+                "text": "Array<ActionHash>"
+              },
+              "fieldName": "satisfactionsHashes"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "create-collective-commitment",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CreateCollectiveCommitment",
+          "declaration": {
+            "name": "CreateCollectiveCommitment",
+            "module": "src/elements/create-collective-commitment.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "create-collective-commitment",
+          "declaration": {
+            "name": "CreateCollectiveCommitment",
+            "module": "src/elements/create-collective-commitment.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/create-promise.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CreatePromise",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToAction",
+              "type": {
+                "text": "EntryRecord<CallToAction>"
+              },
+              "attribute": "callToAction"
+            },
+            {
+              "kind": "field",
+              "name": "needIndex",
+              "type": {
+                "text": "number | undefined"
+              },
+              "attribute": "needIndex"
+            },
+            {
+              "kind": "method",
+              "name": "show"
+            },
+            {
+              "kind": "method",
+              "name": "createPromise",
+              "parameters": [
+                {
+                  "name": "fields",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "promise-created",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { promiseHash }",
+              "name": "promise-created:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToAction",
+              "type": {
+                "text": "EntryRecord<CallToAction>"
+              },
+              "fieldName": "callToAction"
+            },
+            {
+              "name": "needIndex",
+              "type": {
+                "text": "number | undefined"
+              },
+              "fieldName": "needIndex"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "create-promise",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CreatePromise",
+          "declaration": {
+            "name": "CreatePromise",
+            "module": "src/elements/create-promise.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "create-promise",
+          "declaration": {
+            "name": "CreatePromise",
+            "module": "src/elements/create-promise.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/create-satisfaction.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CreateSatisfaction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToAction",
+              "type": {
+                "text": "EntryRecord<CallToAction>"
+              },
+              "attribute": "callToAction"
+            },
+            {
+              "kind": "field",
+              "name": "needIndex",
+              "type": {
+                "text": "number"
+              },
+              "attribute": "needIndex"
+            },
+            {
+              "kind": "field",
+              "name": "promises",
+              "type": {
+                "text": "Array<EntryRecord<CallPromise>> | undefined"
+              },
+              "attribute": "promises"
+            },
+            {
+              "kind": "method",
+              "name": "show"
+            },
+            {
+              "kind": "method",
+              "name": "createSatisfaction",
+              "parameters": [
+                {
+                  "name": "fields",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderAmount",
+              "parameters": [
+                {
+                  "name": "promise",
+                  "type": {
+                    "text": "EntryRecord<CallPromise>"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "satisfaction-created",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { satisfactionHash }",
+              "name": "satisfaction-created:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToAction",
+              "type": {
+                "text": "EntryRecord<CallToAction>"
+              },
+              "fieldName": "callToAction"
+            },
+            {
+              "name": "needIndex",
+              "type": {
+                "text": "number"
+              },
+              "fieldName": "needIndex"
+            },
+            {
+              "name": "promises",
+              "type": {
+                "text": "Array<EntryRecord<CallPromise>> | undefined"
+              },
+              "fieldName": "promises"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "create-satisfaction",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CreateSatisfaction",
+          "declaration": {
+            "name": "CreateSatisfaction",
+            "module": "src/elements/create-satisfaction.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "create-satisfaction",
+          "declaration": {
+            "name": "CreateSatisfaction",
+            "module": "src/elements/create-satisfaction.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/edit-call-to-action.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "EditCallToAction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "currentRecord",
+              "type": {
+                "text": "EntryRecord<CallToAction>"
+              },
+              "attribute": "currentRecord"
+            },
+            {
+              "kind": "method",
+              "name": "updateCallToAction",
+              "parameters": [
+                {
+                  "name": "fields",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "call-to-action-updated",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "edit-canceled",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { previousCallToActionHash, updatedCallToActionHash }",
+              "name": "call-to-action-updated:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "currentRecord",
+              "type": {
+                "text": "EntryRecord<CallToAction>"
+              },
+              "fieldName": "currentRecord"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "edit-call-to-action",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EditCallToAction",
+          "declaration": {
+            "name": "EditCallToAction",
+            "module": "src/elements/edit-call-to-action.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "edit-call-to-action",
+          "declaration": {
+            "name": "EditCallToAction",
+            "module": "src/elements/edit-call-to-action.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/edit-satisfaction.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "EditSatisfaction",
+          "members": [
+            {
+              "kind": "field",
+              "name": "currentRecord",
+              "type": {
+                "text": "EntryRecord<Satisfaction>"
+              },
+              "attribute": "currentRecord"
+            },
+            {
+              "kind": "method",
+              "name": "updateSatisfaction",
+              "parameters": [
+                {
+                  "name": "fields",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "satisfaction-updated",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "edit-canceled",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { previousSatisfactionHash, updatedSatisfactionHash }",
+              "name": "satisfaction-updated:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "currentRecord",
+              "type": {
+                "text": "EntryRecord<Satisfaction>"
+              },
+              "fieldName": "currentRecord"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "edit-satisfaction",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "EditSatisfaction",
+          "declaration": {
+            "name": "EditSatisfaction",
+            "module": "src/elements/edit-satisfaction.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "edit-satisfaction",
+          "declaration": {
+            "name": "EditSatisfaction",
+            "module": "src/elements/edit-satisfaction.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/promise-detail.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PromiseDetail",
+          "members": [
+            {
+              "kind": "field",
+              "name": "promiseHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "promiseHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderDetail",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<CallPromise>"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "detail will contain { promiseHash }",
+              "name": "promise-deleted:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "promiseHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "promiseHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "promise-detail",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "PromiseDetail",
+          "declaration": {
+            "name": "PromiseDetail",
+            "module": "src/elements/promise-detail.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "promise-detail",
+          "declaration": {
+            "name": "PromiseDetail",
+            "module": "src/elements/promise-detail.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/promise-summary.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PromiseSummary",
+          "members": [
+            {
+              "kind": "field",
+              "name": "promiseHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "promiseHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderSummary",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<CallPromise>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderPromise"
+            }
+          ],
+          "events": [
+            {
+              "name": "promise-selected",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { promiseHash }",
+              "name": "promise-selected:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "promiseHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "promiseHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "promise-summary",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "PromiseSummary",
+          "declaration": {
+            "name": "PromiseSummary",
+            "module": "src/elements/promise-summary.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "promise-summary",
+          "declaration": {
+            "name": "PromiseSummary",
+            "module": "src/elements/promise-summary.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/satisfaction-detail.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SatisfactionDetail",
+          "members": [
+            {
+              "kind": "field",
+              "name": "satisfactionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "satisfactionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderDetail",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<Satisfaction>"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "detail will contain { satisfactionHash }",
+              "name": "satisfaction-deleted:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "satisfactionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "satisfactionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "satisfaction-detail",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SatisfactionDetail",
+          "declaration": {
+            "name": "SatisfactionDetail",
+            "module": "src/elements/satisfaction-detail.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "satisfaction-detail",
+          "declaration": {
+            "name": "SatisfactionDetail",
+            "module": "src/elements/satisfaction-detail.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/satisfaction-summary.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SatisfactionSummary",
+          "members": [
+            {
+              "kind": "field",
+              "name": "satisfactionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "satisfactionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderSummary",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<Satisfaction>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderSatisfaction"
+            }
+          ],
+          "events": [
+            {
+              "name": "satisfaction-selected",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { satisfactionHash }",
+              "name": "satisfaction-selected:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "satisfactionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "satisfactionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "satisfaction-summary",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SatisfactionSummary",
+          "declaration": {
+            "name": "SatisfactionSummary",
+            "module": "src/elements/satisfaction-summary.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "satisfaction-summary",
+          "declaration": {
+            "name": "SatisfactionSummary",
+            "module": "src/elements/satisfaction-summary.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/satisfactions-for-promise.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SatisfactionsForPromise",
+          "members": [
+            {
+              "kind": "field",
+              "name": "promiseHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "promiseHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderList",
+              "parameters": [
+                {
+                  "name": "hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "promiseHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "promiseHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "satisfactions-for-promise",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SatisfactionsForPromise",
+          "declaration": {
+            "name": "SatisfactionsForPromise",
+            "module": "src/elements/satisfactions-for-promise.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "satisfactions-for-promise",
+          "declaration": {
+            "name": "SatisfactionsForPromise",
+            "module": "src/elements/satisfactions-for-promise.ts"
+          }
+        }
+      ]
+    }
+  ]
+}
