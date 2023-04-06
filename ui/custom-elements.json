@@ -1173,9 +1173,9 @@
               },
               "parameters": [
                 {
-                  "name": "customContent",
+                  "name": "callToAction",
                   "type": {
-                    "text": "any"
+                    "text": "EntryRecord<CallToAction>"
                   }
                 }
               ]
@@ -1303,6 +1303,12 @@
               }
             },
             {
+              "name": "collective-commitment-created",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
               "description": "detail will contain { callToActionHash }",
               "name": "call-to-action-deleted:"
             }
@@ -1339,6 +1345,66 @@
           "declaration": {
             "name": "CallToActionDetail",
             "module": "src/elements/call-to-action-detail.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/call-to-action-progress.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionProgress",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            }
+          ],
+          "events": [
+            {
+              "description": "detail will contain { callToActionHash }",
+              "name": "call-to-action-selected:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-action-progress",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionProgress",
+          "declaration": {
+            "name": "CallToActionProgress",
+            "module": "src/elements/call-to-action-progress.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-action-progress",
+          "declaration": {
+            "name": "CallToActionProgress",
+            "module": "src/elements/call-to-action-progress.ts"
           }
         }
       ]
@@ -1821,6 +1887,15 @@
                   }
                 }
               ]
+            },
+            {
+              "kind": "method",
+              "name": "customCallToActionName",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
             },
             {
               "kind": "method",

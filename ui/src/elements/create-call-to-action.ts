@@ -10,7 +10,7 @@ import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import { mdiDelete } from '@mdi/js';
+import { mdiDelete, mdiPlus } from '@mdi/js';
 import { encode } from '@msgpack/msgpack';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
@@ -18,6 +18,7 @@ import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import { LitElement, TemplateResult, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -74,7 +75,9 @@ export class CreateCallToAction extends LitElement {
         ...fields,
       };
       delete customContent.title;
-      delete customContent.needs;
+      delete customContent.needs_description;
+      delete customContent.needs_min;
+      delete customContent.needs_max;
     }
 
     const custom_content = encode(customContent);
@@ -126,6 +129,10 @@ export class CreateCallToAction extends LitElement {
     this.committing = false;
   }
 
+  customCallToActionName(): string {
+    return msg('Call To Action');
+  }
+
   renderCustomContentFormFields(): TemplateResult {
     return html``;
   }
@@ -135,9 +142,9 @@ export class CreateCallToAction extends LitElement {
       <sl-input
         name="needs_description"
         required
-        .placeholder=${msg('Description')}
+        .placeholder=${msg('Description*')}
       ></sl-input>
-      <span style="margin-left: 8px">${msg('Min.')}</span>
+      <span style="margin-left: 8px">${msg('Min.')}*</span>
 
       <sl-input
         name="needs_min"
@@ -172,7 +179,9 @@ export class CreateCallToAction extends LitElement {
 
   render() {
     return html` <sl-card style="flex: 1;">
-      <span slot="header">${msg('Create Call To Action')}</span>
+      <span slot="header"
+        >${msg('Create')} ${this.customCallToActionName()}
+      </span>
 
       <form
         id="create-form"
@@ -187,28 +196,32 @@ export class CreateCallToAction extends LitElement {
 
         <div style="margin-bottom: 16px; margin-top: 16px;">
           <div style="display: flex; flex-direction: column">
-            <span style="font-size: 18px">${msg('Needs')}</span>
+            <div class="row" style="align-items: center;">
+              <span style="font-size: 18px">${msg('Needs')}</span>
+              <sl-tooltip .content=${msg('Add need')}>
+                <sl-icon-button
+                  style="margin-left: 4px"
+                  @click=${() => {
+                    this._needsFields = [
+                      ...this._needsFields,
+                      Math.max(...this._needsFields) + 1,
+                    ];
+                  }}
+                  .src=${wrapPathInSvg(mdiPlus)}
+                ></sl-icon-button
+              ></sl-tooltip>
+            </div>
 
             ${repeat(
               this._needsFields,
               i => i,
               index => this.renderNeedFields(index)
             )}
-            <sl-button
-              style="margin-top: 8px"
-              @click=${() => {
-                this._needsFields = [
-                  ...this._needsFields,
-                  Math.max(...this._needsFields) + 1,
-                ];
-              }}
-              >${msg('Add Need')}</sl-button
-            >
           </div>
         </div>
 
         <sl-button variant="primary" type="submit" .loading=${this.committing}
-          >${msg('Create Call To Action')}</sl-button
+          >${msg('Create')} ${this.customCallToActionName()}</sl-button
         >
       </form>
     </sl-card>`;

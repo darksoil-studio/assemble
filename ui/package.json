@@ -1,9 +1,9 @@
 {
   "name": "@darksoil/assemble",
-  "version": "0.1.0",
+  "version": "0.1.10",
   "scripts": {
     "start": "vite --clearScreen false --port $UI_PORT",
-    "build": "npm run lint && tsc && npm run analyze -- --exclude dist",
+    "build": "npm run format && tsc && npm run analyze -- --exclude dist",
     "lint": "eslint --ext .ts && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --fix --ext .ts && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "localize:extract": "lit-localize extract",

@@ -1,27 +1,14 @@
 import {
-  hashProperty,
-  hashState,
   notifyError,
   onSubmit,
   sharedStyles,
-  wrapPathInSvg,
 } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/elements/display-error.js';
 import { EntryRecord } from '@holochain-open-dev/utils';
-import {
-  ActionHash,
-  AgentPubKey,
-  DnaHash,
-  EntryHash,
-  Record,
-  decodeHashFromBase64,
-  encodeHashToBase64,
-} from '@holochain/client';
+import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 import { SlDialog } from '@shoelace-style/shoelace';
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
@@ -83,6 +70,8 @@ export class CreateSatisfaction extends LitElement {
   }
 
   async createSatisfaction(fields: any) {
+    if (this.committing) return;
+
     if (this.callToAction === undefined)
       throw new Error(
         'Cannot create a new Satisfaction without its call_to_action_hash field'
