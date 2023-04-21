@@ -4,7 +4,7 @@ import {
   sharedStyles,
   wrapPathInSvg,
 } from '@holochain-open-dev/elements';
-import '@holochain-open-dev/elements/elements/display-error.js';
+import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
   AsyncReadable,
   StoreSubscriber,

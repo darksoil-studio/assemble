@@ -3,7 +3,7 @@ import {
   onSubmit,
   sharedStyles,
 } from '@holochain-open-dev/elements';
-import '@holochain-open-dev/elements/elements/display-error.js';
+import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
 import { consume } from '@lit-labs/context';

@@ -15,7 +15,6 @@ serde = { workspace = true }
 assemble_integrity = { path = "../../integrity/assemble", package = "hc_zome_assemble_integrity" }
 
 [dev-dependencies]
-fixt = "0.1.0"
 futures = { version = "0.3.1", default-features = false }
 hdk = { workspace = true, features = ["encoding", "test_utils"] }
 holochain = { worskpace = true, default-features = false, features = [

@@ -1,6 +1,6 @@
 import { hashProperty, sharedStyles } from '@holochain-open-dev/elements';
-import '@holochain-open-dev/elements/elements/display-error.js';
-import '@holochain-open-dev/profiles/elements/agent-avatar.js';
+import '@holochain-open-dev/elements/dist/elements/display-error.js';
+import '@holochain-open-dev/profiles/dist/elements/agent-avatar.js';
 import {
   AsyncReadable,
   StoreSubscriber,
