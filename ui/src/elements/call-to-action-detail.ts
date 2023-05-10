@@ -120,7 +120,7 @@ export class CallToActionDetail extends LitElement {
           satisfactions_hashes,
         });
       this.dispatchEvent(
-        new CustomEvent('collective-commitment-created', {
+        new CustomEvent('assembly-created', {
           bubbles: true,
           composed: true,
           detail: {

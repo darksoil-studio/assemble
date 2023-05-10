@@ -1,5 +1,5 @@
 pub mod all_assemblies;
-pub mod all_calls_to_action;
+pub mod open_calls_to_action;
 pub mod assembly;
 pub mod satisfaction;
 pub mod commitment;

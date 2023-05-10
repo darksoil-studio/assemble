@@ -38,8 +38,8 @@
       import { StoreSubscriber } from '@holochain-open-dev/stores';
       import { sharedStyles } from '@holochain-open-dev/elements';
       import '../src/elements/assemble-context.ts';
-      import '../src/elements/all-calls-to-action.ts';
-      import '../src/elements/all-collective-commitments.ts';
+      import '../src/elements/open-calls-to-action.ts';
+      import '../src/elements/all-assemblies.ts';
       import { CreateCallToAction } from '../src/elements/create-call-to-action.ts';
       import { CallToActionDetail } from '../src/elements/call-to-action-detail.ts';
       import { AssembleStore, AssembleClient } from '../src/index.ts';
@@ -110,13 +110,13 @@
                   <div class="row">
                     <create-call-to-action-with-distance>
                     </create-call-to-action-with-distance>
-                    <all-calls-to-action
+                    <open-calls-to-action
                       @call-to-action-selected=${e => {
                         this._selectedCallToActionHash =
                           e.detail.callToActionHash;
                         this.requestUpdate();
                       }}
-                    ></all-calls-to-action>
+                    ></open-calls-to-action>
                   </div>
                   ${this._selectedCallToActionHash
                     ? html`
@@ -129,7 +129,7 @@
               </div>
               <div class="column" style="flex: 1">
                 <span>Collective Commitments</span>
-                <all-collective-commitments></all-collective-commitments>
+                <all-assemblies></all-assemblies>
               </div>
             </assemble-context>
           `;

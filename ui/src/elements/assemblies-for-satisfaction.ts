@@ -21,10 +21,10 @@ import { Assembly } from '../types.js';
 import './assembly-summary.js';
 
 /**
- * @element collective-commitments-for-satisfaction
+ * @element assemblies-for-satisfaction
  */
 @localized()
-@customElement('collective-commitments-for-satisfaction')
+@customElement('assemblies-for-satisfaction')
 export class AssembliesForSatisfaction extends LitElement {
   // REQUIRED. The SatisfactionHash for which the Assemblies should be fetched
   @property(hashProperty('satisfaction-hash'))
@@ -61,9 +61,9 @@ export class AssembliesForSatisfaction extends LitElement {
       <div style="display: flex; flex-direction: column">
         ${hashes.map(
           hash =>
-            html`<collective-commitment-summary
+            html`<assembly-summary
               .assemblyHash=${hash}
-            ></collective-commitment-summary>`
+            ></assembly-summary>`
         )}
       </div>
     `;

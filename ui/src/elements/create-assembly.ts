@@ -33,11 +33,11 @@ import { assembleStoreContext } from '../context.js';
 import { Assembly } from '../types.js';
 
 /**
- * @element create-collective-commitment
- * @fires collective-commitment-created: detail will contain { assemblyHash }
+ * @element create-assembly
+ * @fires assembly-created: detail will contain { assemblyHash }
  */
 @localized()
-@customElement('create-collective-commitment')
+@customElement('create-assembly')
 export class CreateAssembly extends LitElement {
   // REQUIRED. The call to action hash for this Assembly
   @property(hashProperty('call-to-action-hash'))
@@ -88,7 +88,7 @@ export class CreateAssembly extends LitElement {
         );
 
       this.dispatchEvent(
-        new CustomEvent('collective-commitment-created', {
+        new CustomEvent('assembly-created', {
           composed: true,
           bubbles: true,
           detail: {

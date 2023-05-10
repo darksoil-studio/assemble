@@ -19,10 +19,10 @@ import { assembleStoreContext } from '../context.js';
 import './assembly-summary.js';
 
 /**
- * @element all-collective-commitments
+ * @element all-assemblies
  */
 @localized()
-@customElement('all-collective-commitments')
+@customElement('all-assemblies')
 export class AllAssemblies extends LitElement {
   /**
    * @internal
@@ -54,10 +54,10 @@ export class AllAssemblies extends LitElement {
       <div style="display: flex; flex-direction: column; flex: 1">
         ${hashes.map(
           hash =>
-            html`<collective-commitment-summary
+            html`<assembly-summary
               .assemblyHash=${hash}
               style="margin-bottom: 16px;"
-            ></collective-commitment-summary>`
+            ></assembly-summary>`
         )}
       </div>
     `;

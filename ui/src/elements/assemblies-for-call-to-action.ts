@@ -21,10 +21,10 @@ import { Assembly } from '../types.js';
 import './assembly-summary.js';
 
 /**
- * @element collective-commitments-for-call-to-action
+ * @element assemblies-for-call-to-action
  */
 @localized()
-@customElement('collective-commitments-for-call-to-action')
+@customElement('assemblies-for-call-to-action')
 export class AssembliesForCallToAction extends LitElement {
   // REQUIRED. The CallToActionHash for which the Assemblies should be fetched
   @property(hashProperty('call-to-action-hash'))
@@ -63,9 +63,9 @@ export class AssembliesForCallToAction extends LitElement {
       <div style="display: flex; flex-direction: column">
         ${hashes.map(
           hash =>
-            html`<collective-commitment-summary
+            html`<assembly-summary
               .assemblyHash=${hash}
-            ></collective-commitment-summary>`
+            ></assembly-summary>`
         )}
       </div>
     `;

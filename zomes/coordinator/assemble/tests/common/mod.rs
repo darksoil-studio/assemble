@@ -6,8 +6,8 @@ use assemble_integrity::*;
 pub async fn sample_call_to_action_1(conductor: &SweetConductor, zome: &SweetZome) -> CallToAction {
     CallToAction {
         parent_call_to_action_hash: None,
-        title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.".to_string(),
-        custom_content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.".to_string(),
+        expiration_time: None,
+        custom_content: SerializedBytes::default(),
         needs: vec![Need {
             min_necessary: 4,
             max_possible: Some(4),
@@ -19,8 +19,8 @@ pub async fn sample_call_to_action_1(conductor: &SweetConductor, zome: &SweetZom
 pub async fn sample_call_to_action_2(conductor: &SweetConductor, zome: &SweetZome) -> CallToAction {
     CallToAction {
         parent_call_to_action_hash: None,
-        title: "Lorem ipsum 2".to_string(),
-        custom_content: "Lorem ipsum 2".to_string(),
+        expiration_time: None,
+        custom_content: SerializedBytes::default(),
         needs: vec![Need {
             min_necessary: 4,
             max_possible: None,
@@ -51,7 +51,8 @@ pub async fn sample_commitment_1(conductor: &SweetConductor, zome: &SweetZome) -
         .signed_action
         .hashed
         .hash,
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.".to_string(),
+        amount: 4,
+        comment: Some("Lorem ipsum dolor sit amet, consectetur adipiscing elit.".to_string()),
         need_index: 10,
     }
 }
@@ -67,7 +68,8 @@ pub async fn sample_commitment_2(conductor: &SweetConductor, zome: &SweetZome) -
         .signed_action
         .hashed
         .hash,
-        description: "Lorem ipsum 2".to_string(),
+        amount: 1,
+        comment: Some("Lorem ipsum 2".to_string()),
         need_index: 3,
     }
 }
@@ -136,10 +138,7 @@ pub async fn create_satisfaction(
     record
 }
 
-pub async fn sample_assembly_1(
-    conductor: &SweetConductor,
-    zome: &SweetZome,
-) -> Assembly {
+pub async fn sample_assembly_1(conductor: &SweetConductor, zome: &SweetZome) -> Assembly {
     Assembly {
         call_to_action_hash: create_call_to_action(
             conductor,
@@ -164,10 +163,7 @@ pub async fn sample_assembly_1(
     }
 }
 
-pub async fn sample_assembly_2(
-    conductor: &SweetConductor,
-    zome: &SweetZome,
-) -> Assembly {
+pub async fn sample_assembly_2(conductor: &SweetConductor, zome: &SweetZome) -> Assembly {
     Assembly {
         call_to_action_hash: create_call_to_action(
             conductor,
@@ -197,8 +193,6 @@ pub async fn create_assembly(
     zome: &SweetZome,
     assembly: Assembly,
 ) -> Record {
-    let record: Record = conductor
-        .call(zome, "create_assembly", assembly)
-        .await;
+    let record: Record = conductor.call(zome, "create_assembly", assembly).await;
     record
 }

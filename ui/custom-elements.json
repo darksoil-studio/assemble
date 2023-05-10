@@ -318,7 +318,7 @@
             },
             {
               "kind": "method",
-              "name": "getAllCallsToAction",
+              "name": "getOpenCallsToAction",
               "return": {
                 "type": {
                   "text": "Commitment<Array<EntryRecord<CallToAction>>>"
@@ -419,7 +419,7 @@
             },
             {
               "kind": "field",
-              "name": "allCallsToAction",
+              "name": "openCallsToAction",
               "description": "All Calls To Action"
             },
             {
@@ -854,7 +854,7 @@
             },
             {
               "kind": "method",
-              "name": "get_all_calls_to_action",
+              "name": "get_open_calls_to_action",
               "return": {
                 "type": {
                   "text": "Commitment<Array<Record>>"
@@ -980,12 +980,12 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/all-calls-to-action.ts",
+      "path": "src/elements/open-calls-to-action.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "AllCallsToAction",
+          "name": "OpenCallsToAction",
           "members": [
             {
               "kind": "method",
@@ -1004,32 +1004,32 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "all-calls-to-action",
+          "tagName": "open-calls-to-action",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "AllCallsToAction",
+          "name": "OpenCallsToAction",
           "declaration": {
-            "name": "AllCallsToAction",
-            "module": "src/elements/all-calls-to-action.ts"
+            "name": "OpenCallsToAction",
+            "module": "src/elements/open-calls-to-action.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "all-calls-to-action",
+          "name": "open-calls-to-action",
           "declaration": {
-            "name": "AllCallsToAction",
-            "module": "src/elements/all-calls-to-action.ts"
+            "name": "OpenCallsToAction",
+            "module": "src/elements/open-calls-to-action.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/all-collective-commitments.ts",
+      "path": "src/elements/all-assemblies.ts",
       "declarations": [
         {
           "kind": "class",
@@ -1053,7 +1053,7 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "all-collective-commitments",
+          "tagName": "all-assemblies",
           "customElement": true
         }
       ],
@@ -1063,15 +1063,15 @@
           "name": "AllAssemblies",
           "declaration": {
             "name": "AllAssemblies",
-            "module": "src/elements/all-collective-commitments.ts"
+            "module": "src/elements/all-assemblies.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "all-collective-commitments",
+          "name": "all-assemblies",
           "declaration": {
             "name": "AllAssemblies",
-            "module": "src/elements/all-collective-commitments.ts"
+            "module": "src/elements/all-assemblies.ts"
           }
         }
       ]
@@ -1303,7 +1303,7 @@
               }
             },
             {
-              "name": "collective-commitment-created",
+              "name": "assembly-created",
               "type": {
                 "text": "CustomEvent"
               }
@@ -1571,7 +1571,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/collective-commitment-detail.ts",
+      "path": "src/elements/assembly-detail.ts",
       "declarations": [
         {
           "kind": "class",
@@ -1602,7 +1602,7 @@
           "events": [
             {
               "description": "detail will contain { assemblyHash }",
-              "name": "collective-commitment-deleted:"
+              "name": "assembly-deleted:"
             }
           ],
           "attributes": [
@@ -1618,7 +1618,7 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "collective-commitment-detail",
+          "tagName": "assembly-detail",
           "customElement": true
         }
       ],
@@ -1628,22 +1628,22 @@
           "name": "AssemblyDetail",
           "declaration": {
             "name": "AssemblyDetail",
-            "module": "src/elements/collective-commitment-detail.ts"
+            "module": "src/elements/assembly-detail.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "collective-commitment-detail",
+          "name": "assembly-detail",
           "declaration": {
             "name": "AssemblyDetail",
-            "module": "src/elements/collective-commitment-detail.ts"
+            "module": "src/elements/assembly-detail.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/collective-commitment-summary.ts",
+      "path": "src/elements/assembly-summary.ts",
       "declarations": [
         {
           "kind": "class",
@@ -1673,14 +1673,14 @@
           ],
           "events": [
             {
-              "name": "collective-commitment-selected",
+              "name": "assembly-selected",
               "type": {
                 "text": "CustomEvent"
               }
             },
             {
               "description": "detail will contain { assemblyHash }",
-              "name": "collective-commitment-selected:"
+              "name": "assembly-selected:"
             }
           ],
           "attributes": [
@@ -1696,7 +1696,7 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "collective-commitment-summary",
+          "tagName": "assembly-summary",
           "customElement": true
         }
       ],
@@ -1706,22 +1706,22 @@
           "name": "AssemblySummary",
           "declaration": {
             "name": "AssemblySummary",
-            "module": "src/elements/collective-commitment-summary.ts"
+            "module": "src/elements/assembly-summary.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "collective-commitment-summary",
+          "name": "assembly-summary",
           "declaration": {
             "name": "AssemblySummary",
-            "module": "src/elements/collective-commitment-summary.ts"
+            "module": "src/elements/assembly-summary.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/collective-commitments-for-call-to-action.ts",
+      "path": "src/elements/assemblies-for-call-to-action.ts",
       "declarations": [
         {
           "kind": "class",
@@ -1762,7 +1762,7 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "collective-commitments-for-call-to-action",
+          "tagName": "assemblies-for-call-to-action",
           "customElement": true
         }
       ],
@@ -1772,22 +1772,22 @@
           "name": "AssembliesForCallToAction",
           "declaration": {
             "name": "AssembliesForCallToAction",
-            "module": "src/elements/collective-commitments-for-call-to-action.ts"
+            "module": "src/elements/assemblies-for-call-to-action.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "collective-commitments-for-call-to-action",
+          "name": "assemblies-for-call-to-action",
           "declaration": {
             "name": "AssembliesForCallToAction",
-            "module": "src/elements/collective-commitments-for-call-to-action.ts"
+            "module": "src/elements/assemblies-for-call-to-action.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/collective-commitments-for-satisfaction.ts",
+      "path": "src/elements/assemblies-for-satisfaction.ts",
       "declarations": [
         {
           "kind": "class",
@@ -1828,7 +1828,7 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "collective-commitments-for-satisfaction",
+          "tagName": "assemblies-for-satisfaction",
           "customElement": true
         }
       ],
@@ -1838,15 +1838,15 @@
           "name": "AssembliesForSatisfaction",
           "declaration": {
             "name": "AssembliesForSatisfaction",
-            "module": "src/elements/collective-commitments-for-satisfaction.ts"
+            "module": "src/elements/assemblies-for-satisfaction.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "collective-commitments-for-satisfaction",
+          "name": "assemblies-for-satisfaction",
           "declaration": {
             "name": "AssembliesForSatisfaction",
-            "module": "src/elements/collective-commitments-for-satisfaction.ts"
+            "module": "src/elements/assemblies-for-satisfaction.ts"
           }
         }
       ]
@@ -1976,7 +1976,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/create-collective-commitment.ts",
+      "path": "src/elements/create-assembly.ts",
       "declarations": [
         {
           "kind": "class",
@@ -2014,14 +2014,14 @@
           ],
           "events": [
             {
-              "name": "collective-commitment-created",
+              "name": "assembly-created",
               "type": {
                 "text": "CustomEvent"
               }
             },
             {
               "description": "detail will contain { assemblyHash }",
-              "name": "collective-commitment-created:"
+              "name": "assembly-created:"
             }
           ],
           "attributes": [
@@ -2044,7 +2044,7 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "create-collective-commitment",
+          "tagName": "create-assembly",
           "customElement": true
         }
       ],
@@ -2054,15 +2054,15 @@
           "name": "CreateAssembly",
           "declaration": {
             "name": "CreateAssembly",
-            "module": "src/elements/create-collective-commitment.ts"
+            "module": "src/elements/create-assembly.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "create-collective-commitment",
+          "name": "create-assembly",
           "declaration": {
             "name": "CreateAssembly",
-            "module": "src/elements/create-collective-commitment.ts"
+            "module": "src/elements/create-assembly.ts"
           }
         }
       ]

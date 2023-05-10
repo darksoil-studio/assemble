@@ -15,14 +15,14 @@ import { assembleStoreContext } from '../context';
 import { Assembly } from '../types';
 
 /**
- * @element collective-commitment-summary
- * @fires collective-commitment-selected: detail will contain { assemblyHash }
+ * @element assembly-summary
+ * @fires assembly-selected: detail will contain { assemblyHash }
  */
 @localized()
-@customElement('collective-commitment-summary')
+@customElement('assembly-summary')
 export class AssemblySummary extends LitElement {
   // REQUIRED. The hash of the Assembly to show
-  @property(hashProperty('collective-commitment-hash'))
+  @property(hashProperty('assembly-hash'))
   assemblyHash!: ActionHash;
 
   /**
@@ -46,7 +46,7 @@ export class AssemblySummary extends LitElement {
           @call-to-action-selected=${(e: CustomEvent) => {
             e.stopPropagation();
             this.dispatchEvent(
-              new CustomEvent('collective-commitment-selected', {
+              new CustomEvent('assembly-selected', {
                 composed: true,
                 bubbles: true,
                 detail: {

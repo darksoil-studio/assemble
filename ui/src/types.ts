@@ -49,9 +49,8 @@ export type EntryTypes =
 export interface CallToAction {
   parent_call_to_action_hash: ActionHash | undefined;
 
-  title: string;
-
   custom_content: Uint8Array;
+  expiration_time: number | undefined;
 
   needs: Array<Need>;
 }

@@ -1,5 +1,5 @@
 import { html } from "lit-html";
-import "@darksoil/assemble/elements/collective-commitment-summary.js";
+import "@darksoil/assemble/elements/assembly-summary.js";
 import "@darksoil/assemble/elements/assemble-context.js";
 import { AssembleZomeMock, sampleAssembly } from "@darksoil/assemble/mocks";
 import { AssembleStore, AssembleClient } from "@darksoil/assemble";
@@ -12,14 +12,14 @@ const store = new AssembleStore(new AssembleClient(mock));
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/web-components/writing-stories/introduction
 export default {
-  title: "Frontend/Elements/collective-commitment-summary",
+  title: "Frontend/Elements/assembly-summary",
   tags: ["autodocs"],
-  component: "collective-commitment-summary",
+  component: "assembly-summary",
   render: (args) =>
     html` <assemble-context
       .store=${store}
     >
-      <collective-commitment-summary .assemblyHash=${record.signed_action.hashed.hash}></collective-commitment-summary>
+      <assembly-summary .assemblyHash=${record.signed_action.hashed.hash}></assembly-summary>
     </assemble-context>`,
 };
 

@@ -10,7 +10,7 @@ mod common;
 use common::{create_call_to_action, sample_call_to_action_1};
 
 #[tokio::test(flavor = "multi_thread")]
-async fn create_a_call_to_action_and_get_all_calls_to_action() {
+async fn create_a_call_to_action_and_get_open_calls_to_action() {
     // Use prebuilt dna file
     let dna_path = std::env::current_dir()
         .unwrap()
@@ -23,23 +23,35 @@ async fn create_a_call_to_action_and_get_all_calls_to_action() {
     conductors.exchange_peer_info().await;
 
     let ((alice,), (bobbo,)) = apps.into_tuples();
-    
+
     let alice_zome = alice.zome("assemble");
     let bob_zome = bobbo.zome("assemble");
-    
+
     let sample = sample_call_to_action_1(&conductors[0], &alice_zome).await;
-    
+
     // Alice creates a CallToAction
     let record: Record = create_call_to_action(&conductors[0], &alice_zome, sample.clone()).await;
-    
+
     consistency_10s([&alice, &bobbo]).await;
-    
+
     let get_records: Vec<Record> = conductors[1]
-        .call(&bob_zome, "get_all_calls_to_action", ())
+        .call(&bob_zome, "get_open_calls_to_action", ())
         .await;
-        
-    assert_eq!(get_records.len(), 1);    
-    assert_eq!(get_records[0], record);    
+
+    assert_eq!(get_records.len(), 1);
+    assert_eq!(get_records[0], record);
+
+    let _r: () = conductors[1]
+        .call(
+            &bob_zome,
+            "close_call_to_action",
+            record.action_address().clone(),
+        )
+        .await;
+
+    let get_records: Vec<Record> = conductors[1]
+        .call(&bob_zome, "get_open_calls_to_action", ())
+        .await;
+
+    assert_eq!(get_records.len(), 0);
 }
-
-

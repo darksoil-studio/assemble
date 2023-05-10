@@ -1,3 +1,4 @@
+use hdi::prelude::*;
 pub mod assembly;
 pub use assembly::*;
 pub mod satisfaction;
@@ -6,7 +7,7 @@ pub mod commitment;
 pub use commitment::*;
 pub mod call_to_action;
 pub use call_to_action::*;
-use hdi::prelude::*;
+
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
 #[hdk_entry_defs]
@@ -17,6 +18,7 @@ pub enum EntryTypes {
     Satisfaction(Satisfaction),
     Assembly(Assembly),
 }
+
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
 pub enum LinkTypes {
@@ -26,9 +28,10 @@ pub enum LinkTypes {
     CommitmentToSatisfactions,
     CallToActionToAssemblies,
     SatisfactionToAssemblies,
-    AllCallsToAction,
+    OpenCallsToAction,
     AllAssemblies,
 }
+
 #[hdk_extern]
 pub fn genesis_self_check(_data: GenesisSelfCheckData) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
@@ -55,10 +58,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     validate_create_satisfaction(EntryCreationAction::Create(action), satisfaction)
                 }
                 EntryTypes::Assembly(assembly) => {
-                    validate_create_assembly(
-                        EntryCreationAction::Create(action),
-                        assembly,
-                    )
+                    validate_create_assembly(EntryCreationAction::Create(action), assembly)
                 }
             },
             OpEntry::UpdateEntry {
@@ -75,10 +75,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     validate_create_satisfaction(EntryCreationAction::Update(action), satisfaction)
                 }
                 EntryTypes::Assembly(assembly) => {
-                    validate_create_assembly(
-                        EntryCreationAction::Update(action),
-                        assembly,
-                    )
+                    validate_create_assembly(EntryCreationAction::Update(action), assembly)
                 }
             },
             _ => Ok(ValidateCallbackResult::Valid),
@@ -90,15 +87,9 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 app_entry,
                 action,
             } => match (app_entry, original_app_entry) {
-                (
-                    EntryTypes::Assembly(assembly),
-                    EntryTypes::Assembly(original_assembly),
-                ) => validate_update_assembly(
-                    action,
-                    assembly,
-                    original_action,
-                    original_assembly,
-                ),
+                (EntryTypes::Assembly(assembly), EntryTypes::Assembly(original_assembly)) => {
+                    validate_update_assembly(action, assembly, original_action, original_assembly)
+                }
                 (
                     EntryTypes::Satisfaction(satisfaction),
                     EntryTypes::Satisfaction(original_satisfaction),
@@ -108,9 +99,15 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     original_action,
                     original_satisfaction,
                 ),
-                (EntryTypes::Commitment(commitment), EntryTypes::Commitment(original_commitment)) => {
-                    validate_update_commitment(action, commitment, original_action, original_commitment)
-                }
+                (
+                    EntryTypes::Commitment(commitment),
+                    EntryTypes::Commitment(original_commitment),
+                ) => validate_update_commitment(
+                    action,
+                    commitment,
+                    original_action,
+                    original_commitment,
+                ),
                 (
                     EntryTypes::CallToAction(call_to_action),
                     EntryTypes::CallToAction(original_call_to_action),
@@ -142,11 +139,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     validate_delete_satisfaction(action, original_action, satisfaction)
                 }
                 EntryTypes::Assembly(assembly) => {
-                    validate_delete_assembly(
-                        action,
-                        original_action,
-                        assembly,
-                    )
+                    validate_delete_assembly(action, original_action, assembly)
                 }
             },
             _ => Ok(ValidateCallbackResult::Valid),
@@ -166,12 +159,14 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::CallToActionToCommitments => validate_create_link_call_to_action_to_commitments(
-                action,
-                base_address,
-                target_address,
-                tag,
-            ),
+            LinkTypes::CallToActionToCommitments => {
+                validate_create_link_call_to_action_to_commitments(
+                    action,
+                    base_address,
+                    target_address,
+                    tag,
+                )
+            }
             LinkTypes::CallToActionToSatisfactions => {
                 validate_create_link_call_to_action_to_satisfactions(
                     action,
@@ -180,12 +175,14 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::CommitmentToSatisfactions => validate_create_link_commitment_to_satisfactions(
-                action,
-                base_address,
-                target_address,
-                tag,
-            ),
+            LinkTypes::CommitmentToSatisfactions => {
+                validate_create_link_commitment_to_satisfactions(
+                    action,
+                    base_address,
+                    target_address,
+                    tag,
+                )
+            }
             LinkTypes::CallToActionToAssemblies => {
                 validate_create_link_call_to_action_to_assemblies(
                     action,
@@ -194,23 +191,18 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::SatisfactionToAssemblies => {
-                validate_create_link_satisfaction_to_assemblies(
-                    action,
-                    base_address,
-                    target_address,
-                    tag,
-                )
-            }
-            LinkTypes::AllCallsToAction => {
-                validate_create_link_all_calls_to_action(action, base_address, target_address, tag)
-            }
-            LinkTypes::AllAssemblies => validate_create_link_all_assemblies(
+            LinkTypes::SatisfactionToAssemblies => validate_create_link_satisfaction_to_assemblies(
                 action,
                 base_address,
                 target_address,
                 tag,
             ),
+            LinkTypes::OpenCallsToAction => {
+                validate_create_link_open_calls_to_action(action, base_address, target_address, tag)
+            }
+            LinkTypes::AllAssemblies => {
+                validate_create_link_all_assemblies(action, base_address, target_address, tag)
+            }
         },
         FlatOp::RegisterDeleteLink {
             link_type,
@@ -229,13 +221,15 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::CallToActionToCommitments => validate_delete_link_call_to_action_to_commitments(
-                action,
-                original_action,
-                base_address,
-                target_address,
-                tag,
-            ),
+            LinkTypes::CallToActionToCommitments => {
+                validate_delete_link_call_to_action_to_commitments(
+                    action,
+                    original_action,
+                    base_address,
+                    target_address,
+                    tag,
+                )
+            }
             LinkTypes::CallToActionToSatisfactions => {
                 validate_delete_link_call_to_action_to_satisfactions(
                     action,
@@ -245,13 +239,15 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::CommitmentToSatisfactions => validate_delete_link_commitment_to_satisfactions(
-                action,
-                original_action,
-                base_address,
-                target_address,
-                tag,
-            ),
+            LinkTypes::CommitmentToSatisfactions => {
+                validate_delete_link_commitment_to_satisfactions(
+                    action,
+                    original_action,
+                    base_address,
+                    target_address,
+                    tag,
+                )
+            }
             LinkTypes::CallToActionToAssemblies => {
                 validate_delete_link_call_to_action_to_assemblies(
                     action,
@@ -261,16 +257,14 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::SatisfactionToAssemblies => {
-                validate_delete_link_satisfaction_to_assemblies(
-                    action,
-                    original_action,
-                    base_address,
-                    target_address,
-                    tag,
-                )
-            }
-            LinkTypes::AllCallsToAction => validate_delete_link_all_calls_to_action(
+            LinkTypes::SatisfactionToAssemblies => validate_delete_link_satisfaction_to_assemblies(
+                action,
+                original_action,
+                base_address,
+                target_address,
+                tag,
+            ),
+            LinkTypes::OpenCallsToAction => validate_delete_link_open_calls_to_action(
                 action,
                 original_action,
                 base_address,
@@ -298,10 +292,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     validate_create_satisfaction(EntryCreationAction::Create(action), satisfaction)
                 }
                 EntryTypes::Assembly(assembly) => {
-                    validate_create_assembly(
-                        EntryCreationAction::Create(action),
-                        assembly,
-                    )
+                    validate_create_assembly(EntryCreationAction::Create(action), assembly)
                 }
             },
             OpRecord::UpdateEntry {
@@ -422,23 +413,21 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             assembly.clone(),
                         )?;
                         if let ValidateCallbackResult::Valid = result {
-                            let original_assembly: Option<Assembly> =
-                                original_record
-                                    .entry()
-                                    .to_app_option()
-                                    .map_err(|e| wasm_error!(e))?;
-                            let original_assembly =
-                                match original_assembly {
-                                    Some(assembly) => assembly,
-                                    None => {
-                                        return Ok(
+                            let original_assembly: Option<Assembly> = original_record
+                                .entry()
+                                .to_app_option()
+                                .map_err(|e| wasm_error!(e))?;
+                            let original_assembly = match original_assembly {
+                                Some(assembly) => assembly,
+                                None => {
+                                    return Ok(
                                             ValidateCallbackResult::Invalid(
                                                 "The updated entry type must be the same as the original entry type"
                                                     .to_string(),
                                             ),
                                         );
-                                    }
-                                };
+                                }
+                            };
                             validate_update_assembly(
                                 action,
                                 assembly,
@@ -519,11 +508,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         validate_delete_satisfaction(action, original_action, original_satisfaction)
                     }
                     EntryTypes::Assembly(original_assembly) => {
-                        validate_delete_assembly(
-                            action,
-                            original_action,
-                            original_assembly,
-                        )
+                        validate_delete_assembly(action, original_action, original_assembly)
                     }
                 }
             }
@@ -558,12 +543,14 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::CommitmentToSatisfactions => validate_create_link_commitment_to_satisfactions(
-                    action,
-                    base_address,
-                    target_address,
-                    tag,
-                ),
+                LinkTypes::CommitmentToSatisfactions => {
+                    validate_create_link_commitment_to_satisfactions(
+                        action,
+                        base_address,
+                        target_address,
+                        tag,
+                    )
+                }
                 LinkTypes::CallToActionToAssemblies => {
                     validate_create_link_call_to_action_to_assemblies(
                         action,
@@ -580,19 +567,14 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::AllCallsToAction => validate_create_link_all_calls_to_action(
+                LinkTypes::OpenCallsToAction => validate_create_link_open_calls_to_action(
                     action,
                     base_address,
                     target_address,
                     tag,
                 ),
                 LinkTypes::AllAssemblies => {
-                    validate_create_link_all_assemblies(
-                        action,
-                        base_address,
-                        target_address,
-                        tag,
-                    )
+                    validate_create_link_all_assemblies(action, base_address, target_address, tag)
                 }
             },
             OpRecord::DeleteLink {
@@ -673,22 +655,20 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             create_link.tag,
                         )
                     }
-                    LinkTypes::AllCallsToAction => validate_delete_link_all_calls_to_action(
+                    LinkTypes::OpenCallsToAction => validate_delete_link_open_calls_to_action(
                         action,
                         create_link.clone(),
                         base_address,
                         create_link.target_address,
                         create_link.tag,
                     ),
-                    LinkTypes::AllAssemblies => {
-                        validate_delete_link_all_assemblies(
-                            action,
-                            create_link.clone(),
-                            base_address,
-                            create_link.target_address,
-                            create_link.tag,
-                        )
-                    }
+                    LinkTypes::AllAssemblies => validate_delete_link_all_assemblies(
+                        action,
+                        create_link.clone(),
+                        base_address,
+                        create_link.target_address,
+                        create_link.tag,
+                    ),
                 }
             }
             OpRecord::CreatePrivateEntry { .. } => Ok(ValidateCallbackResult::Valid),

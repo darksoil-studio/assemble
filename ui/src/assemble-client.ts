@@ -1,8 +1,4 @@
-import {
-  EntryRecord,
-  ZomeClient,
-  isSignalFromCellWithRole,
-} from '@holochain-open-dev/utils';
+import { EntryRecord, ZomeClient } from '@holochain-open-dev/utils';
 import {
   ActionHash,
   AgentPubKey,
@@ -75,7 +71,9 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
   }
   /** Commitment */
 
-  async createCommitment(commitment: Commitment): Promise<EntryRecord<Commitment>> {
+  async createCommitment(
+    commitment: Commitment
+  ): Promise<EntryRecord<Commitment>> {
     const record: Record = await this.callZome('create_commitment', commitment);
     return new EntryRecord(record);
   }
@@ -83,7 +81,10 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
   async getCommitment(
     commitmentHash: ActionHash
   ): Promise<EntryRecord<Commitment> | undefined> {
-    const record: Record = await this.callZome('get_commitment', commitmentHash);
+    const record: Record = await this.callZome(
+      'get_commitment',
+      commitmentHash
+    );
     return record ? new EntryRecord(record) : undefined;
   }
 
@@ -150,23 +151,15 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
   }
   /** Collective Commitment */
 
-  async createAssembly(
-    assembly: Assembly
-  ): Promise<EntryRecord<Assembly>> {
-    const record: Record = await this.callZome(
-      'create_assembly',
-      assembly
-    );
+  async createAssembly(assembly: Assembly): Promise<EntryRecord<Assembly>> {
+    const record: Record = await this.callZome('create_assembly', assembly);
     return new EntryRecord(record);
   }
 
   async getAssembly(
     assemblyHash: ActionHash
   ): Promise<EntryRecord<Assembly> | undefined> {
-    const record: Record = await this.callZome(
-      'get_assembly',
-      assemblyHash
-    );
+    const record: Record = await this.callZome('get_assembly', assemblyHash);
     return record ? new EntryRecord(record) : undefined;
   }
 
@@ -192,23 +185,22 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   /** All Calls To Action */
 
-  async getAllCallsToAction(): Promise<Array<EntryRecord<CallToAction>>> {
+  async getOpenCallsToAction(): Promise<Array<EntryRecord<CallToAction>>> {
     const records: Record[] = await this.callZome(
-      'get_all_calls_to_action',
+      'get_open_calls_to_action',
       null
     );
     return records.map(r => new EntryRecord(r));
   }
 
+  closeCallToAction(callToActionHash: ActionHash): Promise<void> {
+    return this.callZome('close_call_to_action', callToActionHash);
+  }
+
   /** All Collective Commitments */
 
-  async getAllAssemblies(): Promise<
-    Array<EntryRecord<Assembly>>
-  > {
-    const records: Record[] = await this.callZome(
-      'get_all_assemblies',
-      null
-    );
+  async getAllAssemblies(): Promise<Array<EntryRecord<Assembly>>> {
+    const records: Record[] = await this.callZome('get_all_assemblies', null);
     return records.map(r => new EntryRecord(r));
   }
 }

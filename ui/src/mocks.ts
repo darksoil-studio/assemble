@@ -352,7 +352,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
       .filter(r => !!r) as Record[];
   }
 
-  async get_all_calls_to_action(_: any): Promise<Array<Record>> {
+  async get_open_calls_to_action(_: any): Promise<Array<Record>> {
     return this.callToAction.entryRecords
       .map(er => er?.record)
       .filter(r => !!r) as Record[];

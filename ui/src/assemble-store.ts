@@ -1,8 +1,9 @@
 import { lazyLoadAndPoll } from '@holochain-open-dev/stores';
-import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+import { EntryRecord, LazyHoloHashMap } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 
 import { AssembleClient } from './assemble-client';
+import { CallToAction } from './types';
 
 export class AssembleStore {
   constructor(public client: AssembleClient) {}
@@ -58,31 +59,28 @@ export class AssembleStore {
       )
   );
 
-  satisfactionsForCommitment = new LazyHoloHashMap((commitmentHash: ActionHash) =>
-    lazyLoadAndPoll(async () => {
-      const records = await this.client.getSatisfactionsForCommitment(commitmentHash);
-      return records.map(r => r.actionHash);
-    }, 4000)
+  satisfactionsForCommitment = new LazyHoloHashMap(
+    (commitmentHash: ActionHash) =>
+      lazyLoadAndPoll(async () => {
+        const records = await this.client.getSatisfactionsForCommitment(
+          commitmentHash
+        );
+        return records.map(r => r.actionHash);
+      }, 4000)
   );
 
   /** Collective Commitment */
 
-  assemblies = new LazyHoloHashMap(
-    (assemblyHash: ActionHash) =>
-      lazyLoadAndPoll(
-        async () =>
-          this.client.getAssembly(assemblyHash),
-        4000
-      )
+  assemblies = new LazyHoloHashMap((assemblyHash: ActionHash) =>
+    lazyLoadAndPoll(async () => this.client.getAssembly(assemblyHash), 4000)
   );
 
   assembliesForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
-        const records =
-          await this.client.getAssembliesForCallToAction(
-            callToActionHash
-          );
+        const records = await this.client.getAssembliesForCallToAction(
+          callToActionHash
+        );
         return records.map(r => r.actionHash);
       }, 4000)
   );
@@ -90,19 +88,31 @@ export class AssembleStore {
   assembliesForSatisfaction = new LazyHoloHashMap(
     (satisfactionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
-        const records =
-          await this.client.getAssembliesForSatisfaction(
-            satisfactionHash
-          );
+        const records = await this.client.getAssembliesForSatisfaction(
+          satisfactionHash
+        );
         return records.map(r => r.actionHash);
       }, 4000)
   );
 
   /** All Calls To Action */
 
-  allCallsToAction = lazyLoadAndPoll(async () => {
-    const records = await this.client.getAllCallsToAction();
-    return records.map(r => r.actionHash);
+  openCallsToAction = lazyLoadAndPoll(async () => {
+    const records = await this.client.getOpenCallsToAction();
+    const openCalls: Array<EntryRecord<CallToAction>> = [];
+
+    for (const record of records) {
+      if (
+        record.entry.expiration_time !== undefined &&
+        record.entry.expiration_time > Date.now() * 1000
+      ) {
+        await this.client.closeCallToAction(record.actionHash);
+      } else {
+        openCalls.push(record);
+      }
+    }
+
+    return openCalls.map(r => r.actionHash);
   }, 4000);
 
   /** All Collective Commitments */

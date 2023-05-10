@@ -24,14 +24,14 @@ import { assembleStoreContext } from '../context.js';
 import { Assembly } from '../types.js';
 
 /**
- * @element collective-commitment-detail
- * @fires collective-commitment-deleted: detail will contain { assemblyHash }
+ * @element assembly-detail
+ * @fires assembly-deleted: detail will contain { assemblyHash }
  */
 @localized()
-@customElement('collective-commitment-detail')
+@customElement('assembly-detail')
 export class AssemblyDetail extends LitElement {
   // REQUIRED. The hash of the Assembly to show
-  @property(hashProperty('collective-commitment-hash'))
+  @property(hashProperty('assembly-hash'))
   assemblyHash!: ActionHash;
 
   /**

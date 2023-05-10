@@ -19,11 +19,11 @@ pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Recor
                 WasmErrorInner::Guest(String::from("Could not find the newly created CallToAction"))
             ),
         )?;
-    let path = Path::from("all_calls_to_action");
+    let path = Path::from("open_calls_to_action");
     create_link(
         path.path_entry_hash()?,
         call_to_action_hash.clone(),
-        LinkTypes::AllCallsToAction,
+        LinkTypes::OpenCallsToAction,
         (),
     )?;
     Ok(record)

@@ -19,11 +19,11 @@ import { assembleStoreContext } from '../context.js';
 import './call-to-action-summary.js';
 
 /**
- * @element all-calls-to-action
+ * @element open-calls-to-action
  */
 @localized()
-@customElement('all-calls-to-action')
-export class AllCallsToAction extends LitElement {
+@customElement('open-calls-to-action')
+export class OpenCallsToAction extends LitElement {
   /**
    * @internal
    */
@@ -33,9 +33,9 @@ export class AllCallsToAction extends LitElement {
   /**
    * @internal
    */
-  _allCallsToAction = new StoreSubscriber(
+  _openCallsToAction = new StoreSubscriber(
     this,
-    () => this.assembleStore.allCallsToAction
+    () => this.assembleStore.openCallsToAction
   );
 
   renderList(hashes: Array<ActionHash>) {
@@ -62,7 +62,7 @@ export class AllCallsToAction extends LitElement {
   }
 
   render() {
-    switch (this._allCallsToAction.value.status) {
+    switch (this._openCallsToAction.value.status) {
       case 'pending':
         return html`<div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
@@ -70,11 +70,11 @@ export class AllCallsToAction extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        return this.renderList(this._allCallsToAction.value.value);
+        return this.renderList(this._openCallsToAction.value.value);
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the call to actions')}
-          .error=${this._allCallsToAction.value.error.data.data}
+          .error=${this._openCallsToAction.value.error.data.data}
         ></display-error>`;
     }
   }
