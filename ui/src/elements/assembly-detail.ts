@@ -21,7 +21,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CollectiveCommitment } from '../types.js';
+import { Assembly } from '../types.js';
 
 /**
  * @element collective-commitment-detail
@@ -29,8 +29,8 @@ import { CollectiveCommitment } from '../types.js';
  */
 @localized()
 @customElement('collective-commitment-detail')
-export class CollectiveCommitmentDetail extends LitElement {
-  // REQUIRED. The hash of the CollectiveCommitment to show
+export class AssemblyDetail extends LitElement {
+  // REQUIRED. The hash of the Assembly to show
   @property(hashProperty('collective-commitment-hash'))
   collectiveCommitmentHash!: ActionHash;
 
@@ -47,7 +47,7 @@ export class CollectiveCommitmentDetail extends LitElement {
     this.assembleStore.collectiveCommitments.get(this.collectiveCommitmentHash)
   );
 
-  renderDetail(entryRecord: EntryRecord<CollectiveCommitment>) {
+  renderDetail(entryRecord: EntryRecord<Assembly>) {
     return html`
       <sl-card>
         <div slot="header" style="display: flex; flex-direction: row">

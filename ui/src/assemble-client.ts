@@ -11,7 +11,7 @@ import {
   Record,
 } from '@holochain/client';
 
-import { CollectiveCommitment } from './types';
+import { Assembly } from './types';
 import { Satisfaction } from './types';
 import { CallPromise } from './types';
 import { CallToAction } from './types';
@@ -150,41 +150,41 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
   }
   /** Collective Commitment */
 
-  async createCollectiveCommitment(
-    collectiveCommitment: CollectiveCommitment
-  ): Promise<EntryRecord<CollectiveCommitment>> {
+  async createAssembly(
+    collectiveCommitment: Assembly
+  ): Promise<EntryRecord<Assembly>> {
     const record: Record = await this.callZome(
-      'create_collective_commitment',
+      'create_assembly',
       collectiveCommitment
     );
     return new EntryRecord(record);
   }
 
-  async getCollectiveCommitment(
+  async getAssembly(
     collectiveCommitmentHash: ActionHash
-  ): Promise<EntryRecord<CollectiveCommitment> | undefined> {
+  ): Promise<EntryRecord<Assembly> | undefined> {
     const record: Record = await this.callZome(
-      'get_collective_commitment',
+      'get_assembly',
       collectiveCommitmentHash
     );
     return record ? new EntryRecord(record) : undefined;
   }
 
-  async getCollectiveCommitmentsForCallToAction(
+  async getAssembliesForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<EntryRecord<CollectiveCommitment>>> {
+  ): Promise<Array<EntryRecord<Assembly>>> {
     const records: Record[] = await this.callZome(
-      'get_collective_commitments_for_call_to_action',
+      'get_assemblies_for_call_to_action',
       callToActionHash
     );
     return records.map(r => new EntryRecord(r));
   }
 
-  async getCollectiveCommitmentsForSatisfaction(
+  async getAssembliesForSatisfaction(
     satisfactionHash: ActionHash
-  ): Promise<Array<EntryRecord<CollectiveCommitment>>> {
+  ): Promise<Array<EntryRecord<Assembly>>> {
     const records: Record[] = await this.callZome(
-      'get_collective_commitments_for_satisfaction',
+      'get_assemblies_for_satisfaction',
       satisfactionHash
     );
     return records.map(r => new EntryRecord(r));
@@ -202,11 +202,11 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   /** All Collective Commitments */
 
-  async getAllCollectiveCommitments(): Promise<
-    Array<EntryRecord<CollectiveCommitment>>
+  async getAllAssemblies(): Promise<
+    Array<EntryRecord<Assembly>>
   > {
     const records: Record[] = await this.callZome(
-      'get_all_collective_commitments',
+      'get_all_assemblies',
       null
     );
     return records.map(r => new EntryRecord(r));

@@ -2,14 +2,14 @@
 import { html } from "lit-html";
 import "@darksoil/assemble/elements/collective-commitments-for-satisfaction.js";
 import "@darksoil/assemble/elements/assemble-context.js";
-import { AssembleZomeMock, sampleCollectiveCommitment } from "@darksoil/assemble/mocks";
+import { AssembleZomeMock, sampleAssembly } from "@darksoil/assemble/mocks";
 import { AssembleStore, AssembleClient } from "@darksoil/assemble";
 
 const mock = new AssembleZomeMock();
 
-const collectiveCommitment = sampleCollectiveCommitment();
+const collectiveCommitment = sampleAssembly();
 
-const record = await mock.create_collective_commitment(collectiveCommitment);
+const record = await mock.create_assembly(collectiveCommitment);
 
 const store = new AssembleStore(new AssembleClient(mock));
 

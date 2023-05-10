@@ -41,7 +41,7 @@ export type AssembleSignal =
     };
 
 export type EntryTypes =
-  | ({ type: 'CollectiveCommitment' } & CollectiveCommitment)
+  | ({ type: 'Assembly' } & Assembly)
   | ({ type: 'Satisfaction' } & Satisfaction)
   | ({ type: 'Promise' } & CallPromise)
   | ({ type: 'CallToAction' } & CallToAction);
@@ -79,7 +79,7 @@ export interface Satisfaction {
   promises_hashes: Array<ActionHash>;
 }
 
-export interface CollectiveCommitment {
+export interface Assembly {
   call_to_action_hash: ActionHash;
 
   satisfactions_hashes: Array<ActionHash>;

@@ -28,7 +28,7 @@ import {
 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
 
-import { CollectiveCommitment } from './types.js';
+import { Assembly } from './types.js';
 import { Satisfaction } from './types.js';
 import { CallPromise } from './types.js';
 import { CallToAction } from './types.js';
@@ -270,7 +270,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   }
 
   /** Collective Commitment */
-  collectiveCommitment = new RecordBag<CollectiveCommitment>();
+  collectiveCommitment = new RecordBag<Assembly>();
 
   collectiveCommitmentsForCallToAction = new HoloHashMap<
     ActionHash,
@@ -282,8 +282,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     ActionHash[]
   >();
 
-  async create_collective_commitment(
-    collectiveCommitment: CollectiveCommitment
+  async create_assembly(
+    collectiveCommitment: Assembly
   ): Promise<Record> {
     const record = fakeRecord(
       fakeCreateAction(hash(collectiveCommitment, HashType.ENTRY)),
@@ -313,7 +313,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     return record;
   }
 
-  async get_collective_commitment(
+  async get_assembly(
     collectiveCommitmentHash: ActionHash
   ): Promise<Record | undefined> {
     const state = entryState(
@@ -326,7 +326,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     return state.lastUpdate?.record;
   }
 
-  async get_collective_commitments_for_call_to_action(
+  async get_assemblies_for_call_to_action(
     callToActionHash: ActionHash
   ): Promise<Array<Record>> {
     const actionHashes: ActionHash[] =
@@ -339,7 +339,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
       .filter(r => !!r) as Record[];
   }
 
-  async get_collective_commitments_for_satisfaction(
+  async get_assemblies_for_satisfaction(
     satisfactionHash: ActionHash
   ): Promise<Array<Record>> {
     const actionHashes: ActionHash[] =
@@ -358,7 +358,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
       .filter(r => !!r) as Record[];
   }
 
-  async get_all_collective_commitments(_: any): Promise<Array<Record>> {
+  async get_all_assemblies(_: any): Promise<Array<Record>> {
     return this.collectiveCommitment.entryRecords
       .map(er => er?.record)
       .filter(r => !!r) as Record[];
@@ -397,7 +397,7 @@ export function sampleSatisfaction(): Satisfaction {
   };
 }
 
-export function sampleCollectiveCommitment(): CollectiveCommitment {
+export function sampleAssembly(): Assembly {
   return {
     call_to_action_hash: fakeActionHash(),
     satisfactions_hashes: [fakeActionHash()],

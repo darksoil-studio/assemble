@@ -17,18 +17,18 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CollectiveCommitment } from '../types.js';
-import './collective-commitment-summary.js';
+import { Assembly } from '../types.js';
+import './assembly-summary.js';
 
 /**
- * @element collective-commitments-for-call-to-action
+ * @element collective-commitments-for-satisfaction
  */
 @localized()
-@customElement('collective-commitments-for-call-to-action')
-export class CollectiveCommitmentsForCallToAction extends LitElement {
-  // REQUIRED. The CallToActionHash for which the CollectiveCommitments should be fetched
-  @property(hashProperty('call-to-action-hash'))
-  callToActionHash!: ActionHash;
+@customElement('collective-commitments-for-satisfaction')
+export class AssembliesForSatisfaction extends LitElement {
+  // REQUIRED. The SatisfactionHash for which the Assemblies should be fetched
+  @property(hashProperty('satisfaction-hash'))
+  satisfactionHash!: ActionHash;
 
   /**
    * @internal
@@ -40,8 +40,8 @@ export class CollectiveCommitmentsForCallToAction extends LitElement {
    * @internal
    */
   _collectiveCommitments = new StoreSubscriber(this, () =>
-    this.assembleStore.collectiveCommitmentsForCallToAction.get(
-      this.callToActionHash
+    this.assembleStore.collectiveCommitmentsForSatisfaction.get(
+      this.satisfactionHash
     )
   );
 
@@ -53,9 +53,7 @@ export class CollectiveCommitmentsForCallToAction extends LitElement {
           .src=${wrapPathInSvg(mdiInformationOutline)}
         ></sl-icon>
         <span class="placeholder"
-          >${msg(
-            'No collective commitments found for this call to action'
-          )}</span
+          >${msg('No collective commitments found for this satisfaction')}</span
         >
       </div>`;
 

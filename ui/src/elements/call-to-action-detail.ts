@@ -112,10 +112,10 @@ export class CallToActionDetail extends LitElement {
     return html``;
   }
 
-  async createCollectiveCommitment(satisfactions_hashes: Array<ActionHash>) {
+  async createAssembly(satisfactions_hashes: Array<ActionHash>) {
     try {
       const collectiveCommitment =
-        await this.assembleStore.client.createCollectiveCommitment({
+        await this.assembleStore.client.createAssembly({
           call_to_action_hash: this.callToActionHash,
           satisfactions_hashes,
         });
@@ -348,7 +348,7 @@ export class CallToActionDetail extends LitElement {
               .callToAction=${callToAction}
               @satisfaction-created=${async (e: CustomEvent) => {
                 if (unmetNeeds.length === 1) {
-                  await this.createCollectiveCommitment([
+                  await this.createAssembly([
                     ...satisfactions.map(s => s.actionHash),
                     e.detail.satisfactionHash,
                   ]);

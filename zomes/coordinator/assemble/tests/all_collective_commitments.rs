@@ -7,10 +7,10 @@ use holochain::test_utils::consistency_10s;
 use holochain::{conductor::config::ConductorConfig, sweettest::*};
 
 mod common;
-use common::{create_collective_commitment, sample_collective_commitment_1};
+use common::{create_assembly, sample_assembly_1};
 
 #[tokio::test(flavor = "multi_thread")]
-async fn create_a_collective_commitment_and_get_all_collective_commitments() {
+async fn create_a_assembly_and_get_all_assemblies() {
     // Use prebuilt dna file
     let dna_path = std::env::current_dir()
         .unwrap()
@@ -27,15 +27,15 @@ async fn create_a_collective_commitment_and_get_all_collective_commitments() {
     let alice_zome = alice.zome("assemble");
     let bob_zome = bobbo.zome("assemble");
     
-    let sample = sample_collective_commitment_1(&conductors[0], &alice_zome).await;
+    let sample = sample_assembly_1(&conductors[0], &alice_zome).await;
     
-    // Alice creates a CollectiveCommitment
-    let record: Record = create_collective_commitment(&conductors[0], &alice_zome, sample.clone()).await;
+    // Alice creates a Assembly
+    let record: Record = create_assembly(&conductors[0], &alice_zome, sample.clone()).await;
     
     consistency_10s([&alice, &bobbo]).await;
     
     let get_records: Vec<Record> = conductors[1]
-        .call(&bob_zome, "get_all_collective_commitments", ())
+        .call(&bob_zome, "get_all_assemblies", ())
         .await;
         
     assert_eq!(get_records.len(), 1);    

@@ -136,11 +136,11 @@ pub async fn create_satisfaction(
     record
 }
 
-pub async fn sample_collective_commitment_1(
+pub async fn sample_assembly_1(
     conductor: &SweetConductor,
     zome: &SweetZome,
-) -> CollectiveCommitment {
-    CollectiveCommitment {
+) -> Assembly {
+    Assembly {
         call_to_action_hash: create_call_to_action(
             conductor,
             zome,
@@ -164,11 +164,11 @@ pub async fn sample_collective_commitment_1(
     }
 }
 
-pub async fn sample_collective_commitment_2(
+pub async fn sample_assembly_2(
     conductor: &SweetConductor,
     zome: &SweetZome,
-) -> CollectiveCommitment {
-    CollectiveCommitment {
+) -> Assembly {
+    Assembly {
         call_to_action_hash: create_call_to_action(
             conductor,
             zome,
@@ -192,13 +192,13 @@ pub async fn sample_collective_commitment_2(
     }
 }
 
-pub async fn create_collective_commitment(
+pub async fn create_assembly(
     conductor: &SweetConductor,
     zome: &SweetZome,
-    collective_commitment: CollectiveCommitment,
+    assembly: Assembly,
 ) -> Record {
     let record: Record = conductor
-        .call(zome, "create_collective_commitment", collective_commitment)
+        .call(zome, "create_assembly", assembly)
         .await;
     record
 }

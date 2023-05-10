@@ -22,7 +22,7 @@ import { assembleStoreContext } from '../context';
 import {
   CallPromise,
   CallToAction,
-  CollectiveCommitment,
+  Assembly,
   Satisfaction,
 } from '../types';
 

@@ -71,7 +71,7 @@ export class AssembleStore {
     (collectiveCommitmentHash: ActionHash) =>
       lazyLoadAndPoll(
         async () =>
-          this.client.getCollectiveCommitment(collectiveCommitmentHash),
+          this.client.getAssembly(collectiveCommitmentHash),
         4000
       )
   );
@@ -80,7 +80,7 @@ export class AssembleStore {
     (callToActionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
         const records =
-          await this.client.getCollectiveCommitmentsForCallToAction(
+          await this.client.getAssembliesForCallToAction(
             callToActionHash
           );
         return records.map(r => r.actionHash);
@@ -91,7 +91,7 @@ export class AssembleStore {
     (satisfactionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
         const records =
-          await this.client.getCollectiveCommitmentsForSatisfaction(
+          await this.client.getAssembliesForSatisfaction(
             satisfactionHash
           );
         return records.map(r => r.actionHash);
@@ -107,8 +107,8 @@ export class AssembleStore {
 
   /** All Collective Commitments */
 
-  allCollectiveCommitments = lazyLoadAndPoll(async () => {
-    const records = await this.client.getAllCollectiveCommitments();
+  allAssemblies = lazyLoadAndPoll(async () => {
+    const records = await this.client.getAllAssemblies();
     return records.map(r => r.actionHash);
   }, 4000);
 }

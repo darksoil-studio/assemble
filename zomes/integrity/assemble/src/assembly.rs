@@ -1,16 +1,16 @@
 use hdi::prelude::*;
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq)]
-pub struct CollectiveCommitment {
+pub struct Assembly {
     pub call_to_action_hash: ActionHash,
     pub satisfactions_hashes: Vec<ActionHash>,
 }
-pub fn validate_create_collective_commitment(
+pub fn validate_create_assembly(
     _action: EntryCreationAction,
-    collective_commitment: CollectiveCommitment,
+    assembly: Assembly,
 ) -> ExternResult<ValidateCallbackResult> {
     let record = must_get_valid_record(
-        collective_commitment.call_to_action_hash.clone(),
+        assembly.call_to_action_hash.clone(),
     )?;
     let _call_to_action: crate::CallToAction = record
         .entry()
@@ -21,7 +21,7 @@ pub fn validate_create_collective_commitment(
                 WasmErrorInner::Guest(String::from("Dependant action must be accompanied by an entry"))
             ),
         )?;
-    for action_hash in collective_commitment.satisfactions_hashes.clone() {
+    for action_hash in assembly.satisfactions_hashes.clone() {
         let record = must_get_valid_record(action_hash)?;
         let _satisfaction: crate::Satisfaction = record
             .entry()
@@ -35,11 +35,11 @@ pub fn validate_create_collective_commitment(
     }
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_update_collective_commitment(
+pub fn validate_update_assembly(
     _action: Update,
-    _collective_commitment: CollectiveCommitment,
+    _assembly: Assembly,
     _original_action: EntryCreationAction,
-    _original_collective_commitment: CollectiveCommitment,
+    _original_assembly: Assembly,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
@@ -47,10 +47,10 @@ pub fn validate_update_collective_commitment(
         ),
     )
 }
-pub fn validate_delete_collective_commitment(
+pub fn validate_delete_assembly(
     _action: Delete,
     _original_action: EntryCreationAction,
-    _original_collective_commitment: CollectiveCommitment,
+    _original_assembly: Assembly,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
@@ -58,7 +58,7 @@ pub fn validate_delete_collective_commitment(
         ),
     )
 }
-pub fn validate_create_link_call_to_action_to_collective_commitments(
+pub fn validate_create_link_call_to_action_to_assemblies(
     _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -77,7 +77,7 @@ pub fn validate_create_link_call_to_action_to_collective_commitments(
         )?;
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
-    let _collective_commitment: crate::CollectiveCommitment = record
+    let _assembly: crate::Assembly = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -88,7 +88,7 @@ pub fn validate_create_link_call_to_action_to_collective_commitments(
         )?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_call_to_action_to_collective_commitments(
+pub fn validate_delete_link_call_to_action_to_assemblies(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -97,11 +97,11 @@ pub fn validate_delete_link_call_to_action_to_collective_commitments(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("CallToActionToCollectiveCommitments links cannot be deleted"),
+            String::from("CallToActionToAssemblies links cannot be deleted"),
         ),
     )
 }
-pub fn validate_create_link_satisfaction_to_collective_commitments(
+pub fn validate_create_link_satisfaction_to_assemblies(
     _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -120,7 +120,7 @@ pub fn validate_create_link_satisfaction_to_collective_commitments(
         )?;
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
-    let _collective_commitment: crate::CollectiveCommitment = record
+    let _assembly: crate::Assembly = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -131,7 +131,7 @@ pub fn validate_create_link_satisfaction_to_collective_commitments(
         )?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_satisfaction_to_collective_commitments(
+pub fn validate_delete_link_satisfaction_to_assemblies(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -140,11 +140,11 @@ pub fn validate_delete_link_satisfaction_to_collective_commitments(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("SatisfactionToCollectiveCommitments links cannot be deleted"),
+            String::from("SatisfactionToAssemblies links cannot be deleted"),
         ),
     )
 }
-pub fn validate_create_link_all_collective_commitments(
+pub fn validate_create_link_all_assemblies(
     _action: CreateLink,
     _base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -153,7 +153,7 @@ pub fn validate_create_link_all_collective_commitments(
     // Check the entry type for the given action hash
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
-    let _collective_commitment: crate::CollectiveCommitment = record
+    let _assembly: crate::Assembly = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -165,7 +165,7 @@ pub fn validate_create_link_all_collective_commitments(
     // TODO: add the appropriate validation rules
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_all_collective_commitments(
+pub fn validate_delete_link_all_assemblies(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -174,7 +174,7 @@ pub fn validate_delete_link_all_collective_commitments(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("AllCollectiveCommitments links cannot be deleted"),
+            String::from("AllAssemblies links cannot be deleted"),
         ),
     )
 }

@@ -1,11 +1,11 @@
 use hdk::prelude::*;
 use assemble_integrity::*;
 #[hdk_extern]
-pub fn get_all_collective_commitments(_: ()) -> ExternResult<Vec<Record>> {
-    let path = Path::from("all_collective_commitments");
+pub fn get_all_assemblies(_: ()) -> ExternResult<Vec<Record>> {
+    let path = Path::from("all_assemblies");
     let links = get_links(
         path.path_entry_hash()?,
-        LinkTypes::AllCollectiveCommitments,
+        LinkTypes::AllAssemblies,
         None,
     )?;
     let get_input: Vec<GetInput> = links

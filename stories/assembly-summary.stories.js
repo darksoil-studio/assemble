@@ -1,28 +1,25 @@
-
 import { html } from "lit-html";
-import "@darksoil/assemble/elements/collective-commitments-for-call-to-action.js";
+import "@darksoil/assemble/elements/collective-commitment-summary.js";
 import "@darksoil/assemble/elements/assemble-context.js";
-import { AssembleZomeMock, sampleCollectiveCommitment } from "@darksoil/assemble/mocks";
+import { AssembleZomeMock, sampleAssembly } from "@darksoil/assemble/mocks";
 import { AssembleStore, AssembleClient } from "@darksoil/assemble";
 
 const mock = new AssembleZomeMock();
 
-const collectiveCommitment = sampleCollectiveCommitment();
-
-const record = await mock.create_collective_commitment(collectiveCommitment);
+const record = await mock.create_assembly(sampleAssembly());
 
 const store = new AssembleStore(new AssembleClient(mock));
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/web-components/writing-stories/introduction
 export default {
-  title: "Frontend/Elements/collective-commitments-for-call-to-action",
+  title: "Frontend/Elements/collective-commitment-summary",
   tags: ["autodocs"],
-  component: "collective-commitments-for-call-to-action",
+  component: "collective-commitment-summary",
   render: (args) =>
     html` <assemble-context
       .store=${store}
     >
-      <collective-commitments-for-call-to-action .callToAction=${ collectiveCommitment.call_to_action_hash } ></collective-commitments-for-call-to-action>
+      <collective-commitment-summary .collectiveCommitmentHash=${record.signed_action.hashed.hash}></collective-commitment-summary>
     </assemble-context>`,
 };
 

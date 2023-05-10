@@ -249,17 +249,17 @@
             },
             {
               "kind": "method",
-              "name": "createCollectiveCommitment",
+              "name": "createAssembly",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<CollectiveCommitment>>"
+                  "text": "Promise<EntryRecord<Assembly>>"
                 }
               },
               "parameters": [
                 {
                   "name": "collectiveCommitment",
                   "type": {
-                    "text": "CollectiveCommitment"
+                    "text": "Assembly"
                   }
                 }
               ],
@@ -267,10 +267,10 @@
             },
             {
               "kind": "method",
-              "name": "getCollectiveCommitment",
+              "name": "getAssembly",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<CollectiveCommitment> | undefined>"
+                  "text": "Promise<EntryRecord<Assembly> | undefined>"
                 }
               },
               "parameters": [
@@ -284,10 +284,10 @@
             },
             {
               "kind": "method",
-              "name": "getCollectiveCommitmentsForCallToAction",
+              "name": "getAssembliesForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<CollectiveCommitment>>>"
+                  "text": "Promise<Array<EntryRecord<Assembly>>>"
                 }
               },
               "parameters": [
@@ -301,10 +301,10 @@
             },
             {
               "kind": "method",
-              "name": "getCollectiveCommitmentsForSatisfaction",
+              "name": "getAssembliesForSatisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<CollectiveCommitment>>>"
+                  "text": "Promise<Array<EntryRecord<Assembly>>>"
                 }
               },
               "parameters": [
@@ -328,10 +328,10 @@
             },
             {
               "kind": "method",
-              "name": "getAllCollectiveCommitments",
+              "name": "getAllAssemblies",
               "return": {
                 "type": {
-                  "text": "Promise<\n    Array<EntryRecord<CollectiveCommitment>>\n  >"
+                  "text": "Promise<\n    Array<EntryRecord<Assembly>>\n  >"
                 }
               },
               "description": "All Collective Commitments"
@@ -404,18 +404,18 @@
             {
               "kind": "field",
               "name": "collectiveCommitments",
-              "default": "new LazyHoloHashMap(\n    (collectiveCommitmentHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getCollectiveCommitment(collectiveCommitmentHash),\n        4000\n      )\n  )",
+              "default": "new LazyHoloHashMap(\n    (collectiveCommitmentHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getAssembly(collectiveCommitmentHash),\n        4000\n      )\n  )",
               "description": "Collective Commitment"
             },
             {
               "kind": "field",
               "name": "collectiveCommitmentsForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getCollectiveCommitmentsForCallToAction(\n            callToActionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getAssembliesForCallToAction(\n            callToActionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
             },
             {
               "kind": "field",
               "name": "collectiveCommitmentsForSatisfaction",
-              "default": "new LazyHoloHashMap(\n    (satisfactionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getCollectiveCommitmentsForSatisfaction(\n            satisfactionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
+              "default": "new LazyHoloHashMap(\n    (satisfactionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getAssembliesForSatisfaction(\n            satisfactionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
             },
             {
               "kind": "field",
@@ -424,7 +424,7 @@
             },
             {
               "kind": "field",
-              "name": "allCollectiveCommitments",
+              "name": "allAssemblies",
               "description": "All Collective Commitments"
             }
           ]
@@ -771,7 +771,7 @@
             {
               "kind": "field",
               "name": "collectiveCommitment",
-              "default": "new RecordBag<CollectiveCommitment>()",
+              "default": "new RecordBag<Assembly>()",
               "description": "Collective Commitment"
             },
             {
@@ -786,7 +786,7 @@
             },
             {
               "kind": "method",
-              "name": "create_collective_commitment",
+              "name": "create_assembly",
               "return": {
                 "type": {
                   "text": "Promise<Record>"
@@ -796,14 +796,14 @@
                 {
                   "name": "collectiveCommitment",
                   "type": {
-                    "text": "CollectiveCommitment"
+                    "text": "Assembly"
                   }
                 }
               ]
             },
             {
               "kind": "method",
-              "name": "get_collective_commitment",
+              "name": "get_assembly",
               "return": {
                 "type": {
                   "text": "Promise<Record | undefined>"
@@ -820,7 +820,7 @@
             },
             {
               "kind": "method",
-              "name": "get_collective_commitments_for_call_to_action",
+              "name": "get_assemblies_for_call_to_action",
               "return": {
                 "type": {
                   "text": "Promise<Array<Record>>"
@@ -837,7 +837,7 @@
             },
             {
               "kind": "method",
-              "name": "get_collective_commitments_for_satisfaction",
+              "name": "get_assemblies_for_satisfaction",
               "return": {
                 "type": {
                   "text": "Promise<Array<Record>>"
@@ -871,7 +871,7 @@
             },
             {
               "kind": "method",
-              "name": "get_all_collective_commitments",
+              "name": "get_all_assemblies",
               "return": {
                 "type": {
                   "text": "Promise<Array<Record>>"
@@ -921,10 +921,10 @@
         },
         {
           "kind": "function",
-          "name": "sampleCollectiveCommitment",
+          "name": "sampleAssembly",
           "return": {
             "type": {
-              "text": "CollectiveCommitment"
+              "text": "Assembly"
             }
           }
         }
@@ -964,9 +964,9 @@
         },
         {
           "kind": "js",
-          "name": "sampleCollectiveCommitment",
+          "name": "sampleAssembly",
           "declaration": {
-            "name": "sampleCollectiveCommitment",
+            "name": "sampleAssembly",
             "module": "src/mocks.ts"
           }
         }
@@ -1034,7 +1034,7 @@
         {
           "kind": "class",
           "description": "",
-          "name": "AllCollectiveCommitments",
+          "name": "AllAssemblies",
           "members": [
             {
               "kind": "method",
@@ -1060,9 +1060,9 @@
       "exports": [
         {
           "kind": "js",
-          "name": "AllCollectiveCommitments",
+          "name": "AllAssemblies",
           "declaration": {
-            "name": "AllCollectiveCommitments",
+            "name": "AllAssemblies",
             "module": "src/elements/all-collective-commitments.ts"
           }
         },
@@ -1070,7 +1070,7 @@
           "kind": "custom-element-definition",
           "name": "all-collective-commitments",
           "declaration": {
-            "name": "AllCollectiveCommitments",
+            "name": "AllAssemblies",
             "module": "src/elements/all-collective-commitments.ts"
           }
         }
@@ -1182,7 +1182,7 @@
             },
             {
               "kind": "method",
-              "name": "createCollectiveCommitment",
+              "name": "createAssembly",
               "parameters": [
                 {
                   "name": "satisfactions_hashes",
@@ -1576,7 +1576,7 @@
         {
           "kind": "class",
           "description": "",
-          "name": "CollectiveCommitmentDetail",
+          "name": "AssemblyDetail",
           "members": [
             {
               "kind": "field",
@@ -1593,7 +1593,7 @@
                 {
                   "name": "entryRecord",
                   "type": {
-                    "text": "EntryRecord<CollectiveCommitment>"
+                    "text": "EntryRecord<Assembly>"
                   }
                 }
               ]
@@ -1625,9 +1625,9 @@
       "exports": [
         {
           "kind": "js",
-          "name": "CollectiveCommitmentDetail",
+          "name": "AssemblyDetail",
           "declaration": {
-            "name": "CollectiveCommitmentDetail",
+            "name": "AssemblyDetail",
             "module": "src/elements/collective-commitment-detail.ts"
           }
         },
@@ -1635,7 +1635,7 @@
           "kind": "custom-element-definition",
           "name": "collective-commitment-detail",
           "declaration": {
-            "name": "CollectiveCommitmentDetail",
+            "name": "AssemblyDetail",
             "module": "src/elements/collective-commitment-detail.ts"
           }
         }
@@ -1648,7 +1648,7 @@
         {
           "kind": "class",
           "description": "",
-          "name": "CollectiveCommitmentSummary",
+          "name": "AssemblySummary",
           "members": [
             {
               "kind": "field",
@@ -1665,7 +1665,7 @@
                 {
                   "name": "entryRecord",
                   "type": {
-                    "text": "EntryRecord<CollectiveCommitment>"
+                    "text": "EntryRecord<Assembly>"
                   }
                 }
               ]
@@ -1703,9 +1703,9 @@
       "exports": [
         {
           "kind": "js",
-          "name": "CollectiveCommitmentSummary",
+          "name": "AssemblySummary",
           "declaration": {
-            "name": "CollectiveCommitmentSummary",
+            "name": "AssemblySummary",
             "module": "src/elements/collective-commitment-summary.ts"
           }
         },
@@ -1713,7 +1713,7 @@
           "kind": "custom-element-definition",
           "name": "collective-commitment-summary",
           "declaration": {
-            "name": "CollectiveCommitmentSummary",
+            "name": "AssemblySummary",
             "module": "src/elements/collective-commitment-summary.ts"
           }
         }
@@ -1726,7 +1726,7 @@
         {
           "kind": "class",
           "description": "",
-          "name": "CollectiveCommitmentsForCallToAction",
+          "name": "AssembliesForCallToAction",
           "members": [
             {
               "kind": "field",
@@ -1769,9 +1769,9 @@
       "exports": [
         {
           "kind": "js",
-          "name": "CollectiveCommitmentsForCallToAction",
+          "name": "AssembliesForCallToAction",
           "declaration": {
-            "name": "CollectiveCommitmentsForCallToAction",
+            "name": "AssembliesForCallToAction",
             "module": "src/elements/collective-commitments-for-call-to-action.ts"
           }
         },
@@ -1779,7 +1779,7 @@
           "kind": "custom-element-definition",
           "name": "collective-commitments-for-call-to-action",
           "declaration": {
-            "name": "CollectiveCommitmentsForCallToAction",
+            "name": "AssembliesForCallToAction",
             "module": "src/elements/collective-commitments-for-call-to-action.ts"
           }
         }
@@ -1792,7 +1792,7 @@
         {
           "kind": "class",
           "description": "",
-          "name": "CollectiveCommitmentsForSatisfaction",
+          "name": "AssembliesForSatisfaction",
           "members": [
             {
               "kind": "field",
@@ -1835,9 +1835,9 @@
       "exports": [
         {
           "kind": "js",
-          "name": "CollectiveCommitmentsForSatisfaction",
+          "name": "AssembliesForSatisfaction",
           "declaration": {
-            "name": "CollectiveCommitmentsForSatisfaction",
+            "name": "AssembliesForSatisfaction",
             "module": "src/elements/collective-commitments-for-satisfaction.ts"
           }
         },
@@ -1845,7 +1845,7 @@
           "kind": "custom-element-definition",
           "name": "collective-commitments-for-satisfaction",
           "declaration": {
-            "name": "CollectiveCommitmentsForSatisfaction",
+            "name": "AssembliesForSatisfaction",
             "module": "src/elements/collective-commitments-for-satisfaction.ts"
           }
         }
@@ -1981,7 +1981,7 @@
         {
           "kind": "class",
           "description": "",
-          "name": "CreateCollectiveCommitment",
+          "name": "CreateAssembly",
           "members": [
             {
               "kind": "field",
@@ -2001,7 +2001,7 @@
             },
             {
               "kind": "method",
-              "name": "createCollectiveCommitment",
+              "name": "createAssembly",
               "parameters": [
                 {
                   "name": "fields",
@@ -2051,9 +2051,9 @@
       "exports": [
         {
           "kind": "js",
-          "name": "CreateCollectiveCommitment",
+          "name": "CreateAssembly",
           "declaration": {
-            "name": "CreateCollectiveCommitment",
+            "name": "CreateAssembly",
             "module": "src/elements/create-collective-commitment.ts"
           }
         },
@@ -2061,7 +2061,7 @@
           "kind": "custom-element-definition",
           "name": "create-collective-commitment",
           "declaration": {
-            "name": "CreateCollectiveCommitment",
+            "name": "CreateAssembly",
             "module": "src/elements/create-collective-commitment.ts"
           }
         }

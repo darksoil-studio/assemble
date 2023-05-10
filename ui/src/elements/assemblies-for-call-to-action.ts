@@ -5,6 +5,7 @@ import {
 } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import { StoreSubscriber } from '@holochain-open-dev/stores';
+import { EntryRecord, RecordBag } from '@holochain-open-dev/utils';
 import { ActionHash, AgentPubKey, EntryHash, Record } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
@@ -16,14 +17,19 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import './collective-commitment-summary.js';
+import { Assembly } from '../types.js';
+import './assembly-summary.js';
 
 /**
- * @element all-collective-commitments
+ * @element collective-commitments-for-call-to-action
  */
 @localized()
-@customElement('all-collective-commitments')
-export class AllCollectiveCommitments extends LitElement {
+@customElement('collective-commitments-for-call-to-action')
+export class AssembliesForCallToAction extends LitElement {
+  // REQUIRED. The CallToActionHash for which the Assemblies should be fetched
+  @property(hashProperty('call-to-action-hash'))
+  callToActionHash!: ActionHash;
+
   /**
    * @internal
    */
@@ -33,30 +39,32 @@ export class AllCollectiveCommitments extends LitElement {
   /**
    * @internal
    */
-  _allCollectiveCommitments = new StoreSubscriber(
-    this,
-    () => this.assembleStore.allCollectiveCommitments
+  _collectiveCommitments = new StoreSubscriber(this, () =>
+    this.assembleStore.collectiveCommitmentsForCallToAction.get(
+      this.callToActionHash
+    )
   );
 
   renderList(hashes: Array<ActionHash>) {
     if (hashes.length === 0)
       return html` <div class="column center-content">
         <sl-icon
-          .src=${wrapPathInSvg(mdiInformationOutline)}
           style="color: grey; height: 64px; width: 64px; margin-bottom: 16px"
+          .src=${wrapPathInSvg(mdiInformationOutline)}
         ></sl-icon>
         <span class="placeholder"
-          >${msg('No collective commitments found')}</span
+          >${msg(
+            'No collective commitments found for this call to action'
+          )}</span
         >
       </div>`;
 
     return html`
-      <div style="display: flex; flex-direction: column; flex: 1">
+      <div style="display: flex; flex-direction: column">
         ${hashes.map(
           hash =>
             html`<collective-commitment-summary
               .collectiveCommitmentHash=${hash}
-              style="margin-bottom: 16px;"
             ></collective-commitment-summary>`
         )}
       </div>
@@ -64,7 +72,7 @@ export class AllCollectiveCommitments extends LitElement {
   }
 
   render() {
-    switch (this._allCollectiveCommitments.value.status) {
+    switch (this._collectiveCommitments.value.status) {
       case 'pending':
         return html`<div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
@@ -72,11 +80,11 @@ export class AllCollectiveCommitments extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        return this.renderList(this._allCollectiveCommitments.value.value);
+        return this.renderList(this._collectiveCommitments.value.value);
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the collective commitments')}
-          .error=${this._allCollectiveCommitments.value.error.data.data}
+          .error=${this._collectiveCommitments.value.error.data.data}
         ></display-error>`;
     }
   }

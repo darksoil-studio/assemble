@@ -1,5 +1,5 @@
-pub mod collective_commitment;
-pub use collective_commitment::*;
+pub mod assembly;
+pub use assembly::*;
 pub mod satisfaction;
 pub use satisfaction::*;
 pub mod promise;
@@ -15,7 +15,7 @@ pub enum EntryTypes {
     CallToAction(CallToAction),
     Promise(Promise),
     Satisfaction(Satisfaction),
-    CollectiveCommitment(CollectiveCommitment),
+    Assembly(Assembly),
 }
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
@@ -24,10 +24,10 @@ pub enum LinkTypes {
     CallToActionToPromises,
     CallToActionToSatisfactions,
     PromiseToSatisfactions,
-    CallToActionToCollectiveCommitments,
-    SatisfactionToCollectiveCommitments,
+    CallToActionToAssemblies,
+    SatisfactionToAssemblies,
     AllCallsToAction,
-    AllCollectiveCommitments,
+    AllAssemblies,
 }
 #[hdk_extern]
 pub fn genesis_self_check(_data: GenesisSelfCheckData) -> ExternResult<ValidateCallbackResult> {
@@ -54,10 +54,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_create_satisfaction(EntryCreationAction::Create(action), satisfaction)
                 }
-                EntryTypes::CollectiveCommitment(collective_commitment) => {
-                    validate_create_collective_commitment(
+                EntryTypes::Assembly(assembly) => {
+                    validate_create_assembly(
                         EntryCreationAction::Create(action),
-                        collective_commitment,
+                        assembly,
                     )
                 }
             },
@@ -74,10 +74,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_create_satisfaction(EntryCreationAction::Update(action), satisfaction)
                 }
-                EntryTypes::CollectiveCommitment(collective_commitment) => {
-                    validate_create_collective_commitment(
+                EntryTypes::Assembly(assembly) => {
+                    validate_create_assembly(
                         EntryCreationAction::Update(action),
-                        collective_commitment,
+                        assembly,
                     )
                 }
             },
@@ -91,13 +91,13 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 action,
             } => match (app_entry, original_app_entry) {
                 (
-                    EntryTypes::CollectiveCommitment(collective_commitment),
-                    EntryTypes::CollectiveCommitment(original_collective_commitment),
-                ) => validate_update_collective_commitment(
+                    EntryTypes::Assembly(assembly),
+                    EntryTypes::Assembly(original_assembly),
+                ) => validate_update_assembly(
                     action,
-                    collective_commitment,
+                    assembly,
                     original_action,
-                    original_collective_commitment,
+                    original_assembly,
                 ),
                 (
                     EntryTypes::Satisfaction(satisfaction),
@@ -141,11 +141,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_delete_satisfaction(action, original_action, satisfaction)
                 }
-                EntryTypes::CollectiveCommitment(collective_commitment) => {
-                    validate_delete_collective_commitment(
+                EntryTypes::Assembly(assembly) => {
+                    validate_delete_assembly(
                         action,
                         original_action,
-                        collective_commitment,
+                        assembly,
                     )
                 }
             },
@@ -186,16 +186,16 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 target_address,
                 tag,
             ),
-            LinkTypes::CallToActionToCollectiveCommitments => {
-                validate_create_link_call_to_action_to_collective_commitments(
+            LinkTypes::CallToActionToAssemblies => {
+                validate_create_link_call_to_action_to_assemblies(
                     action,
                     base_address,
                     target_address,
                     tag,
                 )
             }
-            LinkTypes::SatisfactionToCollectiveCommitments => {
-                validate_create_link_satisfaction_to_collective_commitments(
+            LinkTypes::SatisfactionToAssemblies => {
+                validate_create_link_satisfaction_to_assemblies(
                     action,
                     base_address,
                     target_address,
@@ -205,7 +205,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
             LinkTypes::AllCallsToAction => {
                 validate_create_link_all_calls_to_action(action, base_address, target_address, tag)
             }
-            LinkTypes::AllCollectiveCommitments => validate_create_link_all_collective_commitments(
+            LinkTypes::AllAssemblies => validate_create_link_all_assemblies(
                 action,
                 base_address,
                 target_address,
@@ -252,8 +252,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 target_address,
                 tag,
             ),
-            LinkTypes::CallToActionToCollectiveCommitments => {
-                validate_delete_link_call_to_action_to_collective_commitments(
+            LinkTypes::CallToActionToAssemblies => {
+                validate_delete_link_call_to_action_to_assemblies(
                     action,
                     original_action,
                     base_address,
@@ -261,8 +261,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::SatisfactionToCollectiveCommitments => {
-                validate_delete_link_satisfaction_to_collective_commitments(
+            LinkTypes::SatisfactionToAssemblies => {
+                validate_delete_link_satisfaction_to_assemblies(
                     action,
                     original_action,
                     base_address,
@@ -277,7 +277,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 target_address,
                 tag,
             ),
-            LinkTypes::AllCollectiveCommitments => validate_delete_link_all_collective_commitments(
+            LinkTypes::AllAssemblies => validate_delete_link_all_assemblies(
                 action,
                 original_action,
                 base_address,
@@ -297,10 +297,10 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_create_satisfaction(EntryCreationAction::Create(action), satisfaction)
                 }
-                EntryTypes::CollectiveCommitment(collective_commitment) => {
-                    validate_create_collective_commitment(
+                EntryTypes::Assembly(assembly) => {
+                    validate_create_assembly(
                         EntryCreationAction::Create(action),
-                        collective_commitment,
+                        assembly,
                     )
                 }
             },
@@ -416,20 +416,20 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             Ok(result)
                         }
                     }
-                    EntryTypes::CollectiveCommitment(collective_commitment) => {
-                        let result = validate_create_collective_commitment(
+                    EntryTypes::Assembly(assembly) => {
+                        let result = validate_create_assembly(
                             EntryCreationAction::Update(action.clone()),
-                            collective_commitment.clone(),
+                            assembly.clone(),
                         )?;
                         if let ValidateCallbackResult::Valid = result {
-                            let original_collective_commitment: Option<CollectiveCommitment> =
+                            let original_assembly: Option<Assembly> =
                                 original_record
                                     .entry()
                                     .to_app_option()
                                     .map_err(|e| wasm_error!(e))?;
-                            let original_collective_commitment =
-                                match original_collective_commitment {
-                                    Some(collective_commitment) => collective_commitment,
+                            let original_assembly =
+                                match original_assembly {
+                                    Some(assembly) => assembly,
                                     None => {
                                         return Ok(
                                             ValidateCallbackResult::Invalid(
@@ -439,11 +439,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                         );
                                     }
                                 };
-                            validate_update_collective_commitment(
+                            validate_update_assembly(
                                 action,
-                                collective_commitment,
+                                assembly,
                                 original_action,
-                                original_collective_commitment,
+                                original_assembly,
                             )
                         } else {
                             Ok(result)
@@ -518,11 +518,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     EntryTypes::Satisfaction(original_satisfaction) => {
                         validate_delete_satisfaction(action, original_action, original_satisfaction)
                     }
-                    EntryTypes::CollectiveCommitment(original_collective_commitment) => {
-                        validate_delete_collective_commitment(
+                    EntryTypes::Assembly(original_assembly) => {
+                        validate_delete_assembly(
                             action,
                             original_action,
-                            original_collective_commitment,
+                            original_assembly,
                         )
                     }
                 }
@@ -564,16 +564,16 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     target_address,
                     tag,
                 ),
-                LinkTypes::CallToActionToCollectiveCommitments => {
-                    validate_create_link_call_to_action_to_collective_commitments(
+                LinkTypes::CallToActionToAssemblies => {
+                    validate_create_link_call_to_action_to_assemblies(
                         action,
                         base_address,
                         target_address,
                         tag,
                     )
                 }
-                LinkTypes::SatisfactionToCollectiveCommitments => {
-                    validate_create_link_satisfaction_to_collective_commitments(
+                LinkTypes::SatisfactionToAssemblies => {
+                    validate_create_link_satisfaction_to_assemblies(
                         action,
                         base_address,
                         target_address,
@@ -586,8 +586,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     target_address,
                     tag,
                 ),
-                LinkTypes::AllCollectiveCommitments => {
-                    validate_create_link_all_collective_commitments(
+                LinkTypes::AllAssemblies => {
+                    validate_create_link_all_assemblies(
                         action,
                         base_address,
                         target_address,
@@ -655,8 +655,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             create_link.tag,
                         )
                     }
-                    LinkTypes::CallToActionToCollectiveCommitments => {
-                        validate_delete_link_call_to_action_to_collective_commitments(
+                    LinkTypes::CallToActionToAssemblies => {
+                        validate_delete_link_call_to_action_to_assemblies(
                             action,
                             create_link.clone(),
                             base_address,
@@ -664,8 +664,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             create_link.tag,
                         )
                     }
-                    LinkTypes::SatisfactionToCollectiveCommitments => {
-                        validate_delete_link_satisfaction_to_collective_commitments(
+                    LinkTypes::SatisfactionToAssemblies => {
+                        validate_delete_link_satisfaction_to_assemblies(
                             action,
                             create_link.clone(),
                             base_address,
@@ -680,8 +680,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         create_link.target_address,
                         create_link.tag,
                     ),
-                    LinkTypes::AllCollectiveCommitments => {
-                        validate_delete_link_all_collective_commitments(
+                    LinkTypes::AllAssemblies => {
+                        validate_delete_link_all_assemblies(
                             action,
                             create_link.clone(),
                             base_address,

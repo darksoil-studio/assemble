@@ -30,7 +30,7 @@ import { keyed } from 'lit/directives/keyed.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CollectiveCommitment } from '../types.js';
+import { Assembly } from '../types.js';
 
 /**
  * @element create-collective-commitment
@@ -38,12 +38,12 @@ import { CollectiveCommitment } from '../types.js';
  */
 @localized()
 @customElement('create-collective-commitment')
-export class CreateCollectiveCommitment extends LitElement {
-  // REQUIRED. The call to action hash for this CollectiveCommitment
+export class CreateAssembly extends LitElement {
+  // REQUIRED. The call to action hash for this Assembly
   @property(hashProperty('call-to-action-hash'))
   callToActionHash!: ActionHash;
 
-  // REQUIRED. The satisfactions hashes for this CollectiveCommitment
+  // REQUIRED. The satisfactions hashes for this Assembly
   @property()
   satisfactionsHashes!: Array<ActionHash>;
 
@@ -65,7 +65,7 @@ export class CreateCollectiveCommitment extends LitElement {
   @query('#create-form')
   form!: HTMLFormElement;
 
-  async createCollectiveCommitment(fields: any) {
+  async createAssembly(fields: any) {
     if (this.callToActionHash === undefined)
       throw new Error(
         'Cannot create a new Collective Commitment without its call_to_action_hash field'
@@ -75,15 +75,15 @@ export class CreateCollectiveCommitment extends LitElement {
         'Cannot create a new Collective Commitment without its satisfactions_hashes field'
       );
 
-    const collectiveCommitment: CollectiveCommitment = {
+    const collectiveCommitment: Assembly = {
       call_to_action_hash: this.callToActionHash,
       satisfactions_hashes: this.satisfactionsHashes,
     };
 
     try {
       this.committing = true;
-      const record: EntryRecord<CollectiveCommitment> =
-        await this.assembleStore.client.createCollectiveCommitment(
+      const record: EntryRecord<Assembly> =
+        await this.assembleStore.client.createAssembly(
           collectiveCommitment
         );
 
@@ -112,7 +112,7 @@ export class CreateCollectiveCommitment extends LitElement {
       <form
         id="create-form"
         style="display: flex; flex: 1; flex-direction: column;"
-        ${onSubmit(fields => this.createCollectiveCommitment(fields))}
+        ${onSubmit(fields => this.createAssembly(fields))}
       >
         <sl-button variant="primary" type="submit" .loading=${this.committing}
           >${msg('Create Collective Commitment')}</sl-button
