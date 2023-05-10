@@ -16,14 +16,14 @@ import { Assembly } from '../types';
 
 /**
  * @element collective-commitment-summary
- * @fires collective-commitment-selected: detail will contain { collectiveCommitmentHash }
+ * @fires collective-commitment-selected: detail will contain { assemblyHash }
  */
 @localized()
 @customElement('collective-commitment-summary')
 export class AssemblySummary extends LitElement {
   // REQUIRED. The hash of the Assembly to show
   @property(hashProperty('collective-commitment-hash'))
-  collectiveCommitmentHash!: ActionHash;
+  assemblyHash!: ActionHash;
 
   /**
    * @internal
@@ -34,8 +34,8 @@ export class AssemblySummary extends LitElement {
   /**
    * @internal
    */
-  _collectiveCommitment = new StoreSubscriber(this, () =>
-    this.assembleStore.collectiveCommitments.get(this.collectiveCommitmentHash)
+  _assembly = new StoreSubscriber(this, () =>
+    this.assembleStore.assemblies.get(this.assemblyHash)
   );
 
   renderSummary(entryRecord: EntryRecord<Assembly>) {
@@ -50,7 +50,7 @@ export class AssemblySummary extends LitElement {
                 composed: true,
                 bubbles: true,
                 detail: {
-                  collectiveCommitmentHash: this.collectiveCommitmentHash,
+                  assemblyHash: this.assemblyHash,
                 },
               })
             );
@@ -61,7 +61,7 @@ export class AssemblySummary extends LitElement {
   }
 
   render() {
-    switch (this._collectiveCommitment.value.status) {
+    switch (this._assembly.value.status) {
       case 'pending':
         return html`<div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
@@ -69,16 +69,16 @@ export class AssemblySummary extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        if (!this._collectiveCommitment.value.value)
+        if (!this._assembly.value.value)
           return html`<span
             >${msg("The requested collective commitment doesn't exist")}</span
           >`;
 
-        return this.renderSummary(this._collectiveCommitment.value.value);
+        return this.renderSummary(this._assembly.value.value);
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the collective commitment')}
-          .error=${this._collectiveCommitment.value.error.data.data}
+          .error=${this._assembly.value.error.data.data}
         ></display-error>`;
     }
   }

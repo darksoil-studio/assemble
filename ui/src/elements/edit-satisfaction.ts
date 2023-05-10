@@ -55,7 +55,7 @@ export class EditSatisfaction extends LitElement {
     const satisfaction: Satisfaction = {
       call_to_action_hash: this.currentRecord.entry.call_to_action_hash,
       need_index: this.currentRecord.entry.need_index,
-      promises_hashes: this.currentRecord.entry.promises_hashes,
+      commitments_hashes: this.currentRecord.entry.commitments_hashes,
     };
 
     try {

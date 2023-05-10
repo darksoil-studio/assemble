@@ -26,9 +26,9 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallPromise, CallToAction, Need, Satisfaction } from '../types.js';
-import './create-promise.js';
-import { CreatePromise } from './create-promise.js';
+import { Commitment, CallToAction, Need, Satisfaction } from '../types.js';
+import './create-commitment.js';
+import { CreateCommitment } from './create-commitment.js';
 import './create-satisfaction.js';
 import { CreateSatisfaction } from './create-satisfaction.js';
 import './edit-call-to-action.js';
@@ -62,16 +62,16 @@ export class CallToActionDetail extends LitElement {
   /**
    * @internal
    */
-  _promisesAndSatisfactionsForCall = new StoreSubscriber(
+  _commitmentsAndSatisfactionsForCall = new StoreSubscriber(
     this,
     () =>
       join([
-        this.assembleStore.promisesForCallToAction.get(this.callToActionHash),
+        this.assembleStore.commitmentsForCallToAction.get(this.callToActionHash),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
       ]) as AsyncReadable<
-        [Array<EntryRecord<CallPromise>>, Array<EntryRecord<Satisfaction>>]
+        [Array<EntryRecord<Commitment>>, Array<EntryRecord<Satisfaction>>]
       >,
     () => [this.callToActionHash]
   );
@@ -114,7 +114,7 @@ export class CallToActionDetail extends LitElement {
 
   async createAssembly(satisfactions_hashes: Array<ActionHash>) {
     try {
-      const collectiveCommitment =
+      const assembly =
         await this.assembleStore.client.createAssembly({
           call_to_action_hash: this.callToActionHash,
           satisfactions_hashes,
@@ -124,43 +124,43 @@ export class CallToActionDetail extends LitElement {
           bubbles: true,
           composed: true,
           detail: {
-            collectiveCommitmentHash: collectiveCommitment.actionHash,
+            assemblyHash: assembly.actionHash,
           },
         })
       );
     } catch (e) {
-      notifyError(msg('Error accepting the promise'));
+      notifyError(msg('Error accepting the commitment'));
       console.error(e);
     }
   }
 
-  renderPromisesForNeed(
+  renderCommitmentsForNeed(
     callToAction: EntryRecord<CallToAction>,
     needIndex: number,
-    promises: Array<EntryRecord<CallPromise>>
+    commitments: Array<EntryRecord<Commitment>>
   ) {
-    const promisesForThisNeed = promises.filter(
+    const commitmentsForThisNeed = commitments.filter(
       p => p.entry.need_index === needIndex
     );
 
-    if (promisesForThisNeed.length === 0)
+    if (commitmentsForThisNeed.length === 0)
       return html`<span class="placeholder" style="margin-top: 8px"
         >${msg('No one has contributed to this need yet.')}</span
       >`;
 
     return html`<div class="column">
-      ${promisesForThisNeed.map(
-        promise => html`
+      ${commitmentsForThisNeed.map(
+        commitment => html`
           <div class="row" style="align-items: center; margin-top: 8px">
-            <agent-avatar .agentPubKey=${promise.action.author}></agent-avatar>
+            <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
             <div class="column" style="margin-left: 8px">
-              <span>${promise.entry.comment || msg('No comment')}</span>
+              <span>${commitment.entry.comment || msg('No comment')}</span>
               ${callToAction.entry.needs[needIndex].min_necessary === 1 &&
               callToAction.entry.needs[needIndex].max_possible === 1
                 ? html``
                 : html`
                     <span style="margin-top: 8px"
-                      >${msg('Amount')}: ${promise.entry.amount}</span
+                      >${msg('Amount')}: ${commitment.entry.amount}</span
                     >
                   `}
             </div>
@@ -173,7 +173,7 @@ export class CallToActionDetail extends LitElement {
   renderUnmetNeeds(
     callToAction: EntryRecord<CallToAction>,
     needs: Array<[Need, number]>,
-    promises: Array<EntryRecord<CallPromise>>
+    commitments: Array<EntryRecord<Commitment>>
   ) {
     if (needs.length === 0)
       return html`<span
@@ -192,14 +192,14 @@ export class CallToActionDetail extends LitElement {
                   <sl-progress-bar
                     style="flex: 1"
                     .value=${(100 *
-                      promises
+                      commitments
                         .filter(p => p.entry.need_index === i)
                         .reduce((count, p) => count + p.entry.amount, 0)) /
                     need.min_necessary}
                   >
                   </sl-progress-bar
                   ><span style="margin-left: 8px">
-                    ${promises
+                    ${commitments
                       .filter(p => p.entry.need_index === i)
                       .reduce((count, p) => count + p.entry.amount, 0)}
                     ${msg('of')} ${need.min_necessary}
@@ -208,16 +208,16 @@ export class CallToActionDetail extends LitElement {
               : html``}
           </div>
           <div class="column">
-            ${this.renderPromisesForNeed(callToAction, i, promises)}
+            ${this.renderCommitmentsForNeed(callToAction, i, commitments)}
             <div class="row" style="flex: 1; margin-top: 16px">
               <sl-button
                 style="flex: 1"
                 @click=${() => {
-                  const createPromise = this.shadowRoot?.querySelector(
-                    'create-promise'
-                  ) as CreatePromise;
-                  createPromise.needIndex = i;
-                  createPromise.show();
+                  const createCommitment = this.shadowRoot?.querySelector(
+                    'create-commitment'
+                  ) as CreateCommitment;
+                  createCommitment.needIndex = i;
+                  createCommitment.show();
                 }}
                 >${msg('Contribute')}</sl-button
               >
@@ -232,7 +232,7 @@ export class CallToActionDetail extends LitElement {
                             'create-satisfaction'
                           ) as CreateSatisfaction;
                         createSatisfaction.needIndex = i;
-                        createSatisfaction.promises = promises.filter(
+                        createSatisfaction.commitments = commitments.filter(
                           p => p.entry.need_index === i
                         );
                         createSatisfaction.show();
@@ -251,7 +251,7 @@ export class CallToActionDetail extends LitElement {
   renderMetNeeds(
     callToAction: EntryRecord<CallToAction>,
     needs: Array<[Need, number]>,
-    promises: Array<EntryRecord<CallPromise>>,
+    commitments: Array<EntryRecord<Commitment>>,
     satisfactions: Array<EntryRecord<Satisfaction>>
   ) {
     if (needs.length === 0)
@@ -265,29 +265,29 @@ export class CallToActionDetail extends LitElement {
             <span style="flex: 1">${need.description}</span>
           </div>
           <div class="column">
-            ${promises.length > 0
-              ? promises
+            ${commitments.length > 0
+              ? commitments
                   .filter(p =>
                     satisfactions.find(
                       s =>
                         s.entry.need_index === i &&
-                        s.entry.promises_hashes.find(
+                        s.entry.commitments_hashes.find(
                           ph => ph.toString() === p.actionHash.toString()
                         )
                     )
                   )
                   .map(
-                    promise => html` <div
+                    commitment => html` <div
                       class="row"
                       style="align-items: center"
                     >
                       <agent-avatar
-                        .agentPubKey=${promise.action.author}
+                        .agentPubKey=${commitment.action.author}
                       ></agent-avatar>
-                      ${promise.entry.comment
+                      ${commitment.entry.comment
                         ? html`
                             <span style="margin-left: 8px"
-                              >${promise.entry.comment}</span
+                              >${commitment.entry.comment}</span
                             >
                           `
                         : html`
@@ -298,16 +298,16 @@ export class CallToActionDetail extends LitElement {
                     </div>`
                   )
               : html`<span
-                  >${msg('This need was satisfied with no promises.')}</span
+                  >${msg('This need was satisfied with no commitments.')}</span
                 >`}
             <sl-button
               style="margin-top: 16px"
               @click=${() => {
-                const createPromise = this.shadowRoot?.querySelector(
-                  'create-promise'
-                ) as CreatePromise;
-                createPromise.needIndex = i;
-                createPromise.show();
+                const createCommitment = this.shadowRoot?.querySelector(
+                  'create-commitment'
+                ) as CreateCommitment;
+                createCommitment.needIndex = i;
+                createCommitment.show();
               }}
               >${msg('Contribute')}</sl-button
             >
@@ -318,7 +318,7 @@ export class CallToActionDetail extends LitElement {
   }
 
   renderNeeds(callToAction: EntryRecord<CallToAction>) {
-    switch (this._promisesAndSatisfactionsForCall.value.status) {
+    switch (this._commitmentsAndSatisfactionsForCall.value.status) {
       case 'pending':
         return html`
           <div class="column">
@@ -328,9 +328,9 @@ export class CallToActionDetail extends LitElement {
           </div>
         `;
       case 'complete':
-        const promises = this._promisesAndSatisfactionsForCall.value.value[0];
+        const commitments = this._commitmentsAndSatisfactionsForCall.value.value[0];
         const satisfactions =
-          this._promisesAndSatisfactionsForCall.value.value[1];
+          this._commitmentsAndSatisfactionsForCall.value.value[1];
 
         const unmetNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
@@ -359,7 +359,7 @@ export class CallToActionDetail extends LitElement {
               <span style="margin-top: 24px; margin-bottom: 16px"
                 ><strong>${msg('Unmet Needs')}</strong></span
               >
-              ${this.renderUnmetNeeds(callToAction, unmetNeeds, promises)}
+              ${this.renderUnmetNeeds(callToAction, unmetNeeds, commitments)}
             </div>
 
             <div class="column" style="flex: 1; margin-left: 16px">
@@ -369,7 +369,7 @@ export class CallToActionDetail extends LitElement {
               ${this.renderMetNeeds(
                 callToAction,
                 metNeeds,
-                promises,
+                commitments,
                 satisfactions
               )}
             </div>
@@ -378,16 +378,16 @@ export class CallToActionDetail extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg(
-            'Error fetching the promises for this call to action'
+            'Error fetching the commitments for this call to action'
           )}
-          .error=${this._promisesAndSatisfactionsForCall.value.error.data.data}
+          .error=${this._commitmentsAndSatisfactionsForCall.value.error.data.data}
         ></display-error>`;
     }
   }
 
   renderDetail(entryRecord: EntryRecord<CallToAction>) {
     return html`
-      <create-promise .callToAction=${entryRecord}></create-promise>
+      <create-commitment .callToAction=${entryRecord}></create-commitment>
 
       <div class="column">
         <sl-card>

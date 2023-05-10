@@ -12,18 +12,18 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import { CallPromise } from '../types';
+import { Commitment } from '../types';
 
 /**
- * @element promise-summary
- * @fires promise-selected: detail will contain { promiseHash }
+ * @element commitment-summary
+ * @fires commitment-selected: detail will contain { commitmentHash }
  */
 @localized()
-@customElement('promise-summary')
-export class PromiseSummary extends LitElement {
-  // REQUIRED. The hash of the Promise to show
-  @property(hashProperty('promise-hash'))
-  promiseHash!: ActionHash;
+@customElement('commitment-summary')
+export class CommitmentSummary extends LitElement {
+  // REQUIRED. The hash of the Commitment to show
+  @property(hashProperty('commitment-hash'))
+  commitmentHash!: ActionHash;
 
   /**
    * @internal
@@ -34,11 +34,11 @@ export class PromiseSummary extends LitElement {
   /**
    * @internal
    */
-  _promise = new StoreSubscriber(this, () =>
-    this.assembleStore.promises.get(this.promiseHash)
+  _commitment = new StoreSubscriber(this, () =>
+    this.assembleStore.commitments.get(this.commitmentHash)
   );
 
-  renderSummary(entryRecord: EntryRecord<CallPromise>) {
+  renderSummary(entryRecord: EntryRecord<Commitment>) {
     return html`
       <div style="display: flex; flex-direction: column">
         <div style="display: flex; flex-direction: column; margin-bottom: 16px">
@@ -53,8 +53,8 @@ export class PromiseSummary extends LitElement {
     `;
   }
 
-  renderPromise() {
-    switch (this._promise.value.status) {
+  renderCommitment() {
+    switch (this._commitment.value.status) {
       case 'pending':
         return html`<div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
@@ -62,16 +62,16 @@ export class PromiseSummary extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        if (!this._promise.value.value)
+        if (!this._commitment.value.value)
           return html`<span
-            >${msg("The requested promise doesn't exist")}</span
+            >${msg("The requested commitment doesn't exist")}</span
           >`;
 
-        return this.renderSummary(this._promise.value.value);
+        return this.renderSummary(this._commitment.value.value);
       case 'error':
         return html`<display-error
-          .headline=${msg('Error fetching the promise')}
-          .error=${this._promise.value.error.data.data}
+          .headline=${msg('Error fetching the commitment')}
+          .error=${this._commitment.value.error.data.data}
         ></display-error>`;
     }
   }
@@ -81,16 +81,16 @@ export class PromiseSummary extends LitElement {
       style="flex: 1; cursor: grab;"
       @click=${() =>
         this.dispatchEvent(
-          new CustomEvent('promise-selected', {
+          new CustomEvent('commitment-selected', {
             composed: true,
             bubbles: true,
             detail: {
-              promiseHash: this.promiseHash,
+              commitmentHash: this.commitmentHash,
             },
           })
         )}
     >
-      ${this.renderPromise()}
+      ${this.renderCommitment()}
     </sl-card>`;
   }
 

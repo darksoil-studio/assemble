@@ -10,12 +10,12 @@ use assemble_integrity::*;
 
 
 mod common;
-use common::{create_promise, sample_promise_1, sample_promise_2};
+use common::{create_commitment, sample_commitment_1, sample_commitment_2};
 
 use common::{create_call_to_action, sample_call_to_action_1, sample_call_to_action_2};
 
 #[tokio::test(flavor = "multi_thread")]
-async fn create_promise_test() {
+async fn create_commitment_test() {
     // Use prebuilt dna file
     let dna_path = std::env::current_dir()
         .unwrap()
@@ -31,17 +31,17 @@ async fn create_promise_test() {
     
     let alice_zome = alice.zome("assemble");
     
-    let sample = sample_promise_1(&conductors[0], &alice_zome).await;
+    let sample = sample_commitment_1(&conductors[0], &alice_zome).await;
     
-    // Alice creates a Promise
-    let record: Record = create_promise(&conductors[0], &alice_zome, sample.clone()).await;
-    let entry: Promise = record.entry().to_app_option().unwrap().unwrap();
+    // Alice creates a Commitment
+    let record: Record = create_commitment(&conductors[0], &alice_zome, sample.clone()).await;
+    let entry: Commitment = record.entry().to_app_option().unwrap().unwrap();
     assert!(entry.eq(&sample));
 }
 
 
 #[tokio::test(flavor = "multi_thread")]
-async fn create_and_read_promise() {
+async fn create_and_read_commitment() {
     // Use prebuilt dna file
     let dna_path = std::env::current_dir()
         .unwrap()
@@ -58,15 +58,15 @@ async fn create_and_read_promise() {
     let alice_zome = alice.zome("assemble");
     let bob_zome = bobbo.zome("assemble");
     
-    let sample = sample_promise_1(&conductors[0], &alice_zome).await;
+    let sample = sample_commitment_1(&conductors[0], &alice_zome).await;
     
-    // Alice creates a Promise
-    let record: Record = create_promise(&conductors[0], &alice_zome, sample.clone()).await;
+    // Alice creates a Commitment
+    let record: Record = create_commitment(&conductors[0], &alice_zome, sample.clone()).await;
     
     consistency_10s([&alice, &bobbo]).await;
     
     let get_record: Option<Record> = conductors[1]
-        .call(&bob_zome, "get_promise", record.signed_action.action_address().clone())
+        .call(&bob_zome, "get_commitment", record.signed_action.action_address().clone())
         .await;
         
     assert_eq!(record, get_record.unwrap());    

@@ -13,7 +13,7 @@ import {
 
 import { Assembly } from './types';
 import { Satisfaction } from './types';
-import { CallPromise } from './types';
+import { Commitment } from './types';
 import { CallToAction } from './types';
 import { AssembleSignal } from './types';
 
@@ -73,25 +73,25 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
     );
     return records.map(r => new EntryRecord(r));
   }
-  /** Promise */
+  /** Commitment */
 
-  async createPromise(promise: CallPromise): Promise<EntryRecord<CallPromise>> {
-    const record: Record = await this.callZome('create_promise', promise);
+  async createCommitment(commitment: Commitment): Promise<EntryRecord<Commitment>> {
+    const record: Record = await this.callZome('create_commitment', commitment);
     return new EntryRecord(record);
   }
 
-  async getPromise(
-    promiseHash: ActionHash
-  ): Promise<EntryRecord<CallPromise> | undefined> {
-    const record: Record = await this.callZome('get_promise', promiseHash);
+  async getCommitment(
+    commitmentHash: ActionHash
+  ): Promise<EntryRecord<Commitment> | undefined> {
+    const record: Record = await this.callZome('get_commitment', commitmentHash);
     return record ? new EntryRecord(record) : undefined;
   }
 
-  async getPromisesForCallToAction(
+  async getCommitmentsForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<EntryRecord<CallPromise>>> {
+  ): Promise<Array<EntryRecord<Commitment>>> {
     const records: Record[] = await this.callZome(
-      'get_promises_for_call_to_action',
+      'get_commitments_for_call_to_action',
       callToActionHash
     );
     return records.map(r => new EntryRecord(r));
@@ -139,33 +139,33 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
     return records.map(r => new EntryRecord(r));
   }
 
-  async getSatisfactionsForPromise(
-    promiseHash: ActionHash
+  async getSatisfactionsForCommitment(
+    commitmentHash: ActionHash
   ): Promise<Array<EntryRecord<Satisfaction>>> {
     const records: Record[] = await this.callZome(
-      'get_satisfactions_for_promise',
-      promiseHash
+      'get_satisfactions_for_commitment',
+      commitmentHash
     );
     return records.map(r => new EntryRecord(r));
   }
   /** Collective Commitment */
 
   async createAssembly(
-    collectiveCommitment: Assembly
+    assembly: Assembly
   ): Promise<EntryRecord<Assembly>> {
     const record: Record = await this.callZome(
       'create_assembly',
-      collectiveCommitment
+      assembly
     );
     return new EntryRecord(record);
   }
 
   async getAssembly(
-    collectiveCommitmentHash: ActionHash
+    assemblyHash: ActionHash
   ): Promise<EntryRecord<Assembly> | undefined> {
     const record: Record = await this.callZome(
       'get_assembly',
-      collectiveCommitmentHash
+      assemblyHash
     );
     return record ? new EntryRecord(record) : undefined;
   }

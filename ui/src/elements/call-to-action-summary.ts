@@ -20,7 +20,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
 import {
-  CallPromise,
+  Commitment,
   CallToAction,
   Assembly,
   Satisfaction,
@@ -53,27 +53,27 @@ export class CallToActionSummary extends LitElement {
   /**
    * @internal
    */
-  _promisesAndSatisfactionsForCall = new StoreSubscriber(
+  _commitmentsAndSatisfactionsForCall = new StoreSubscriber(
     this,
     () =>
       join([
-        this.assembleStore.promisesForCallToAction.get(this.callToActionHash),
+        this.assembleStore.commitmentsForCallToAction.get(this.callToActionHash),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
       ]) as AsyncReadable<
-        [Array<EntryRecord<CallPromise>>, Array<EntryRecord<Satisfaction>>]
+        [Array<EntryRecord<Commitment>>, Array<EntryRecord<Satisfaction>>]
       >
   );
 
   renderProgress(callToAction: EntryRecord<CallToAction>) {
-    switch (this._promisesAndSatisfactionsForCall.value.status) {
+    switch (this._commitmentsAndSatisfactionsForCall.value.status) {
       case 'pending':
         return html`<sl-skeleton></sl-skeleton>`;
       case 'complete':
-        const promises = this._promisesAndSatisfactionsForCall.value.value[0];
+        const commitments = this._commitmentsAndSatisfactionsForCall.value.value[0];
         const satisfactions =
-          this._promisesAndSatisfactionsForCall.value.value[1];
+          this._commitmentsAndSatisfactionsForCall.value.value[1];
         const needsCount = callToAction.entry.needs
           .filter(
             (_, index) => !satisfactions.find(s => s.entry.need_index === index)
@@ -82,8 +82,8 @@ export class CallToActionSummary extends LitElement {
 
         return html` <sl-progress-bar
           .value=${(100 *
-            promises.reduce(
-              (count, promise) => count + promise.entry.amount,
+            commitments.reduce(
+              (count, commitment) => count + commitment.entry.amount,
               0
             )) /
           needsCount}
@@ -91,7 +91,7 @@ export class CallToActionSummary extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the progress of the call')}
-          .error=${this._promisesAndSatisfactionsForCall.value.error.data.data}
+          .error=${this._commitmentsAndSatisfactionsForCall.value.error.data.data}
         ></display-error>`;
     }
   }

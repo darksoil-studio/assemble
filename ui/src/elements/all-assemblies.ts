@@ -55,7 +55,7 @@ export class AllAssemblies extends LitElement {
         ${hashes.map(
           hash =>
             html`<collective-commitment-summary
-              .collectiveCommitmentHash=${hash}
+              .assemblyHash=${hash}
               style="margin-bottom: 16px;"
             ></collective-commitment-summary>`
         )}

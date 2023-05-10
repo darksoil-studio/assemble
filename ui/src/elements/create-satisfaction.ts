@@ -20,7 +20,7 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallPromise, CallToAction, Satisfaction } from '../types.js';
+import { Commitment, CallToAction, Satisfaction } from '../types.js';
 
 /**
  * @element create-satisfaction
@@ -37,9 +37,9 @@ export class CreateSatisfaction extends LitElement {
   @property()
   needIndex!: number;
 
-  // REQUIRED. The promises hashes for this Satisfaction
+  // REQUIRED. The commitments hashes for this Satisfaction
   @property()
-  promises: Array<EntryRecord<CallPromise>> | undefined;
+  commitments: Array<EntryRecord<Commitment>> | undefined;
 
   /**
    * @internal
@@ -80,19 +80,19 @@ export class CreateSatisfaction extends LitElement {
       throw new Error(
         'Cannot create a new Satisfaction without its need_index field'
       );
-    if (this.promises === undefined)
+    if (this.commitments === undefined)
       throw new Error(
-        'Cannot create a new Satisfaction without its promises_hashes field'
+        'Cannot create a new Satisfaction without its commitments_hashes field'
       );
 
-    const promises_hashes = Object.entries(fields)
+    const commitments_hashes = Object.entries(fields)
       .filter(([_key, value]) => value === 'on')
       .map(([key, _value]) => decodeHashFromBase64(key));
 
     const satisfaction: Satisfaction = {
       call_to_action_hash: this.callToAction.actionHash,
       need_index: this.needIndex,
-      promises_hashes,
+      commitments_hashes,
     };
 
     try {
@@ -112,7 +112,7 @@ export class CreateSatisfaction extends LitElement {
 
       this.form.reset();
       this.dialog.hide();
-      this.promises = undefined;
+      this.commitments = undefined;
     } catch (e: any) {
       console.error(e);
       notifyError(msg('Error creating the satisfaction'));
@@ -120,41 +120,41 @@ export class CreateSatisfaction extends LitElement {
     this.committing = false;
   }
 
-  renderAmount(promise: EntryRecord<CallPromise>) {
+  renderAmount(commitment: EntryRecord<Commitment>) {
     if (
       this.callToAction.entry.needs[this.needIndex].min_necessary === 1 &&
       this.callToAction.entry.needs[this.needIndex].max_possible === 1
     )
       return html``;
 
-    return html`${msg('Amount')}: ${promise.entry.amount}`;
+    return html`${msg('Amount')}: ${commitment.entry.amount}`;
   }
 
   render() {
     return html` <sl-dialog .label=${msg('Satisfy Need')}>
-      ${this.promises
+      ${this.commitments
         ? html`
             <form
               id="create-form"
               style="display: flex; flex: 1; flex-direction: column;"
               ${onSubmit(fields => this.createSatisfaction(fields))}
             >
-              ${this.promises.length === 0
+              ${this.commitments.length === 0
                 ? html`
                     <span style="margin-bottom: 16px"
                       >${msg(
-                        'Are you sure? There are no promises to contribute to this need yet.'
+                        'Are you sure? There are no commitments to contribute to this need yet.'
                       )}</span
                     >
                   `
                 : html`
                     <span style="margin-bottom: 16px"
                       >${msg(
-                        'Select the promises that satisfy this need.'
+                        'Select the commitments that satisfy this need.'
                       )}</span
                     >
                   `}
-              ${this.promises.map(
+              ${this.commitments.map(
                 p =>
                   html`<sl-checkbox
                     style="margin-bottom: 16px"

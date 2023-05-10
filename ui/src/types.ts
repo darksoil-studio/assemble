@@ -43,7 +43,7 @@ export type AssembleSignal =
 export type EntryTypes =
   | ({ type: 'Assembly' } & Assembly)
   | ({ type: 'Satisfaction' } & Satisfaction)
-  | ({ type: 'Promise' } & CallPromise)
+  | ({ type: 'Commitment' } & Commitment)
   | ({ type: 'CallToAction' } & CallToAction);
 
 export interface CallToAction {
@@ -62,7 +62,7 @@ export interface Need {
   description: string;
 }
 
-export interface CallPromise {
+export interface Commitment {
   call_to_action_hash: ActionHash;
 
   need_index: number;
@@ -76,7 +76,7 @@ export interface Satisfaction {
 
   need_index: number;
 
-  promises_hashes: Array<ActionHash>;
+  commitments_hashes: Array<ActionHash>;
 }
 
 export interface Assembly {

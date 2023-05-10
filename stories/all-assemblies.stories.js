@@ -6,9 +6,9 @@ import { AssembleStore, AssembleClient } from "@darksoil/assemble";
 
 const mock = new AssembleZomeMock();
 
-const collectiveCommitment = sampleAssembly();
+const assembly = sampleAssembly();
 
-const record = await mock.create_assembly(collectiveCommitment);
+const record = await mock.create_assembly(assembly);
 
 const store = new AssembleStore(new AssembleClient(mock));
 

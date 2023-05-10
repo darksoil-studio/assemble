@@ -21,20 +21,20 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallPromise, CallToAction } from '../types.js';
+import { Commitment, CallToAction } from '../types.js';
 
 /**
- * @element create-promise
- * @fires promise-created: detail will contain { promiseHash }
+ * @element create-commitment
+ * @fires commitment-created: detail will contain { commitmentHash }
  */
 @localized()
-@customElement('create-promise')
-export class CreatePromise extends LitElement {
-  // REQUIRED. The call to action hash for this Promise
+@customElement('create-commitment')
+export class CreateCommitment extends LitElement {
+  // REQUIRED. The call to action hash for this Commitment
   @property()
   callToAction!: EntryRecord<CallToAction>;
 
-  // REQUIRED. The need index for this Promise
+  // REQUIRED. The need index for this Commitment
   @property()
   needIndex: number | undefined;
 
@@ -66,19 +66,19 @@ export class CreatePromise extends LitElement {
     this.dialog.show();
   }
 
-  async createPromise(fields: any) {
+  async createCommitment(fields: any) {
     if (this.committing) return;
 
     if (this.callToAction.actionHash === undefined)
       throw new Error(
-        'Cannot create a new Promise without its call_to_action_hash field'
+        'Cannot create a new Commitment without its call_to_action_hash field'
       );
     if (this.needIndex === undefined)
       throw new Error(
-        'Cannot create a new Promise without its need_index field'
+        'Cannot create a new Commitment without its need_index field'
       );
 
-    const promise: CallPromise = {
+    const commitment: Commitment = {
       call_to_action_hash: this.callToAction.actionHash,
       comment: fields.comment,
       amount: fields.amount ? parseInt(fields.amount, 10) : 1,
@@ -87,15 +87,15 @@ export class CreatePromise extends LitElement {
 
     try {
       this.committing = true;
-      const record: EntryRecord<CallPromise> =
-        await this.assembleStore.client.createPromise(promise);
+      const record: EntryRecord<Commitment> =
+        await this.assembleStore.client.createCommitment(commitment);
 
       this.dispatchEvent(
-        new CustomEvent('promise-created', {
+        new CustomEvent('commitment-created', {
           composed: true,
           bubbles: true,
           detail: {
-            promiseHash: record.actionHash,
+            commitmentHash: record.actionHash,
           },
         })
       );
@@ -105,7 +105,7 @@ export class CreatePromise extends LitElement {
       this.needIndex = undefined;
     } catch (e: any) {
       console.error(e);
-      notifyError(msg('Error creating the promise'));
+      notifyError(msg('Error creating the commitment'));
     }
     this.committing = false;
   }
@@ -113,14 +113,14 @@ export class CreatePromise extends LitElement {
   render() {
     return html` <sl-dialog
       style="flex: 1;"
-      .label=${msg('Promise to Contribute')}
+      .label=${msg('Commitment to Contribute')}
     >
       ${this.needIndex !== undefined
         ? html`
             <form
               id="create-form"
               style="display: flex; flex: 1; flex-direction: column;"
-              ${onSubmit(fields => this.createPromise(fields))}
+              ${onSubmit(fields => this.createCommitment(fields))}
             >
               ${this.callToAction.entry.needs[this.needIndex].min_necessary !==
                 1 &&
@@ -150,7 +150,7 @@ export class CreatePromise extends LitElement {
                 variant="primary"
                 type="submit"
                 .loading=${this.committing}
-                >${msg('Promise')}</sl-button
+                >${msg('Commitment')}</sl-button
               >
             </form>
           `

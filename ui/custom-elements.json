@@ -16,7 +16,7 @@
               "name": "createCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<CallToAction>>"
+                  "text": "Commitment<EntryRecord<CallToAction>>"
                 }
               },
               "parameters": [
@@ -34,7 +34,7 @@
               "name": "getCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<CallToAction> | undefined>"
+                  "text": "Commitment<EntryRecord<CallToAction> | undefined>"
                 }
               },
               "parameters": [
@@ -51,7 +51,7 @@
               "name": "deleteCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<ActionHash>"
+                  "text": "Commitment<ActionHash>"
                 }
               },
               "parameters": [
@@ -68,7 +68,7 @@
               "name": "updateCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<CallToAction>>"
+                  "text": "Commitment<EntryRecord<CallToAction>>"
                 }
               },
               "parameters": [
@@ -91,7 +91,7 @@
               "name": "getCallToActionsForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<CallToAction>>>"
+                  "text": "Commitment<Array<EntryRecord<CallToAction>>>"
                 }
               },
               "parameters": [
@@ -105,33 +105,33 @@
             },
             {
               "kind": "method",
-              "name": "createPromise",
+              "name": "createCommitment",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<CallPromise>>"
+                  "text": "Commitment<EntryRecord<Commitment>>"
                 }
               },
               "parameters": [
                 {
-                  "name": "promise",
+                  "name": "commitment",
                   "type": {
-                    "text": "CallPromise"
+                    "text": "Commitment"
                   }
                 }
               ],
-              "description": "Promise"
+              "description": "Commitment"
             },
             {
               "kind": "method",
-              "name": "getPromise",
+              "name": "getCommitment",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<CallPromise> | undefined>"
+                  "text": "Commitment<EntryRecord<Commitment> | undefined>"
                 }
               },
               "parameters": [
                 {
-                  "name": "promiseHash",
+                  "name": "commitmentHash",
                   "type": {
                     "text": "ActionHash"
                   }
@@ -140,10 +140,10 @@
             },
             {
               "kind": "method",
-              "name": "getPromisesForCallToAction",
+              "name": "getCommitmentsForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<CallPromise>>>"
+                  "text": "Commitment<Array<EntryRecord<Commitment>>>"
                 }
               },
               "parameters": [
@@ -160,7 +160,7 @@
               "name": "createSatisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<Satisfaction>>"
+                  "text": "Commitment<EntryRecord<Satisfaction>>"
                 }
               },
               "parameters": [
@@ -178,7 +178,7 @@
               "name": "getSatisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<Satisfaction> | undefined>"
+                  "text": "Commitment<EntryRecord<Satisfaction> | undefined>"
                 }
               },
               "parameters": [
@@ -195,7 +195,7 @@
               "name": "updateSatisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<Satisfaction>>"
+                  "text": "Commitment<EntryRecord<Satisfaction>>"
                 }
               },
               "parameters": [
@@ -218,7 +218,7 @@
               "name": "getSatisfactionsForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<Satisfaction>>>"
+                  "text": "Commitment<Array<EntryRecord<Satisfaction>>>"
                 }
               },
               "parameters": [
@@ -232,15 +232,15 @@
             },
             {
               "kind": "method",
-              "name": "getSatisfactionsForPromise",
+              "name": "getSatisfactionsForCommitment",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<Satisfaction>>>"
+                  "text": "Commitment<Array<EntryRecord<Satisfaction>>>"
                 }
               },
               "parameters": [
                 {
-                  "name": "promiseHash",
+                  "name": "commitmentHash",
                   "type": {
                     "text": "ActionHash"
                   }
@@ -252,12 +252,12 @@
               "name": "createAssembly",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<Assembly>>"
+                  "text": "Commitment<EntryRecord<Assembly>>"
                 }
               },
               "parameters": [
                 {
-                  "name": "collectiveCommitment",
+                  "name": "assembly",
                   "type": {
                     "text": "Assembly"
                   }
@@ -270,12 +270,12 @@
               "name": "getAssembly",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<Assembly> | undefined>"
+                  "text": "Commitment<EntryRecord<Assembly> | undefined>"
                 }
               },
               "parameters": [
                 {
-                  "name": "collectiveCommitmentHash",
+                  "name": "assemblyHash",
                   "type": {
                     "text": "ActionHash"
                   }
@@ -287,7 +287,7 @@
               "name": "getAssembliesForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<Assembly>>>"
+                  "text": "Commitment<Array<EntryRecord<Assembly>>>"
                 }
               },
               "parameters": [
@@ -304,7 +304,7 @@
               "name": "getAssembliesForSatisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<Assembly>>>"
+                  "text": "Commitment<Array<EntryRecord<Assembly>>>"
                 }
               },
               "parameters": [
@@ -321,7 +321,7 @@
               "name": "getAllCallsToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<CallToAction>>>"
+                  "text": "Commitment<Array<EntryRecord<CallToAction>>>"
                 }
               },
               "description": "All Calls To Action"
@@ -331,7 +331,7 @@
               "name": "getAllAssemblies",
               "return": {
                 "type": {
-                  "text": "Promise<\n    Array<EntryRecord<Assembly>>\n  >"
+                  "text": "Commitment<\n    Array<EntryRecord<Assembly>>\n  >"
                 }
               },
               "description": "All Collective Commitments"
@@ -376,14 +376,14 @@
             },
             {
               "kind": "field",
-              "name": "promises",
-              "default": "new LazyHoloHashMap((promiseHash: ActionHash) =>\n    lazyLoadAndPoll(async () => this.client.getPromise(promiseHash), 4000)\n  )",
-              "description": "Promise"
+              "name": "commitments",
+              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) =>\n    lazyLoadAndPoll(async () => this.client.getCommitment(commitmentHash), 4000)\n  )",
+              "description": "Commitment"
             },
             {
               "kind": "field",
-              "name": "promisesForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () => this.client.getPromisesForCallToAction(callToActionHash),\n        4000\n      )\n  )"
+              "name": "commitmentsForCallToAction",
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () => this.client.getCommitmentsForCallToAction(callToActionHash),\n        4000\n      )\n  )"
             },
             {
               "kind": "field",
@@ -398,23 +398,23 @@
             },
             {
               "kind": "field",
-              "name": "satisfactionsForPromise",
-              "default": "new LazyHoloHashMap((promiseHash: ActionHash) =>\n    lazyLoadAndPoll(async () => {\n      const records = await this.client.getSatisfactionsForPromise(promiseHash);\n      return records.map(r => r.actionHash);\n    }, 4000)\n  )"
+              "name": "satisfactionsForCommitment",
+              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) =>\n    lazyLoadAndPoll(async () => {\n      const records = await this.client.getSatisfactionsForCommitment(commitmentHash);\n      return records.map(r => r.actionHash);\n    }, 4000)\n  )"
             },
             {
               "kind": "field",
-              "name": "collectiveCommitments",
-              "default": "new LazyHoloHashMap(\n    (collectiveCommitmentHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getAssembly(collectiveCommitmentHash),\n        4000\n      )\n  )",
+              "name": "assemblies",
+              "default": "new LazyHoloHashMap(\n    (assemblyHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getAssembly(assemblyHash),\n        4000\n      )\n  )",
               "description": "Collective Commitment"
             },
             {
               "kind": "field",
-              "name": "collectiveCommitmentsForCallToAction",
+              "name": "assembliesForCallToAction",
               "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getAssembliesForCallToAction(\n            callToActionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
             },
             {
               "kind": "field",
-              "name": "collectiveCommitmentsForSatisfaction",
+              "name": "assembliesForSatisfaction",
               "default": "new LazyHoloHashMap(\n    (satisfactionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records =\n          await this.client.getAssembliesForSatisfaction(\n            satisfactionHash\n          );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
             },
             {
@@ -525,7 +525,7 @@
               "name": "create_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Record>"
+                  "text": "Commitment<Record>"
                 }
               },
               "parameters": [
@@ -542,7 +542,7 @@
               "name": "get_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Record | undefined>"
+                  "text": "Commitment<Record | undefined>"
                 }
               },
               "parameters": [
@@ -559,7 +559,7 @@
               "name": "delete_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<ActionHash>"
+                  "text": "Commitment<ActionHash>"
                 }
               },
               "parameters": [
@@ -576,7 +576,7 @@
               "name": "update_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Record>"
+                  "text": "Commitment<Record>"
                 }
               },
               "parameters": [
@@ -593,7 +593,7 @@
               "name": "get_call_to_actions_for_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
@@ -607,43 +607,43 @@
             },
             {
               "kind": "field",
-              "name": "promise",
-              "default": "new RecordBag<CallPromise>()",
-              "description": "Promise"
+              "name": "commitment",
+              "default": "new RecordBag<Commitment>()",
+              "description": "Commitment"
             },
             {
               "kind": "field",
-              "name": "promisesForCallToAction",
+              "name": "commitmentsForCallToAction",
               "default": "new HoloHashMap<ActionHash, ActionHash[]>()"
             },
             {
               "kind": "method",
-              "name": "create_promise",
+              "name": "create_commitment",
               "return": {
                 "type": {
-                  "text": "Promise<Record>"
+                  "text": "Commitment<Record>"
                 }
               },
               "parameters": [
                 {
-                  "name": "promise",
+                  "name": "commitment",
                   "type": {
-                    "text": "CallPromise"
+                    "text": "Commitment"
                   }
                 }
               ]
             },
             {
               "kind": "method",
-              "name": "get_promise",
+              "name": "get_commitment",
               "return": {
                 "type": {
-                  "text": "Promise<Record | undefined>"
+                  "text": "Commitment<Record | undefined>"
                 }
               },
               "parameters": [
                 {
-                  "name": "promiseHash",
+                  "name": "commitmentHash",
                   "type": {
                     "text": "ActionHash"
                   }
@@ -652,10 +652,10 @@
             },
             {
               "kind": "method",
-              "name": "get_promises_for_call_to_action",
+              "name": "get_commitments_for_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
@@ -680,7 +680,7 @@
             },
             {
               "kind": "field",
-              "name": "satisfactionsForPromise",
+              "name": "satisfactionsForCommitment",
               "default": "new HoloHashMap<ActionHash, ActionHash[]>()"
             },
             {
@@ -688,7 +688,7 @@
               "name": "create_satisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<Record>"
+                  "text": "Commitment<Record>"
                 }
               },
               "parameters": [
@@ -705,7 +705,7 @@
               "name": "get_satisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<Record | undefined>"
+                  "text": "Commitment<Record | undefined>"
                 }
               },
               "parameters": [
@@ -722,7 +722,7 @@
               "name": "update_satisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<Record>"
+                  "text": "Commitment<Record>"
                 }
               },
               "parameters": [
@@ -739,7 +739,7 @@
               "name": "get_satisfactions_for_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
@@ -753,15 +753,15 @@
             },
             {
               "kind": "method",
-              "name": "get_satisfactions_for_promise",
+              "name": "get_satisfactions_for_commitment",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
                 {
-                  "name": "promiseHash",
+                  "name": "commitmentHash",
                   "type": {
                     "text": "ActionHash"
                   }
@@ -770,18 +770,18 @@
             },
             {
               "kind": "field",
-              "name": "collectiveCommitment",
+              "name": "assembly",
               "default": "new RecordBag<Assembly>()",
               "description": "Collective Commitment"
             },
             {
               "kind": "field",
-              "name": "collectiveCommitmentsForCallToAction",
+              "name": "assembliesForCallToAction",
               "default": "new HoloHashMap<\n    ActionHash,\n    ActionHash[]\n  >()"
             },
             {
               "kind": "field",
-              "name": "collectiveCommitmentsForSatisfaction",
+              "name": "assembliesForSatisfaction",
               "default": "new HoloHashMap<\n    ActionHash,\n    ActionHash[]\n  >()"
             },
             {
@@ -789,12 +789,12 @@
               "name": "create_assembly",
               "return": {
                 "type": {
-                  "text": "Promise<Record>"
+                  "text": "Commitment<Record>"
                 }
               },
               "parameters": [
                 {
-                  "name": "collectiveCommitment",
+                  "name": "assembly",
                   "type": {
                     "text": "Assembly"
                   }
@@ -806,12 +806,12 @@
               "name": "get_assembly",
               "return": {
                 "type": {
-                  "text": "Promise<Record | undefined>"
+                  "text": "Commitment<Record | undefined>"
                 }
               },
               "parameters": [
                 {
-                  "name": "collectiveCommitmentHash",
+                  "name": "assemblyHash",
                   "type": {
                     "text": "ActionHash"
                   }
@@ -823,7 +823,7 @@
               "name": "get_assemblies_for_call_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
@@ -840,7 +840,7 @@
               "name": "get_assemblies_for_satisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
@@ -857,7 +857,7 @@
               "name": "get_all_calls_to_action",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
@@ -874,7 +874,7 @@
               "name": "get_all_assemblies",
               "return": {
                 "type": {
-                  "text": "Promise<Array<Record>>"
+                  "text": "Commitment<Array<Record>>"
                 }
               },
               "parameters": [
@@ -903,10 +903,10 @@
         },
         {
           "kind": "function",
-          "name": "samplePromise",
+          "name": "sampleCommitment",
           "return": {
             "type": {
-              "text": "CallPromise"
+              "text": "Commitment"
             }
           }
         },
@@ -948,9 +948,9 @@
         },
         {
           "kind": "js",
-          "name": "samplePromise",
+          "name": "sampleCommitment",
           "declaration": {
-            "name": "samplePromise",
+            "name": "sampleCommitment",
             "module": "src/mocks.ts"
           }
         },
@@ -1194,7 +1194,7 @@
             },
             {
               "kind": "method",
-              "name": "renderPromisesForNeed",
+              "name": "renderCommitmentsForNeed",
               "parameters": [
                 {
                   "name": "callToAction",
@@ -1209,9 +1209,9 @@
                   }
                 },
                 {
-                  "name": "promises",
+                  "name": "commitments",
                   "type": {
-                    "text": "Array<EntryRecord<CallPromise>>"
+                    "text": "Array<EntryRecord<Commitment>>"
                   }
                 }
               ]
@@ -1233,9 +1233,9 @@
                   }
                 },
                 {
-                  "name": "promises",
+                  "name": "commitments",
                   "type": {
-                    "text": "Array<EntryRecord<CallPromise>>"
+                    "text": "Array<EntryRecord<Commitment>>"
                   }
                 }
               ]
@@ -1257,9 +1257,9 @@
                   }
                 },
                 {
-                  "name": "promises",
+                  "name": "commitments",
                   "type": {
-                    "text": "Array<EntryRecord<CallPromise>>"
+                    "text": "Array<EntryRecord<Commitment>>"
                   }
                 },
                 {
@@ -1580,11 +1580,11 @@
           "members": [
             {
               "kind": "field",
-              "name": "collectiveCommitmentHash",
+              "name": "assemblyHash",
               "type": {
                 "text": "ActionHash"
               },
-              "attribute": "collectiveCommitmentHash"
+              "attribute": "assemblyHash"
             },
             {
               "kind": "method",
@@ -1601,17 +1601,17 @@
           ],
           "events": [
             {
-              "description": "detail will contain { collectiveCommitmentHash }",
+              "description": "detail will contain { assemblyHash }",
               "name": "collective-commitment-deleted:"
             }
           ],
           "attributes": [
             {
-              "name": "collectiveCommitmentHash",
+              "name": "assemblyHash",
               "type": {
                 "text": "ActionHash"
               },
-              "fieldName": "collectiveCommitmentHash"
+              "fieldName": "assemblyHash"
             }
           ],
           "superclass": {
@@ -1652,11 +1652,11 @@
           "members": [
             {
               "kind": "field",
-              "name": "collectiveCommitmentHash",
+              "name": "assemblyHash",
               "type": {
                 "text": "ActionHash"
               },
-              "attribute": "collectiveCommitmentHash"
+              "attribute": "assemblyHash"
             },
             {
               "kind": "method",
@@ -1679,17 +1679,17 @@
               }
             },
             {
-              "description": "detail will contain { collectiveCommitmentHash }",
+              "description": "detail will contain { assemblyHash }",
               "name": "collective-commitment-selected:"
             }
           ],
           "attributes": [
             {
-              "name": "collectiveCommitmentHash",
+              "name": "assemblyHash",
               "type": {
                 "text": "ActionHash"
               },
-              "fieldName": "collectiveCommitmentHash"
+              "fieldName": "assemblyHash"
             }
           ],
           "superclass": {
@@ -2020,7 +2020,7 @@
               }
             },
             {
-              "description": "detail will contain { collectiveCommitmentHash }",
+              "description": "detail will contain { assemblyHash }",
               "name": "collective-commitment-created:"
             }
           ],
@@ -2069,12 +2069,12 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/create-promise.ts",
+      "path": "src/elements/create-commitment.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "CreatePromise",
+          "name": "CreateCommitment",
           "members": [
             {
               "kind": "field",
@@ -2098,7 +2098,7 @@
             },
             {
               "kind": "method",
-              "name": "createPromise",
+              "name": "createCommitment",
               "parameters": [
                 {
                   "name": "fields",
@@ -2111,14 +2111,14 @@
           ],
           "events": [
             {
-              "name": "promise-created",
+              "name": "commitment-created",
               "type": {
                 "text": "CustomEvent"
               }
             },
             {
-              "description": "detail will contain { promiseHash }",
-              "name": "promise-created:"
+              "description": "detail will contain { commitmentHash }",
+              "name": "commitment-created:"
             }
           ],
           "attributes": [
@@ -2141,25 +2141,25 @@
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "create-promise",
+          "tagName": "create-commitment",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "CreatePromise",
+          "name": "CreateCommitment",
           "declaration": {
-            "name": "CreatePromise",
-            "module": "src/elements/create-promise.ts"
+            "name": "CreateCommitment",
+            "module": "src/elements/create-commitment.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "create-promise",
+          "name": "create-commitment",
           "declaration": {
-            "name": "CreatePromise",
-            "module": "src/elements/create-promise.ts"
+            "name": "CreateCommitment",
+            "module": "src/elements/create-commitment.ts"
           }
         }
       ]
@@ -2191,11 +2191,11 @@
             },
             {
               "kind": "field",
-              "name": "promises",
+              "name": "commitments",
               "type": {
-                "text": "Array<EntryRecord<CallPromise>> | undefined"
+                "text": "Array<EntryRecord<Commitment>> | undefined"
               },
-              "attribute": "promises"
+              "attribute": "commitments"
             },
             {
               "kind": "method",
@@ -2218,9 +2218,9 @@
               "name": "renderAmount",
               "parameters": [
                 {
-                  "name": "promise",
+                  "name": "commitment",
                   "type": {
-                    "text": "EntryRecord<CallPromise>"
+                    "text": "EntryRecord<Commitment>"
                   }
                 }
               ]
@@ -2254,11 +2254,11 @@
               "fieldName": "needIndex"
             },
             {
-              "name": "promises",
+              "name": "commitments",
               "type": {
-                "text": "Array<EntryRecord<CallPromise>> | undefined"
+                "text": "Array<EntryRecord<Commitment>> | undefined"
               },
-              "fieldName": "promises"
+              "fieldName": "commitments"
             }
           ],
           "superclass": {
@@ -2458,20 +2458,20 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/promise-detail.ts",
+      "path": "src/elements/commitment-detail.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "PromiseDetail",
+          "name": "CommitmentDetail",
           "members": [
             {
               "kind": "field",
-              "name": "promiseHash",
+              "name": "commitmentHash",
               "type": {
                 "text": "ActionHash"
               },
-              "attribute": "promiseHash"
+              "attribute": "commitmentHash"
             },
             {
               "kind": "method",
@@ -2480,7 +2480,7 @@
                 {
                   "name": "entryRecord",
                   "type": {
-                    "text": "EntryRecord<CallPromise>"
+                    "text": "EntryRecord<Commitment>"
                   }
                 }
               ]
@@ -2488,62 +2488,62 @@
           ],
           "events": [
             {
-              "description": "detail will contain { promiseHash }",
-              "name": "promise-deleted:"
+              "description": "detail will contain { commitmentHash }",
+              "name": "commitment-deleted:"
             }
           ],
           "attributes": [
             {
-              "name": "promiseHash",
+              "name": "commitmentHash",
               "type": {
                 "text": "ActionHash"
               },
-              "fieldName": "promiseHash"
+              "fieldName": "commitmentHash"
             }
           ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "promise-detail",
+          "tagName": "commitment-detail",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "PromiseDetail",
+          "name": "CommitmentDetail",
           "declaration": {
-            "name": "PromiseDetail",
-            "module": "src/elements/promise-detail.ts"
+            "name": "CommitmentDetail",
+            "module": "src/elements/commitment-detail.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "promise-detail",
+          "name": "commitment-detail",
           "declaration": {
-            "name": "PromiseDetail",
-            "module": "src/elements/promise-detail.ts"
+            "name": "CommitmentDetail",
+            "module": "src/elements/commitment-detail.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/promise-summary.ts",
+      "path": "src/elements/commitment-summary.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "PromiseSummary",
+          "name": "CommitmentSummary",
           "members": [
             {
               "kind": "field",
-              "name": "promiseHash",
+              "name": "commitmentHash",
               "type": {
                 "text": "ActionHash"
               },
-              "attribute": "promiseHash"
+              "attribute": "commitmentHash"
             },
             {
               "kind": "method",
@@ -2552,60 +2552,60 @@
                 {
                   "name": "entryRecord",
                   "type": {
-                    "text": "EntryRecord<CallPromise>"
+                    "text": "EntryRecord<Commitment>"
                   }
                 }
               ]
             },
             {
               "kind": "method",
-              "name": "renderPromise"
+              "name": "renderCommitment"
             }
           ],
           "events": [
             {
-              "name": "promise-selected",
+              "name": "commitment-selected",
               "type": {
                 "text": "CustomEvent"
               }
             },
             {
-              "description": "detail will contain { promiseHash }",
-              "name": "promise-selected:"
+              "description": "detail will contain { commitmentHash }",
+              "name": "commitment-selected:"
             }
           ],
           "attributes": [
             {
-              "name": "promiseHash",
+              "name": "commitmentHash",
               "type": {
                 "text": "ActionHash"
               },
-              "fieldName": "promiseHash"
+              "fieldName": "commitmentHash"
             }
           ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "promise-summary",
+          "tagName": "commitment-summary",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "PromiseSummary",
+          "name": "CommitmentSummary",
           "declaration": {
-            "name": "PromiseSummary",
-            "module": "src/elements/promise-summary.ts"
+            "name": "CommitmentSummary",
+            "module": "src/elements/commitment-summary.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "promise-summary",
+          "name": "commitment-summary",
           "declaration": {
-            "name": "PromiseSummary",
-            "module": "src/elements/promise-summary.ts"
+            "name": "CommitmentSummary",
+            "module": "src/elements/commitment-summary.ts"
           }
         }
       ]
@@ -2766,20 +2766,20 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/satisfactions-for-promise.ts",
+      "path": "src/elements/satisfactions-for-commitment.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "SatisfactionsForPromise",
+          "name": "SatisfactionsForCommitment",
           "members": [
             {
               "kind": "field",
-              "name": "promiseHash",
+              "name": "commitmentHash",
               "type": {
                 "text": "ActionHash"
               },
-              "attribute": "promiseHash"
+              "attribute": "commitmentHash"
             },
             {
               "kind": "method",
@@ -2796,36 +2796,36 @@
           ],
           "attributes": [
             {
-              "name": "promiseHash",
+              "name": "commitmentHash",
               "type": {
                 "text": "ActionHash"
               },
-              "fieldName": "promiseHash"
+              "fieldName": "commitmentHash"
             }
           ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
-          "tagName": "satisfactions-for-promise",
+          "tagName": "satisfactions-for-commitment",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "SatisfactionsForPromise",
+          "name": "SatisfactionsForCommitment",
           "declaration": {
-            "name": "SatisfactionsForPromise",
-            "module": "src/elements/satisfactions-for-promise.ts"
+            "name": "SatisfactionsForCommitment",
+            "module": "src/elements/satisfactions-for-commitment.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "satisfactions-for-promise",
+          "name": "satisfactions-for-commitment",
           "declaration": {
-            "name": "SatisfactionsForPromise",
-            "module": "src/elements/satisfactions-for-promise.ts"
+            "name": "SatisfactionsForCommitment",
+            "module": "src/elements/satisfactions-for-commitment.ts"
           }
         }
       ]

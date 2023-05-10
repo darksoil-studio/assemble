@@ -21,18 +21,18 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallPromise } from '../types.js';
+import { Commitment } from '../types.js';
 
 /**
- * @element promise-detail
- * @fires promise-deleted: detail will contain { promiseHash }
+ * @element commitment-detail
+ * @fires commitment-deleted: detail will contain { commitmentHash }
  */
 @localized()
-@customElement('promise-detail')
-export class PromiseDetail extends LitElement {
-  // REQUIRED. The hash of the Promise to show
-  @property(hashProperty('promise-hash'))
-  promiseHash!: ActionHash;
+@customElement('commitment-detail')
+export class CommitmentDetail extends LitElement {
+  // REQUIRED. The hash of the Commitment to show
+  @property(hashProperty('commitment-hash'))
+  commitmentHash!: ActionHash;
 
   /**
    * @internal
@@ -43,15 +43,15 @@ export class PromiseDetail extends LitElement {
   /**
    * @internal
    */
-  _promise = new StoreSubscriber(this, () =>
-    this.assembleStore.promises.get(this.promiseHash)
+  _commitment = new StoreSubscriber(this, () =>
+    this.assembleStore.commitments.get(this.commitmentHash)
   );
 
-  renderDetail(entryRecord: EntryRecord<CallPromise>) {
+  renderDetail(entryRecord: EntryRecord<Commitment>) {
     return html`
       <sl-card>
         <div slot="header" style="display: flex; flex-direction: row">
-          <span style="font-size: 18px; flex: 1;">${msg('Promise')}</span>
+          <span style="font-size: 18px; flex: 1;">${msg('Commitment')}</span>
         </div>
 
         <div style="display: flex; flex-direction: column">
@@ -71,7 +71,7 @@ export class PromiseDetail extends LitElement {
   }
 
   render() {
-    switch (this._promise.value.status) {
+    switch (this._commitment.value.status) {
       case 'pending':
         return html`<sl-card>
           <div
@@ -81,19 +81,19 @@ export class PromiseDetail extends LitElement {
           </div>
         </sl-card>`;
       case 'complete':
-        const promise = this._promise.value.value;
+        const commitment = this._commitment.value.value;
 
-        if (!promise)
+        if (!commitment)
           return html`<span
-            >${msg("The requested promise doesn't exist")}</span
+            >${msg("The requested commitment doesn't exist")}</span
           >`;
 
-        return this.renderDetail(promise);
+        return this.renderDetail(commitment);
       case 'error':
         return html`<sl-card>
           <display-error
-            .headline=${msg('Error fetching the promise')}
-            .error=${this._promise.value.error.data.data}
+            .headline=${msg('Error fetching the commitment')}
+            .error=${this._commitment.value.error.data.data}
           ></display-error>
         </sl-card>`;
     }

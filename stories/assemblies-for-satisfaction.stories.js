@@ -7,9 +7,9 @@ import { AssembleStore, AssembleClient } from "@darksoil/assemble";
 
 const mock = new AssembleZomeMock();
 
-const collectiveCommitment = sampleAssembly();
+const assembly = sampleAssembly();
 
-const record = await mock.create_assembly(collectiveCommitment);
+const record = await mock.create_assembly(assembly);
 
 const store = new AssembleStore(new AssembleClient(mock));
 
@@ -22,7 +22,7 @@ export default {
     html` <assemble-context
       .store=${store}
     >
-      <collective-commitments-for-satisfaction .satisfaction=${ collectiveCommitment.satisfactions_hashes[0] }></collective-commitments-for-satisfaction>
+      <collective-commitments-for-satisfaction .satisfaction=${ assembly.satisfactions_hashes[0] }></collective-commitments-for-satisfaction>
     </assemble-context>`,
 };
 

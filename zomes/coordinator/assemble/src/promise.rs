@@ -1,31 +1,31 @@
 use hdk::prelude::*;
 use assemble_integrity::*;
 #[hdk_extern]
-pub fn create_promise(promise: Promise) -> ExternResult<Record> {
-    let promise_hash = create_entry(&EntryTypes::Promise(promise.clone()))?;
+pub fn create_commitment(commitment: Commitment) -> ExternResult<Record> {
+    let commitment_hash = create_entry(&EntryTypes::Commitment(commitment.clone()))?;
     create_link(
-        promise.call_to_action_hash.clone(),
-        promise_hash.clone(),
-        LinkTypes::CallToActionToPromises,
+        commitment.call_to_action_hash.clone(),
+        commitment_hash.clone(),
+        LinkTypes::CallToActionToCommitments,
         (),
     )?;
-    let record = get(promise_hash.clone(), GetOptions::default())?
+    let record = get(commitment_hash.clone(), GetOptions::default())?
         .ok_or(
             wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly created Promise"))
+                WasmErrorInner::Guest(String::from("Could not find the newly created Commitment"))
             ),
         )?;
     Ok(record)
 }
 #[hdk_extern]
-pub fn get_promise(promise_hash: ActionHash) -> ExternResult<Option<Record>> {
-    get(promise_hash, GetOptions::default())
+pub fn get_commitment(commitment_hash: ActionHash) -> ExternResult<Option<Record>> {
+    get(commitment_hash, GetOptions::default())
 }
 #[hdk_extern]
-pub fn get_promises_for_call_to_action(
+pub fn get_commitments_for_call_to_action(
     call_to_action_hash: ActionHash,
 ) -> ExternResult<Vec<Record>> {
-    let links = get_links(call_to_action_hash, LinkTypes::CallToActionToPromises, None)?;
+    let links = get_links(call_to_action_hash, LinkTypes::CallToActionToCommitments, None)?;
     let get_input: Vec<GetInput> = links
         .into_iter()
         .map(|link| GetInput::new(

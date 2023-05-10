@@ -11,11 +11,11 @@ pub fn create_satisfaction(satisfaction: Satisfaction) -> ExternResult<Record> {
         LinkTypes::CallToActionToSatisfactions,
         (),
     )?;
-    for base in satisfaction.promises_hashes.clone() {
+    for base in satisfaction.commitments_hashes.clone() {
         create_link(
             base,
             satisfaction_hash.clone(),
-            LinkTypes::PromiseToSatisfactions,
+            LinkTypes::CommitmentToSatisfactions,
             (),
         )?;
     }
@@ -95,10 +95,10 @@ pub fn get_satisfactions_for_call_to_action(
     Ok(records)
 }
 #[hdk_extern]
-pub fn get_satisfactions_for_promise(
-    promise_hash: ActionHash,
+pub fn get_satisfactions_for_commitment(
+    commitment_hash: ActionHash,
 ) -> ExternResult<Vec<Record>> {
-    let links = get_links(promise_hash, LinkTypes::PromiseToSatisfactions, None)?;
+    let links = get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)?;
     let get_input: Vec<GetInput> = links
         .into_iter()
         .map(|link| GetInput::new(

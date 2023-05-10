@@ -1,17 +1,17 @@
 use hdi::prelude::*;
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq)]
-pub struct Promise {
+pub struct Commitment {
     pub call_to_action_hash: ActionHash,
     pub amount: u32,
     pub comment: Option<String>,
     pub need_index: u32,
 }
-pub fn validate_create_promise(
+pub fn validate_create_commitment(
     _action: EntryCreationAction,
-    promise: Promise,
+    commitment: Commitment,
 ) -> ExternResult<ValidateCallbackResult> {
-    let record = must_get_valid_record(promise.call_to_action_hash.clone())?;
+    let record = must_get_valid_record(commitment.call_to_action_hash.clone())?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
@@ -21,26 +21,26 @@ pub fn validate_create_promise(
         ))))?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_update_promise(
+pub fn validate_update_commitment(
     _action: Update,
-    _promise: Promise,
+    _commitment: Commitment,
     _original_action: EntryCreationAction,
-    _original_promise: Promise,
+    _original_commitment: Commitment,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(String::from(
-        "Promises cannot be updated",
+        "Commitments cannot be updated",
     )))
 }
-pub fn validate_delete_promise(
+pub fn validate_delete_commitment(
     _action: Delete,
     _original_action: EntryCreationAction,
-    _original_promise: Promise,
+    _original_commitment: Commitment,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(String::from(
-        "Promises cannot be deleted",
+        "Commitments cannot be deleted",
     )))
 }
-pub fn validate_create_link_call_to_action_to_promises(
+pub fn validate_create_link_call_to_action_to_commitments(
     _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -57,7 +57,7 @@ pub fn validate_create_link_call_to_action_to_promises(
         ))))?;
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
-    let _promise: crate::Promise = record
+    let _commitment: crate::Commitment = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -66,7 +66,7 @@ pub fn validate_create_link_call_to_action_to_promises(
         ))))?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_call_to_action_to_promises(
+pub fn validate_delete_link_call_to_action_to_commitments(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -74,6 +74,6 @@ pub fn validate_delete_link_call_to_action_to_promises(
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Invalid(String::from(
-        "CallToActionToPromises links cannot be deleted",
+        "CallToActionToCommitments links cannot be deleted",
     )))
 }

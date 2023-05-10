@@ -2,8 +2,8 @@ pub mod assembly;
 pub use assembly::*;
 pub mod satisfaction;
 pub use satisfaction::*;
-pub mod promise;
-pub use promise::*;
+pub mod commitment;
+pub use commitment::*;
 pub mod call_to_action;
 pub use call_to_action::*;
 use hdi::prelude::*;
@@ -13,7 +13,7 @@ use hdi::prelude::*;
 #[unit_enum(UnitEntryTypes)]
 pub enum EntryTypes {
     CallToAction(CallToAction),
-    Promise(Promise),
+    Commitment(Commitment),
     Satisfaction(Satisfaction),
     Assembly(Assembly),
 }
@@ -21,9 +21,9 @@ pub enum EntryTypes {
 #[hdk_link_types]
 pub enum LinkTypes {
     CallToActionToCallToActions,
-    CallToActionToPromises,
+    CallToActionToCommitments,
     CallToActionToSatisfactions,
-    PromiseToSatisfactions,
+    CommitmentToSatisfactions,
     CallToActionToAssemblies,
     SatisfactionToAssemblies,
     AllCallsToAction,
@@ -48,8 +48,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     EntryCreationAction::Create(action),
                     call_to_action,
                 ),
-                EntryTypes::Promise(promise) => {
-                    validate_create_promise(EntryCreationAction::Create(action), promise)
+                EntryTypes::Commitment(commitment) => {
+                    validate_create_commitment(EntryCreationAction::Create(action), commitment)
                 }
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_create_satisfaction(EntryCreationAction::Create(action), satisfaction)
@@ -68,8 +68,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     EntryCreationAction::Update(action),
                     call_to_action,
                 ),
-                EntryTypes::Promise(promise) => {
-                    validate_create_promise(EntryCreationAction::Update(action), promise)
+                EntryTypes::Commitment(commitment) => {
+                    validate_create_commitment(EntryCreationAction::Update(action), commitment)
                 }
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_create_satisfaction(EntryCreationAction::Update(action), satisfaction)
@@ -108,8 +108,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     original_action,
                     original_satisfaction,
                 ),
-                (EntryTypes::Promise(promise), EntryTypes::Promise(original_promise)) => {
-                    validate_update_promise(action, promise, original_action, original_promise)
+                (EntryTypes::Commitment(commitment), EntryTypes::Commitment(original_commitment)) => {
+                    validate_update_commitment(action, commitment, original_action, original_commitment)
                 }
                 (
                     EntryTypes::CallToAction(call_to_action),
@@ -135,8 +135,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 EntryTypes::CallToAction(call_to_action) => {
                     validate_delete_call_to_action(action, original_action, call_to_action)
                 }
-                EntryTypes::Promise(promise) => {
-                    validate_delete_promise(action, original_action, promise)
+                EntryTypes::Commitment(commitment) => {
+                    validate_delete_commitment(action, original_action, commitment)
                 }
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_delete_satisfaction(action, original_action, satisfaction)
@@ -166,7 +166,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::CallToActionToPromises => validate_create_link_call_to_action_to_promises(
+            LinkTypes::CallToActionToCommitments => validate_create_link_call_to_action_to_commitments(
                 action,
                 base_address,
                 target_address,
@@ -180,7 +180,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::PromiseToSatisfactions => validate_create_link_promise_to_satisfactions(
+            LinkTypes::CommitmentToSatisfactions => validate_create_link_commitment_to_satisfactions(
                 action,
                 base_address,
                 target_address,
@@ -229,7 +229,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::CallToActionToPromises => validate_delete_link_call_to_action_to_promises(
+            LinkTypes::CallToActionToCommitments => validate_delete_link_call_to_action_to_commitments(
                 action,
                 original_action,
                 base_address,
@@ -245,7 +245,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     tag,
                 )
             }
-            LinkTypes::PromiseToSatisfactions => validate_delete_link_promise_to_satisfactions(
+            LinkTypes::CommitmentToSatisfactions => validate_delete_link_commitment_to_satisfactions(
                 action,
                 original_action,
                 base_address,
@@ -291,8 +291,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                     EntryCreationAction::Create(action),
                     call_to_action,
                 ),
-                EntryTypes::Promise(promise) => {
-                    validate_create_promise(EntryCreationAction::Create(action), promise)
+                EntryTypes::Commitment(commitment) => {
+                    validate_create_commitment(EntryCreationAction::Create(action), commitment)
                 }
                 EntryTypes::Satisfaction(satisfaction) => {
                     validate_create_satisfaction(EntryCreationAction::Create(action), satisfaction)
@@ -354,18 +354,18 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             Ok(result)
                         }
                     }
-                    EntryTypes::Promise(promise) => {
-                        let result = validate_create_promise(
+                    EntryTypes::Commitment(commitment) => {
+                        let result = validate_create_commitment(
                             EntryCreationAction::Update(action.clone()),
-                            promise.clone(),
+                            commitment.clone(),
                         )?;
                         if let ValidateCallbackResult::Valid = result {
-                            let original_promise: Option<Promise> = original_record
+                            let original_commitment: Option<Commitment> = original_record
                                 .entry()
                                 .to_app_option()
                                 .map_err(|e| wasm_error!(e))?;
-                            let original_promise = match original_promise {
-                                Some(promise) => promise,
+                            let original_commitment = match original_commitment {
+                                Some(commitment) => commitment,
                                 None => {
                                     return Ok(
                                             ValidateCallbackResult::Invalid(
@@ -375,11 +375,11 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                                         );
                                 }
                             };
-                            validate_update_promise(
+                            validate_update_commitment(
                                 action,
-                                promise,
+                                commitment,
                                 original_action,
-                                original_promise,
+                                original_commitment,
                             )
                         } else {
                             Ok(result)
@@ -512,8 +512,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             original_call_to_action,
                         )
                     }
-                    EntryTypes::Promise(original_promise) => {
-                        validate_delete_promise(action, original_action, original_promise)
+                    EntryTypes::Commitment(original_commitment) => {
+                        validate_delete_commitment(action, original_action, original_commitment)
                     }
                     EntryTypes::Satisfaction(original_satisfaction) => {
                         validate_delete_satisfaction(action, original_action, original_satisfaction)
@@ -542,8 +542,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::CallToActionToPromises => {
-                    validate_create_link_call_to_action_to_promises(
+                LinkTypes::CallToActionToCommitments => {
+                    validate_create_link_call_to_action_to_commitments(
                         action,
                         base_address,
                         target_address,
@@ -558,7 +558,7 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                         tag,
                     )
                 }
-                LinkTypes::PromiseToSatisfactions => validate_create_link_promise_to_satisfactions(
+                LinkTypes::CommitmentToSatisfactions => validate_create_link_commitment_to_satisfactions(
                     action,
                     base_address,
                     target_address,
@@ -628,8 +628,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             create_link.tag,
                         )
                     }
-                    LinkTypes::CallToActionToPromises => {
-                        validate_delete_link_call_to_action_to_promises(
+                    LinkTypes::CallToActionToCommitments => {
+                        validate_delete_link_call_to_action_to_commitments(
                             action,
                             create_link.clone(),
                             base_address,
@@ -646,8 +646,8 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                             create_link.tag,
                         )
                     }
-                    LinkTypes::PromiseToSatisfactions => {
-                        validate_delete_link_promise_to_satisfactions(
+                    LinkTypes::CommitmentToSatisfactions => {
+                        validate_delete_link_commitment_to_satisfactions(
                             action,
                             create_link.clone(),
                             base_address,

@@ -30,7 +30,7 @@ import { encode } from '@msgpack/msgpack';
 
 import { Assembly } from './types.js';
 import { Satisfaction } from './types.js';
-import { CallPromise } from './types.js';
+import { Commitment } from './types.js';
 import { CallToAction } from './types.js';
 
 export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
@@ -127,21 +127,21 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   }
 
   /** Promise */
-  promise = new RecordBag<CallPromise>();
+  commitment = new RecordBag<Commitment>();
 
-  promisesForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
+  commitmentsForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
 
-  async create_promise(promise: CallPromise): Promise<Record> {
+  async create_commitment(commitment: Commitment): Promise<Record> {
     const record = fakeRecord(
-      fakeCreateAction(hash(promise, HashType.ENTRY)),
-      fakeEntry(promise)
+      fakeCreateAction(hash(commitment, HashType.ENTRY)),
+      fakeEntry(commitment)
     );
 
-    this.promise.add([record]);
+    this.commitment.add([record]);
 
     const existingCallToActionHash =
-      this.promisesForCallToAction.get(promise.call_to_action_hash) || [];
-    this.promisesForCallToAction.set(promise.call_to_action_hash, [
+      this.commitmentsForCallToAction.get(commitment.call_to_action_hash) || [];
+    this.commitmentsForCallToAction.set(commitment.call_to_action_hash, [
       ...existingCallToActionHash,
       record.signed_action.hashed.hash,
     ]);
@@ -149,22 +149,22 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     return record;
   }
 
-  async get_promise(promiseHash: ActionHash): Promise<Record | undefined> {
-    const state = entryState(this.promise, promiseHash);
+  async get_commitment(commitmentHash: ActionHash): Promise<Record | undefined> {
+    const state = entryState(this.commitment, commitmentHash);
 
     if (!state || state.deleted) return undefined;
 
     return state.lastUpdate?.record;
   }
 
-  async get_promises_for_call_to_action(
+  async get_commitments_for_call_to_action(
     callToActionHash: ActionHash
   ): Promise<Array<Record>> {
     const actionHashes: ActionHash[] =
-      this.promisesForCallToAction.get(callToActionHash) || [];
+      this.commitmentsForCallToAction.get(callToActionHash) || [];
 
     return actionHashes
-      .map(actionHash => this.promise.entryRecord(actionHash)?.record)
+      .map(actionHash => this.commitment.entryRecord(actionHash)?.record)
       .filter(r => !!r) as Record[];
   }
 
@@ -173,7 +173,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
 
   satisfactionsForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
 
-  satisfactionsForPromise = new HoloHashMap<ActionHash, ActionHash[]>();
+  satisfactionsForCommitment = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_satisfaction(satisfaction: Satisfaction): Promise<Record> {
     const record = fakeRecord(
@@ -190,10 +190,10 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
       ...existingCallToActionHash,
       record.signed_action.hashed.hash,
     ]);
-    for (const promises_hashes of satisfaction.promises_hashes) {
+    for (const commitments_hashes of satisfaction.commitments_hashes) {
       const existingPromisesHashes =
-        this.satisfactionsForPromise.get(promises_hashes) || [];
-      this.satisfactionsForPromise.set(promises_hashes, [
+        this.satisfactionsForCommitment.get(commitments_hashes) || [];
+      this.satisfactionsForCommitment.set(commitments_hashes, [
         ...existingPromisesHashes,
         record.signed_action.hashed.hash,
       ]);
@@ -235,10 +235,10 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
       ...existingCallToActionHash,
       record.signed_action.hashed.hash,
     ]);
-    for (const promises_hashes of satisfaction.promises_hashes) {
+    for (const commitments_hashes of satisfaction.commitments_hashes) {
       const existingPromisesHashes =
-        this.satisfactionsForPromise.get(promises_hashes) || [];
-      this.satisfactionsForPromise.set(promises_hashes, [
+        this.satisfactionsForCommitment.get(commitments_hashes) || [];
+      this.satisfactionsForCommitment.set(commitments_hashes, [
         ...existingPromisesHashes,
         record.signed_action.hashed.hash,
       ]);
@@ -258,11 +258,11 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
       .filter(r => !!r) as Record[];
   }
 
-  async get_satisfactions_for_promise(
-    promiseHash: ActionHash
+  async get_satisfactions_for_commitment(
+    commitmentHash: ActionHash
   ): Promise<Array<Record>> {
     const actionHashes: ActionHash[] =
-      this.satisfactionsForPromise.get(promiseHash) || [];
+      this.satisfactionsForCommitment.get(commitmentHash) || [];
 
     return actionHashes
       .map(actionHash => this.satisfaction.entryRecord(actionHash)?.record)
@@ -270,41 +270,41 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   }
 
   /** Collective Commitment */
-  collectiveCommitment = new RecordBag<Assembly>();
+  assembly = new RecordBag<Assembly>();
 
-  collectiveCommitmentsForCallToAction = new HoloHashMap<
+  assembliesForCallToAction = new HoloHashMap<
     ActionHash,
     ActionHash[]
   >();
 
-  collectiveCommitmentsForSatisfaction = new HoloHashMap<
+  assembliesForSatisfaction = new HoloHashMap<
     ActionHash,
     ActionHash[]
   >();
 
   async create_assembly(
-    collectiveCommitment: Assembly
+    assembly: Assembly
   ): Promise<Record> {
     const record = fakeRecord(
-      fakeCreateAction(hash(collectiveCommitment, HashType.ENTRY)),
-      fakeEntry(collectiveCommitment)
+      fakeCreateAction(hash(assembly, HashType.ENTRY)),
+      fakeEntry(assembly)
     );
 
-    this.collectiveCommitment.add([record]);
+    this.assembly.add([record]);
 
     const existingCallToActionHash =
-      this.collectiveCommitmentsForCallToAction.get(
-        collectiveCommitment.call_to_action_hash
+      this.assembliesForCallToAction.get(
+        assembly.call_to_action_hash
       ) || [];
-    this.collectiveCommitmentsForCallToAction.set(
-      collectiveCommitment.call_to_action_hash,
+    this.assembliesForCallToAction.set(
+      assembly.call_to_action_hash,
       [...existingCallToActionHash, record.signed_action.hashed.hash]
     );
-    for (const satisfactions_hashes of collectiveCommitment.satisfactions_hashes) {
+    for (const satisfactions_hashes of assembly.satisfactions_hashes) {
       const existingSatisfactionsHashes =
-        this.collectiveCommitmentsForSatisfaction.get(satisfactions_hashes) ||
+        this.assembliesForSatisfaction.get(satisfactions_hashes) ||
         [];
-      this.collectiveCommitmentsForSatisfaction.set(satisfactions_hashes, [
+      this.assembliesForSatisfaction.set(satisfactions_hashes, [
         ...existingSatisfactionsHashes,
         record.signed_action.hashed.hash,
       ]);
@@ -314,11 +314,11 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   }
 
   async get_assembly(
-    collectiveCommitmentHash: ActionHash
+    assemblyHash: ActionHash
   ): Promise<Record | undefined> {
     const state = entryState(
-      this.collectiveCommitment,
-      collectiveCommitmentHash
+      this.assembly,
+      assemblyHash
     );
 
     if (!state || state.deleted) return undefined;
@@ -330,11 +330,11 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     callToActionHash: ActionHash
   ): Promise<Array<Record>> {
     const actionHashes: ActionHash[] =
-      this.collectiveCommitmentsForCallToAction.get(callToActionHash) || [];
+      this.assembliesForCallToAction.get(callToActionHash) || [];
 
     return actionHashes
       .map(
-        actionHash => this.collectiveCommitment.entryRecord(actionHash)?.record
+        actionHash => this.assembly.entryRecord(actionHash)?.record
       )
       .filter(r => !!r) as Record[];
   }
@@ -343,11 +343,11 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     satisfactionHash: ActionHash
   ): Promise<Array<Record>> {
     const actionHashes: ActionHash[] =
-      this.collectiveCommitmentsForSatisfaction.get(satisfactionHash) || [];
+      this.assembliesForSatisfaction.get(satisfactionHash) || [];
 
     return actionHashes
       .map(
-        actionHash => this.collectiveCommitment.entryRecord(actionHash)?.record
+        actionHash => this.assembly.entryRecord(actionHash)?.record
       )
       .filter(r => !!r) as Record[];
   }
@@ -359,7 +359,7 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   }
 
   async get_all_assemblies(_: any): Promise<Array<Record>> {
-    return this.collectiveCommitment.entryRecords
+    return this.assembly.entryRecords
       .map(er => er?.record)
       .filter(r => !!r) as Record[];
   }
@@ -380,7 +380,7 @@ export function sampleCallToAction(): CallToAction {
   };
 }
 
-export function samplePromise(): CallPromise {
+export function sampleCommitment(): Commitment {
   return {
     call_to_action_hash: fakeActionHash(),
     comment: 'Lorem ipsum 2',
@@ -393,7 +393,7 @@ export function sampleSatisfaction(): Satisfaction {
   return {
     call_to_action_hash: fakeActionHash(),
     need_index: 3,
-    promises_hashes: [fakeActionHash()],
+    commitments_hashes: [fakeActionHash()],
   };
 }
 

@@ -39,8 +39,8 @@ export class AssembliesForCallToAction extends LitElement {
   /**
    * @internal
    */
-  _collectiveCommitments = new StoreSubscriber(this, () =>
-    this.assembleStore.collectiveCommitmentsForCallToAction.get(
+  _assemblies = new StoreSubscriber(this, () =>
+    this.assembleStore.assembliesForCallToAction.get(
       this.callToActionHash
     )
   );
@@ -64,7 +64,7 @@ export class AssembliesForCallToAction extends LitElement {
         ${hashes.map(
           hash =>
             html`<collective-commitment-summary
-              .collectiveCommitmentHash=${hash}
+              .assemblyHash=${hash}
             ></collective-commitment-summary>`
         )}
       </div>
@@ -72,7 +72,7 @@ export class AssembliesForCallToAction extends LitElement {
   }
 
   render() {
-    switch (this._collectiveCommitments.value.status) {
+    switch (this._assemblies.value.status) {
       case 'pending':
         return html`<div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
@@ -80,11 +80,11 @@ export class AssembliesForCallToAction extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        return this.renderList(this._collectiveCommitments.value.value);
+        return this.renderList(this._assemblies.value.value);
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the collective commitments')}
-          .error=${this._collectiveCommitments.value.error.data.data}
+          .error=${this._assemblies.value.error.data.data}
         ></display-error>`;
     }
   }

@@ -40,8 +40,8 @@ pub async fn create_call_to_action(
     record
 }
 
-pub async fn sample_promise_1(conductor: &SweetConductor, zome: &SweetZome) -> Promise {
-    Promise {
+pub async fn sample_commitment_1(conductor: &SweetConductor, zome: &SweetZome) -> Commitment {
+    Commitment {
         call_to_action_hash: create_call_to_action(
             conductor,
             zome,
@@ -56,8 +56,8 @@ pub async fn sample_promise_1(conductor: &SweetConductor, zome: &SweetZome) -> P
     }
 }
 
-pub async fn sample_promise_2(conductor: &SweetConductor, zome: &SweetZome) -> Promise {
-    Promise {
+pub async fn sample_commitment_2(conductor: &SweetConductor, zome: &SweetZome) -> Commitment {
+    Commitment {
         call_to_action_hash: create_call_to_action(
             conductor,
             zome,
@@ -72,12 +72,12 @@ pub async fn sample_promise_2(conductor: &SweetConductor, zome: &SweetZome) -> P
     }
 }
 
-pub async fn create_promise(
+pub async fn create_commitment(
     conductor: &SweetConductor,
     zome: &SweetZome,
-    promise: Promise,
+    commitment: Commitment,
 ) -> Record {
-    let record: Record = conductor.call(zome, "create_promise", promise).await;
+    let record: Record = conductor.call(zome, "create_commitment", commitment).await;
     record
 }
 
@@ -93,8 +93,8 @@ pub async fn sample_satisfaction_1(conductor: &SweetConductor, zome: &SweetZome)
         .hashed
         .hash,
         need_index: 10,
-        promises_hashes: vec![
-            create_promise(conductor, zome, sample_promise_1(conductor, zome).await)
+        commitments_hashes: vec![
+            create_commitment(conductor, zome, sample_commitment_1(conductor, zome).await)
                 .await
                 .signed_action
                 .hashed
@@ -115,8 +115,8 @@ pub async fn sample_satisfaction_2(conductor: &SweetConductor, zome: &SweetZome)
         .hashed
         .hash,
         need_index: 3,
-        promises_hashes: vec![
-            create_promise(conductor, zome, sample_promise_2(conductor, zome).await)
+        commitments_hashes: vec![
+            create_commitment(conductor, zome, sample_commitment_2(conductor, zome).await)
                 .await
                 .signed_action
                 .hashed

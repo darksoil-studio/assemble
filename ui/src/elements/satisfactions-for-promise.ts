@@ -21,14 +21,14 @@ import { Satisfaction } from '../types.js';
 import './satisfaction-summary.js';
 
 /**
- * @element satisfactions-for-promise
+ * @element satisfactions-for-commitment
  */
 @localized()
-@customElement('satisfactions-for-promise')
-export class SatisfactionsForPromise extends LitElement {
-  // REQUIRED. The PromiseHash for which the Satisfactions should be fetched
-  @property(hashProperty('promise-hash'))
-  promiseHash!: ActionHash;
+@customElement('satisfactions-for-commitment')
+export class SatisfactionsForCommitment extends LitElement {
+  // REQUIRED. The CommitmentHash for which the Satisfactions should be fetched
+  @property(hashProperty('commitment-hash'))
+  commitmentHash!: ActionHash;
 
   /**
    * @internal
@@ -40,7 +40,7 @@ export class SatisfactionsForPromise extends LitElement {
    * @internal
    */
   _satisfactions = new StoreSubscriber(this, () =>
-    this.assembleStore.satisfactionsForPromise.get(this.promiseHash)
+    this.assembleStore.satisfactionsForCommitment.get(this.commitmentHash)
   );
 
   renderList(hashes: Array<ActionHash>) {
@@ -51,7 +51,7 @@ export class SatisfactionsForPromise extends LitElement {
           .src=${wrapPathInSvg(mdiInformationOutline)}
         ></sl-icon>
         <span class="placeholder"
-          >${msg('No satisfactions found for this promise')}</span
+          >${msg('No satisfactions found for this commitment')}</span
         >
       </div>`;
 

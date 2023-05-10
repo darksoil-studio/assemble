@@ -26,16 +26,16 @@ export class AssembleStore {
       }, 4000)
   );
 
-  /** Promise */
+  /** Commitment */
 
-  promises = new LazyHoloHashMap((promiseHash: ActionHash) =>
-    lazyLoadAndPoll(async () => this.client.getPromise(promiseHash), 4000)
+  commitments = new LazyHoloHashMap((commitmentHash: ActionHash) =>
+    lazyLoadAndPoll(async () => this.client.getCommitment(commitmentHash), 4000)
   );
 
-  promisesForCallToAction = new LazyHoloHashMap(
+  commitmentsForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
       lazyLoadAndPoll(
-        async () => this.client.getPromisesForCallToAction(callToActionHash),
+        async () => this.client.getCommitmentsForCallToAction(callToActionHash),
         4000
       )
   );
@@ -58,25 +58,25 @@ export class AssembleStore {
       )
   );
 
-  satisfactionsForPromise = new LazyHoloHashMap((promiseHash: ActionHash) =>
+  satisfactionsForCommitment = new LazyHoloHashMap((commitmentHash: ActionHash) =>
     lazyLoadAndPoll(async () => {
-      const records = await this.client.getSatisfactionsForPromise(promiseHash);
+      const records = await this.client.getSatisfactionsForCommitment(commitmentHash);
       return records.map(r => r.actionHash);
     }, 4000)
   );
 
   /** Collective Commitment */
 
-  collectiveCommitments = new LazyHoloHashMap(
-    (collectiveCommitmentHash: ActionHash) =>
+  assemblies = new LazyHoloHashMap(
+    (assemblyHash: ActionHash) =>
       lazyLoadAndPoll(
         async () =>
-          this.client.getAssembly(collectiveCommitmentHash),
+          this.client.getAssembly(assemblyHash),
         4000
       )
   );
 
-  collectiveCommitmentsForCallToAction = new LazyHoloHashMap(
+  assembliesForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
         const records =
@@ -87,7 +87,7 @@ export class AssembleStore {
       }, 4000)
   );
 
-  collectiveCommitmentsForSatisfaction = new LazyHoloHashMap(
+  assembliesForSatisfaction = new LazyHoloHashMap(
     (satisfactionHash: ActionHash) =>
       lazyLoadAndPoll(async () => {
         const records =

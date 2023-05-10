@@ -4,7 +4,7 @@ use hdi::prelude::*;
 pub struct Satisfaction {
     pub call_to_action_hash: ActionHash,
     pub need_index: u32,
-    pub promises_hashes: Vec<ActionHash>,
+    pub commitments_hashes: Vec<ActionHash>,
 }
 pub fn validate_create_satisfaction(
     _action: EntryCreationAction,
@@ -20,9 +20,9 @@ pub fn validate_create_satisfaction(
                 WasmErrorInner::Guest(String::from("Dependant action must be accompanied by an entry"))
             ),
         )?;
-    for action_hash in satisfaction.promises_hashes.clone() {
+    for action_hash in satisfaction.commitments_hashes.clone() {
         let record = must_get_valid_record(action_hash)?;
-        let _promise: crate::Promise = record
+        let _commitment: crate::Commitment = record
             .entry()
             .to_app_option()
             .map_err(|e| wasm_error!(e))?
@@ -92,7 +92,7 @@ pub fn validate_delete_link_call_to_action_to_satisfactions(
         ),
     )
 }
-pub fn validate_create_link_promise_to_satisfactions(
+pub fn validate_create_link_commitment_to_satisfactions(
     _action: CreateLink,
     base_address: AnyLinkableHash,
     target_address: AnyLinkableHash,
@@ -100,7 +100,7 @@ pub fn validate_create_link_promise_to_satisfactions(
 ) -> ExternResult<ValidateCallbackResult> {
     let action_hash = ActionHash::from(base_address);
     let record = must_get_valid_record(action_hash)?;
-    let _promise: crate::Promise = record
+    let _commitment: crate::Commitment = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
@@ -122,7 +122,7 @@ pub fn validate_create_link_promise_to_satisfactions(
         )?;
     Ok(ValidateCallbackResult::Valid)
 }
-pub fn validate_delete_link_promise_to_satisfactions(
+pub fn validate_delete_link_commitment_to_satisfactions(
     _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
@@ -131,7 +131,7 @@ pub fn validate_delete_link_promise_to_satisfactions(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("PromiseToSatisfactions links cannot be deleted"),
+            String::from("CommitmentToSatisfactions links cannot be deleted"),
         ),
     )
 }

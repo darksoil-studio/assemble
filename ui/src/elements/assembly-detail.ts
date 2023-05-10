@@ -25,14 +25,14 @@ import { Assembly } from '../types.js';
 
 /**
  * @element collective-commitment-detail
- * @fires collective-commitment-deleted: detail will contain { collectiveCommitmentHash }
+ * @fires collective-commitment-deleted: detail will contain { assemblyHash }
  */
 @localized()
 @customElement('collective-commitment-detail')
 export class AssemblyDetail extends LitElement {
   // REQUIRED. The hash of the Assembly to show
   @property(hashProperty('collective-commitment-hash'))
-  collectiveCommitmentHash!: ActionHash;
+  assemblyHash!: ActionHash;
 
   /**
    * @internal
@@ -43,8 +43,8 @@ export class AssemblyDetail extends LitElement {
   /**
    * @internal
    */
-  _collectiveCommitment = new StoreSubscriber(this, () =>
-    this.assembleStore.collectiveCommitments.get(this.collectiveCommitmentHash)
+  _assembly = new StoreSubscriber(this, () =>
+    this.assembleStore.assemblies.get(this.assemblyHash)
   );
 
   renderDetail(entryRecord: EntryRecord<Assembly>) {
@@ -62,7 +62,7 @@ export class AssemblyDetail extends LitElement {
   }
 
   render() {
-    switch (this._collectiveCommitment.value.status) {
+    switch (this._assembly.value.status) {
       case 'pending':
         return html`<sl-card>
           <div
@@ -72,19 +72,19 @@ export class AssemblyDetail extends LitElement {
           </div>
         </sl-card>`;
       case 'complete':
-        const collectiveCommitment = this._collectiveCommitment.value.value;
+        const assembly = this._assembly.value.value;
 
-        if (!collectiveCommitment)
+        if (!assembly)
           return html`<span
             >${msg("The requested collective commitment doesn't exist")}</span
           >`;
 
-        return this.renderDetail(collectiveCommitment);
+        return this.renderDetail(assembly);
       case 'error':
         return html`<sl-card>
           <display-error
             .headline=${msg('Error fetching the collective commitment')}
-            .error=${this._collectiveCommitment.value.error.data.data}
+            .error=${this._assembly.value.error.data.data}
           ></display-error>
         </sl-card>`;
     }

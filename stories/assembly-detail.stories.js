@@ -19,7 +19,7 @@ export default {
     html` <assemble-context
       .store=${store}
     >
-      <collective-commitment-detail .collectiveCommitmentHash=${record.signed_action.hashed.hash}></collective-commitment-detail>
+      <collective-commitment-detail .assemblyHash=${record.signed_action.hashed.hash}></collective-commitment-detail>
     </assemble-context>`,
 };
 

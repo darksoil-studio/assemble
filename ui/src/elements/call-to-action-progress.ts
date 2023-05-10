@@ -19,7 +19,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import { CallPromise, CallToAction, Satisfaction } from '../types';
+import { Commitment, CallToAction, Satisfaction } from '../types';
 
 /**
  * @element call-to-action-progress
@@ -46,14 +46,14 @@ export class CallToActionProgress extends LitElement {
     () =>
       join([
         this.assembleStore.callToActions.get(this.callToActionHash),
-        this.assembleStore.promisesForCallToAction.get(this.callToActionHash),
+        this.assembleStore.commitmentsForCallToAction.get(this.callToActionHash),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
       ]) as AsyncReadable<
         [
           EntryRecord<CallToAction>,
-          Array<EntryRecord<CallPromise>>,
+          Array<EntryRecord<Commitment>>,
           Array<EntryRecord<Satisfaction>>
         ]
       >,
@@ -66,7 +66,7 @@ export class CallToActionProgress extends LitElement {
         return html`<sl-skeleton></sl-skeleton>`;
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
-        const promises = this._callToActionInfo.value.value[1];
+        const commitments = this._callToActionInfo.value.value[1];
         const satisfactions = this._callToActionInfo.value.value[2];
         const needsCount = callToAction.entry.needs
           .filter(
@@ -76,8 +76,8 @@ export class CallToActionProgress extends LitElement {
 
         return html` <sl-progress-bar
           .value=${(100 *
-            promises.reduce(
-              (count, promise) => count + promise.entry.amount,
+            commitments.reduce(
+              (count, commitment) => count + commitment.entry.amount,
               0
             )) /
           needsCount}

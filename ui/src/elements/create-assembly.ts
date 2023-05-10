@@ -34,7 +34,7 @@ import { Assembly } from '../types.js';
 
 /**
  * @element create-collective-commitment
- * @fires collective-commitment-created: detail will contain { collectiveCommitmentHash }
+ * @fires collective-commitment-created: detail will contain { assemblyHash }
  */
 @localized()
 @customElement('create-collective-commitment')
@@ -75,7 +75,7 @@ export class CreateAssembly extends LitElement {
         'Cannot create a new Collective Commitment without its satisfactions_hashes field'
       );
 
-    const collectiveCommitment: Assembly = {
+    const assembly: Assembly = {
       call_to_action_hash: this.callToActionHash,
       satisfactions_hashes: this.satisfactionsHashes,
     };
@@ -84,7 +84,7 @@ export class CreateAssembly extends LitElement {
       this.committing = true;
       const record: EntryRecord<Assembly> =
         await this.assembleStore.client.createAssembly(
-          collectiveCommitment
+          assembly
         );
 
       this.dispatchEvent(
@@ -92,7 +92,7 @@ export class CreateAssembly extends LitElement {
           composed: true,
           bubbles: true,
           detail: {
-            collectiveCommitmentHash: record.actionHash,
+            assemblyHash: record.actionHash,
           },
         })
       );

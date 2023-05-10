@@ -2,7 +2,7 @@ pub mod all_assemblies;
 pub mod all_calls_to_action;
 pub mod assembly;
 pub mod satisfaction;
-pub mod promise;
+pub mod commitment;
 pub mod call_to_action;
 use hdk::prelude::*;
 use assemble_integrity::*;
