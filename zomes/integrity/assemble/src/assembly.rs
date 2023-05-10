@@ -43,7 +43,7 @@ pub fn validate_update_assembly(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("Collective Commitments cannot be updated"),
+            String::from("Assemblies cannot be updated"),
         ),
     )
 }
@@ -54,7 +54,7 @@ pub fn validate_delete_assembly(
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         ValidateCallbackResult::Invalid(
-            String::from("Collective Commitments cannot be deleted"),
+            String::from("Assemblies cannot be deleted"),
         ),
     )
 }

@@ -52,7 +52,7 @@ export class AssemblyDetail extends LitElement {
       <sl-card>
         <div slot="header" style="display: flex; flex-direction: row">
           <span style="font-size: 18px; flex: 1;"
-            >${msg('Collective Commitment')}</span
+            >${msg('Assembly')}</span
           >
         </div>
 

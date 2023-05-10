@@ -263,7 +263,7 @@
                   }
                 }
               ],
-              "description": "Collective Commitment"
+              "description": "Assembly"
             },
             {
               "kind": "method",
@@ -334,7 +334,7 @@
                   "text": "Commitment<\n    Array<EntryRecord<Assembly>>\n  >"
                 }
               },
-              "description": "All Collective Commitments"
+              "description": "All Assemblies"
             }
           ],
           "superclass": {
@@ -405,7 +405,7 @@
               "kind": "field",
               "name": "assemblies",
               "default": "new LazyHoloHashMap(\n    (assemblyHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getAssembly(assemblyHash),\n        4000\n      )\n  )",
-              "description": "Collective Commitment"
+              "description": "Assembly"
             },
             {
               "kind": "field",
@@ -425,7 +425,7 @@
             {
               "kind": "field",
               "name": "allAssemblies",
-              "description": "All Collective Commitments"
+              "description": "All Assemblies"
             }
           ]
         }
@@ -772,7 +772,7 @@
               "kind": "field",
               "name": "assembly",
               "default": "new RecordBag<Assembly>()",
-              "description": "Collective Commitment"
+              "description": "Assembly"
             },
             {
               "kind": "field",

@@ -69,7 +69,7 @@ export class AssembleStore {
       }, 4000)
   );
 
-  /** Collective Commitment */
+  /** Assembly */
 
   assemblies = new LazyHoloHashMap((assemblyHash: ActionHash) =>
     lazyLoadAndPoll(async () => this.client.getAssembly(assemblyHash), 4000)
@@ -115,7 +115,7 @@ export class AssembleStore {
     return openCalls.map(r => r.actionHash);
   }, 4000);
 
-  /** All Collective Commitments */
+  /** All Assemblies */
 
   allAssemblies = lazyLoadAndPoll(async () => {
     const records = await this.client.getAllAssemblies();

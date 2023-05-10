@@ -38,7 +38,7 @@ import './edit-call-to-action.js';
  * @fires call-to-action-deleted: detail will contain { callToActionHash }
  */
 @localized()
-@customElement('call-to-action-detail')
+@customElement('call-to-action-needs')
 export class CallToActionDetail extends LitElement {
   // REQUIRED. The hash of the CallToAction to show
   @property(hashProperty('call-to-action-hash'))
@@ -66,7 +66,9 @@ export class CallToActionDetail extends LitElement {
     this,
     () =>
       join([
-        this.assembleStore.commitmentsForCallToAction.get(this.callToActionHash),
+        this.assembleStore.commitmentsForCallToAction.get(
+          this.callToActionHash
+        ),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
@@ -114,11 +116,10 @@ export class CallToActionDetail extends LitElement {
 
   async createAssembly(satisfactions_hashes: Array<ActionHash>) {
     try {
-      const assembly =
-        await this.assembleStore.client.createAssembly({
-          call_to_action_hash: this.callToActionHash,
-          satisfactions_hashes,
-        });
+      const assembly = await this.assembleStore.client.createAssembly({
+        call_to_action_hash: this.callToActionHash,
+        satisfactions_hashes,
+      });
       this.dispatchEvent(
         new CustomEvent('assembly-created', {
           bubbles: true,
@@ -152,7 +153,9 @@ export class CallToActionDetail extends LitElement {
       ${commitmentsForThisNeed.map(
         commitment => html`
           <div class="row" style="align-items: center; margin-top: 8px">
-            <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
+            <agent-avatar
+              .agentPubKey=${commitment.action.author}
+            ></agent-avatar>
             <div class="column" style="margin-left: 8px">
               <span>${commitment.entry.comment || msg('No comment')}</span>
               ${callToAction.entry.needs[needIndex].min_necessary === 1 &&
@@ -328,7 +331,8 @@ export class CallToActionDetail extends LitElement {
           </div>
         `;
       case 'complete':
-        const commitments = this._commitmentsAndSatisfactionsForCall.value.value[0];
+        const commitments =
+          this._commitmentsAndSatisfactionsForCall.value.value[0];
         const satisfactions =
           this._commitmentsAndSatisfactionsForCall.value.value[1];
 
@@ -380,7 +384,8 @@ export class CallToActionDetail extends LitElement {
           .headline=${msg(
             'Error fetching the commitments for this call to action'
           )}
-          .error=${this._commitmentsAndSatisfactionsForCall.value.error.data.data}
+          .error=${this._commitmentsAndSatisfactionsForCall.value.error.data
+            .data}
         ></display-error>`;
     }
   }

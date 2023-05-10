@@ -7,7 +7,7 @@ import {
   join,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
-import { ActionHash, EntryHash, Record } from '@holochain/client';
+import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
@@ -19,12 +19,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import {
-  Commitment,
-  CallToAction,
-  Assembly,
-  Satisfaction,
-} from '../types';
+import { Commitment, CallToAction, Satisfaction } from '../types';
 
 /**
  * @element call-to-action-summary
@@ -57,7 +52,9 @@ export class CallToActionSummary extends LitElement {
     this,
     () =>
       join([
-        this.assembleStore.commitmentsForCallToAction.get(this.callToActionHash),
+        this.assembleStore.commitmentsForCallToAction.get(
+          this.callToActionHash
+        ),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
@@ -71,7 +68,8 @@ export class CallToActionSummary extends LitElement {
       case 'pending':
         return html`<sl-skeleton></sl-skeleton>`;
       case 'complete':
-        const commitments = this._commitmentsAndSatisfactionsForCall.value.value[0];
+        const commitments =
+          this._commitmentsAndSatisfactionsForCall.value.value[0];
         const satisfactions =
           this._commitmentsAndSatisfactionsForCall.value.value[1];
         const needsCount = callToAction.entry.needs
@@ -91,7 +89,8 @@ export class CallToActionSummary extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the progress of the call')}
-          .error=${this._commitmentsAndSatisfactionsForCall.value.error.data.data}
+          .error=${this._commitmentsAndSatisfactionsForCall.value.error.data
+            .data}
         ></display-error>`;
     }
   }
@@ -100,9 +99,6 @@ export class CallToActionSummary extends LitElement {
     return html`
       <div style="display: flex; flex-direction: column">
         <div class="row" style="align-items: center; margin-bottom: 8px">
-          <span style="white-space: pre-line; flex: 1"
-            >${entryRecord.entry.title}</span
-          >
           <agent-avatar
             style="margin-left: 16px"
             .agentPubKey=${entryRecord.action.author}

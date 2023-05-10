@@ -485,12 +485,14 @@ pub fn validate(op: Op) -> ExternResult<ValidateCallbackResult> {
                 )? {
                     Some(app_entry) => app_entry,
                     None => {
-                        return Ok(
-                                ValidateCallbackResult::Invalid(
-                                    "Original app entry must be one of the defined entry types for this zome"
-                                        .to_string(),
-                                ),
-                            );
+                        return Ok(ValidateCallbackResult::Valid);
+                        // TODO: uncomment when inconsistency is fixed in HC core
+                        // return Ok(
+                        //         ValidateCallbackResult::Invalid(
+                        //             "Original app entry must be one of the defined entry types for this zome"
+                        //                 .to_string(),
+                        //         ),
+                        //     );
                     }
                 };
                 match original_app_entry {

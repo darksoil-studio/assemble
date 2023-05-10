@@ -68,11 +68,11 @@ export class CreateAssembly extends LitElement {
   async createAssembly(fields: any) {
     if (this.callToActionHash === undefined)
       throw new Error(
-        'Cannot create a new Collective Commitment without its call_to_action_hash field'
+        'Cannot create a new Assembly without its call_to_action_hash field'
       );
     if (this.satisfactionsHashes === undefined)
       throw new Error(
-        'Cannot create a new Collective Commitment without its satisfactions_hashes field'
+        'Cannot create a new Assembly without its satisfactions_hashes field'
       );
 
     const assembly: Assembly = {
@@ -107,7 +107,7 @@ export class CreateAssembly extends LitElement {
 
   render() {
     return html` <sl-card style="flex: 1;">
-      <span slot="header">${msg('Create Collective Commitment')}</span>
+      <span slot="header">${msg('Create Assembly')}</span>
 
       <form
         id="create-form"
@@ -115,7 +115,7 @@ export class CreateAssembly extends LitElement {
         ${onSubmit(fields => this.createAssembly(fields))}
       >
         <sl-button variant="primary" type="submit" .loading=${this.committing}
-          >${msg('Create Collective Commitment')}</sl-button
+          >${msg('Create Assembly')}</sl-button
         >
       </form>
     </sl-card>`;

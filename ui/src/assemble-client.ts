@@ -149,7 +149,7 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
     );
     return records.map(r => new EntryRecord(r));
   }
-  /** Collective Commitment */
+  /** Assembly */
 
   async createAssembly(assembly: Assembly): Promise<EntryRecord<Assembly>> {
     const record: Record = await this.callZome('create_assembly', assembly);
@@ -197,7 +197,7 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
     return this.callZome('close_call_to_action', callToActionHash);
   }
 
-  /** All Collective Commitments */
+  /** All Assemblies */
 
   async getAllAssemblies(): Promise<Array<EntryRecord<Assembly>>> {
     const records: Record[] = await this.callZome('get_all_assemblies', null);
