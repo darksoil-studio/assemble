@@ -45,7 +45,7 @@ export class OpenCallsToAction extends LitElement {
           .src=${wrapPathInSvg(mdiInformationOutline)}
           style="color: grey; height: 64px; width: 64px; margin-bottom: 16px"
         ></sl-icon>
-        <span class="placeholder">${msg('No call to actions found')}</span>
+        <span class="placeholder">${msg('No open call to actions found')}</span>
       </div>`;
 
     return html`

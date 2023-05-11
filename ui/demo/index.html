@@ -41,6 +41,7 @@
       import '../src/elements/open-calls-to-action.ts';
       import '../src/elements/all-assemblies.ts';
       import '../src/elements/call-to-action-needs-form.ts';
+      import '../src/elements/call-to-action-needs.ts';
       import {
         AssembleStore,
         AssembleClient,
@@ -68,17 +69,18 @@
             );
           }
 
-          createCallToAction(fields) {
-            this._assembleStore.value.client.createCallToAction({
+          async createCallToAction(fields) {
+            await this._assembleStore.value.client.createCallToAction({
               custom_content: encode({}),
-              expiry_time: (Date.now() + 2 * 60 * 1000) * 1000,
+              expiration_time: (Date.now() + 2 * 60 * 1000) * 1000,
               needs: JSON.parse(fields.needs),
             });
+            this.shadowRoot.getElementById('needs-form').reset();
           }
 
           render() {
             return html`<form ${onSubmit(f => this.createCallToAction(f))}>
-          <call-to-action-needs-form></call-to-action-needs-form>
+          <call-to-action-needs-form id="needs-form"></call-to-action-needs-form>
           <input type="submit">Create</input>
           </form>`;
           }
@@ -130,9 +132,9 @@
                   </div>
                   ${this._selectedCallToActionHash
                     ? html`
-                        <call-to-action-detail-with-distance
+                        <call-to-action-needs
                           .callToActionHash=${this._selectedCallToActionHash}
-                        ></call-to-action-detail-with-distance>
+                        ></call-to-action-needs>
                       `
                     : html``}
                 </div>

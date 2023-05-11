@@ -150,7 +150,7 @@ export class CreateCommitment extends LitElement {
                 variant="primary"
                 type="submit"
                 .loading=${this.committing}
-                >${msg('Commitment')}</sl-button
+                >${msg('Commit')}</sl-button
               >
             </form>
           `

@@ -7,12 +7,10 @@ import {
   wrapPathInSvg,
 } from '@holochain-open-dev/elements';
 import { EntryRecord } from '@holochain-open-dev/utils';
-import { ActionHash, AgentPubKey, EntryHash, Record } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
@@ -62,7 +60,7 @@ export class EditCallToAction extends LitElement {
     const callToAction: CallToAction = {
       parent_call_to_action_hash:
         this.currentRecord.entry.parent_call_to_action_hash,
-      title: fields.title,
+      expiration_time: this.currentRecord.entry.expiration_time,
       custom_content: this.currentRecord.entry.custom_content,
       needs: (Array.isArray(fields.needs) ? fields.needs : [fields.needs]).map(
         (el: any) => el
@@ -102,15 +100,6 @@ export class EditCallToAction extends LitElement {
         style="display: flex; flex: 1; flex-direction: column;"
         ${onSubmit(fields => this.updateCallToAction(fields))}
       >
-        <div style="margin-bottom: 16px">
-          <sl-input
-            name="title"
-            .label=${msg('Title')}
-            required
-            .defaultValue=${this.currentRecord.entry.title}
-          ></sl-input>
-        </div>
-
         <div style="margin-bottom: 16px">
           <div style="display: flex; flex-direction: column">
             <span>${msg('Needs')}</span>

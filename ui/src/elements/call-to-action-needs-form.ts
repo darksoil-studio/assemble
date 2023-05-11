@@ -97,6 +97,7 @@ export class CallToActionNeedsForm extends LitElement implements FormField {
 
   async reset() {
     this.form.reset();
+    this._needsFields = [[0, false, false]];
   }
 
   /**

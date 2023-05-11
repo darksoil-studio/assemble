@@ -1,5 +1,5 @@
 import { html } from "lit-html";
-import "@darksoil/assemble/elements/call-to-action-detail.js";
+import "@darksoil/assemble/elements/call-to-action-needs.js";
 import "@darksoil/assemble/elements/assemble-context.js";
 import { AssembleZomeMock, sampleCallToAction } from "@darksoil/assemble/mocks";
 import { AssembleStore, AssembleClient } from "@darksoil/assemble";
@@ -12,14 +12,14 @@ const store = new AssembleStore(new AssembleClient(mock));
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/web-components/writing-stories/introduction
 export default {
-  title: "Frontend/Elements/call-to-action-detail",
+  title: "Frontend/Elements/call-to-action-needs",
   tags: ["autodocs"],
-  component: "call-to-action-detail",
+  component: "call-to-action-needs",
   render: (args) =>
     html` <assemble-context
       .store=${store}
     >
-      <call-to-action-detail .callToActionHash=${record.signed_action.hashed.hash}></call-to-action-detail>
+      <call-to-action-needs .callToActionHash=${record.signed_action.hashed.hash}></call-to-action-needs>
     </assemble-context>`,
 };
 

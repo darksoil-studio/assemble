@@ -104,7 +104,7 @@ export class AssembleStore {
     for (const record of records) {
       if (
         record.entry.expiration_time !== undefined &&
-        record.entry.expiration_time > Date.now() * 1000
+        record.entry.expiration_time < Date.now() * 1000
       ) {
         await this.client.closeCallToAction(record.actionHash);
       } else {

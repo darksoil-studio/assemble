@@ -102,28 +102,20 @@ pub fn validate_create_link_open_calls_to_action(
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_open_calls_to_action(
-    action: DeleteLink,
+    _action: DeleteLink,
     _original_action: CreateLink,
     _base: AnyLinkableHash,
     target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
     let record = must_get_valid_record(ActionHash::from(target))?;
-    let call_to_action: crate::CallToAction = record
+    let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
         .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
             "Linked action must reference an entry"
         ))))?;
-
-    if let Some(expiration_time) = call_to_action.expiration_time {
-        if action.timestamp.lt(&expiration_time) {
-            return Ok(ValidateCallbackResult::Invalid(String::from(
-                "Calls to action can only be closed after their expiration time",
-            )));
-        }
-    }
 
     Ok(ValidateCallbackResult::Valid)
 }

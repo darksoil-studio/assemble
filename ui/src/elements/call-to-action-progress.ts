@@ -46,7 +46,9 @@ export class CallToActionProgress extends LitElement {
     () =>
       join([
         this.assembleStore.callToActions.get(this.callToActionHash),
-        this.assembleStore.commitmentsForCallToAction.get(this.callToActionHash),
+        this.assembleStore.commitmentsForCallToAction.get(
+          this.callToActionHash
+        ),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
@@ -74,13 +76,14 @@ export class CallToActionProgress extends LitElement {
           )
           .reduce((count, need) => count + need.min_necessary, 0);
 
+        const amountContributed = commitments.reduce(
+          (count, commitment) => count + commitment.entry.amount,
+          0
+        );
         return html` <sl-progress-bar
-          .value=${(100 *
-            commitments.reduce(
-              (count, commitment) => count + commitment.entry.amount,
-              0
-            )) /
-          needsCount}
+          .value=${needsCount > 0
+            ? (100 * amountContributed) / needsCount
+            : 100}
         ></sl-progress-bar>`;
       case 'error':
         return html`<display-error

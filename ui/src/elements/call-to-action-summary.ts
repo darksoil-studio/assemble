@@ -108,6 +108,15 @@ export class CallToActionSummary extends LitElement {
             style="margin-left: 8px;"
             .date=${entryRecord.action.timestamp}
           ></sl-relative-time>
+          ${entryRecord.entry.expiration_time
+            ? html`
+                <sl-relative-time
+                  class="placeholder"
+                  style="margin-left: 8px;"
+                  .date=${entryRecord.entry.expiration_time / 1000}
+                ></sl-relative-time>
+              `
+            : html``}
         </div>
         ${this.renderProgress(entryRecord)}
       </div>
