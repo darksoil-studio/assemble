@@ -1,10 +1,11 @@
-use hdk::prelude::*;
 use assemble_integrity::*;
+use hdk::prelude::*;
+
+use crate::my_calls_to_action::add_to_my_calls_to_action;
+
 #[hdk_extern]
 pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Record> {
-    let call_to_action_hash = create_entry(
-        &EntryTypes::CallToAction(call_to_action.clone()),
-    )?;
+    let call_to_action_hash = create_entry(&EntryTypes::CallToAction(call_to_action.clone()))?;
     if let Some(base) = call_to_action.parent_call_to_action_hash.clone() {
         create_link(
             base,
@@ -13,12 +14,12 @@ pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Recor
             (),
         )?;
     }
-    let record = get(call_to_action_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly created CallToAction"))
-            ),
-        )?;
+    let record = get(call_to_action_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest(String::from(
+            "Could not find the newly created CallToAction"
+        ))
+    ))?;
+
     let path = Path::from("open_calls_to_action");
     create_link(
         path.path_entry_hash()?,
@@ -26,6 +27,9 @@ pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Recor
         LinkTypes::OpenCallsToAction,
         (),
     )?;
+
+    add_to_my_calls_to_action(call_to_action_hash.clone())?;
+
     Ok(record)
 }
 #[hdk_extern]
@@ -34,15 +38,14 @@ pub fn get_call_to_action(
 ) -> ExternResult<Option<Record>> {
     get_latest_call_to_action(original_call_to_action_hash)
 }
-fn get_latest_call_to_action(
-    call_to_action_hash: ActionHash,
-) -> ExternResult<Option<Record>> {
-    let details = get_details(call_to_action_hash, GetOptions::default())?
-        .ok_or(wasm_error!(WasmErrorInner::Guest("CallToAction not found".into())))?;
+fn get_latest_call_to_action(call_to_action_hash: ActionHash) -> ExternResult<Option<Record>> {
+    let details = get_details(call_to_action_hash, GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest("CallToAction not found".into())
+    ))?;
     let record_details = match details {
-        Details::Entry(_) => {
-            Err(wasm_error!(WasmErrorInner::Guest("Malformed details".into())))
-        }
+        Details::Entry(_) => Err(wasm_error!(WasmErrorInner::Guest(
+            "Malformed details".into()
+        ))),
         Details::Record(record_details) => Ok(record_details),
     }?;
     if record_details.deletes.len() > 0 {
@@ -64,18 +67,15 @@ pub fn update_call_to_action(input: UpdateCallToActionInput) -> ExternResult<Rec
         input.previous_call_to_action_hash,
         &input.updated_call_to_action,
     )?;
-    let record = get(updated_call_to_action_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly updated CallToAction"))
-            ),
-        )?;
+    let record = get(updated_call_to_action_hash.clone(), GetOptions::default())?.ok_or(
+        wasm_error!(WasmErrorInner::Guest(String::from(
+            "Could not find the newly updated CallToAction"
+        ))),
+    )?;
     Ok(record)
 }
 #[hdk_extern]
-pub fn delete_call_to_action(
-    original_call_to_action_hash: ActionHash,
-) -> ExternResult<ActionHash> {
+pub fn delete_call_to_action(original_call_to_action_hash: ActionHash) -> ExternResult<ActionHash> {
     delete_entry(original_call_to_action_hash)
 }
 #[hdk_extern]
@@ -89,10 +89,7 @@ pub fn get_call_to_actions_for_call_to_action(
     )?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(
-            ActionHash::from(link.target).into(),
-            GetOptions::default(),
-        ))
+        .map(|link| GetInput::new(ActionHash::from(link.target).into(), GetOptions::default()))
         .collect();
     let records: Vec<Record> = HDK
         .with(|hdk| hdk.borrow().get(get_input))?

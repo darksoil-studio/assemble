@@ -3,7 +3,6 @@ import {
   ActionHash,
   AgentPubKey,
   AppAgentClient,
-  EntryHash,
   Record,
 } from '@holochain/client';
 
@@ -202,5 +201,17 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
   async getAllAssemblies(): Promise<Array<EntryRecord<Assembly>>> {
     const records: Record[] = await this.callZome('get_all_assemblies', null);
     return records.map(r => new EntryRecord(r));
+  }
+
+  /** My Calls To Action */
+
+  async getMyCallsToAction(): Promise<Array<ActionHash>> {
+    return this.callZome('get_my_calls_to_action', null);
+  }
+
+  async clearCallsToAction(
+    callsToActionHashes: Array<ActionHash>
+  ): Promise<void> {
+    return this.callZome('clear_calls_to_action', callsToActionHashes);
   }
 }

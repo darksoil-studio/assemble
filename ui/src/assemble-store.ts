@@ -1,4 +1,8 @@
-import { lazyLoadAndPoll } from '@holochain-open-dev/stores';
+import {
+  lazyLoadAndPoll,
+  pipe,
+  sliceAndJoin,
+} from '@holochain-open-dev/stores';
 import { EntryRecord, LazyHoloHashMap } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 
@@ -121,4 +125,11 @@ export class AssembleStore {
     const records = await this.client.getAllAssemblies();
     return records.map(r => r.actionHash);
   }, 4000);
+
+  /** My Calls To Action */
+
+  myCallsToAction = pipe(
+    lazyLoadAndPoll(async () => this.client.getMyCallsToAction(), 4000),
+    callsToActionHashes => sliceAndJoin(this.callToActions, callsToActionHashes)
+  );
 }

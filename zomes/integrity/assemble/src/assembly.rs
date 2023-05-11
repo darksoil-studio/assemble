@@ -9,9 +9,7 @@ pub fn validate_create_assembly(
     _action: EntryCreationAction,
     assembly: Assembly,
 ) -> ExternResult<ValidateCallbackResult> {
-    let record = must_get_valid_record(
-        assembly.call_to_action_hash.clone(),
-    )?;
+    let record = must_get_valid_record(assembly.call_to_action_hash.clone())?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
@@ -41,22 +39,14 @@ pub fn validate_update_assembly(
     _original_action: EntryCreationAction,
     _original_assembly: Assembly,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(
-        ValidateCallbackResult::Invalid(
-            String::from("Assemblies cannot be updated"),
-        ),
-    )
+    Ok(ValidateCallbackResult::Invalid(String::from("Assemblies cannot be updated")))
 }
 pub fn validate_delete_assembly(
     _action: Delete,
     _original_action: EntryCreationAction,
     _original_assembly: Assembly,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(
-        ValidateCallbackResult::Invalid(
-            String::from("Assemblies cannot be deleted"),
-        ),
-    )
+    Ok(ValidateCallbackResult::Invalid(String::from("Assemblies cannot be deleted")))
 }
 pub fn validate_create_link_call_to_action_to_assemblies(
     _action: CreateLink,
@@ -150,7 +140,6 @@ pub fn validate_create_link_all_assemblies(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    // Check the entry type for the given action hash
     let action_hash = ActionHash::from(target_address);
     let record = must_get_valid_record(action_hash)?;
     let _assembly: crate::Assembly = record
@@ -162,7 +151,6 @@ pub fn validate_create_link_all_assemblies(
                 WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
             ),
         )?;
-    // TODO: add the appropriate validation rules
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_all_assemblies(

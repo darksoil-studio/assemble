@@ -3,11 +3,7 @@ use assemble_integrity::*;
 #[hdk_extern]
 pub fn get_all_assemblies(_: ()) -> ExternResult<Vec<Record>> {
     let path = Path::from("all_assemblies");
-    let links = get_links(
-        path.path_entry_hash()?,
-        LinkTypes::AllAssemblies,
-        None,
-    )?;
+    let links = get_links(path.path_entry_hash()?, LinkTypes::AllAssemblies, None)?;
     let get_input: Vec<GetInput> = links
         .into_iter()
         .map(|link| GetInput::new(
