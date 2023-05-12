@@ -40,8 +40,10 @@
       import '../src/elements/assemble-context.ts';
       import '../src/elements/open-calls-to-action.ts';
       import '../src/elements/all-assemblies.ts';
+      import '../src/elements/call-to-action-need-form.ts';
       import '../src/elements/call-to-action-needs-form.ts';
       import '../src/elements/call-to-action-needs.ts';
+      import '../src/elements/call-to-action-need-progress.ts';
       import {
         AssembleStore,
         AssembleClient,
@@ -70,18 +72,36 @@
           }
 
           async createCallToAction(fields) {
+            console.log(fields);
+            const needsFields = Array.isArray(fields.need)
+              ? fields.need
+              : [fields.need];
+
+            const needs = needsFields.map(n => JSON.parse(n));
             await this._assembleStore.value.client.createCallToAction({
               custom_content: encode({}),
               expiration_time: (Date.now() + 2 * 60 * 1000) * 1000,
-              needs: JSON.parse(fields.needs),
+              needs,
             });
             this.shadowRoot.getElementById('needs-form').reset();
           }
 
           render() {
             return html`<form ${onSubmit(f => this.createCallToAction(f))}>
-          <call-to-action-needs-form id="needs-form"></call-to-action-needs-form>
-          <input type="submit">Create</input>
+              <call-to-action-need-form name="participants" .defaultValue=${{
+                description: 'participants',
+                min_necessary: 4,
+                max_possible: 8,
+              }}></call-to-action-need-form>
+              <call-to-action-needs-form id="needs-form"
+.defaultValue=${[
+              {
+                description: 'participants',
+                min_necessary: 4,
+                max_possible: 8,
+              },
+            ]}            ></call-to-action-needs-form>
+              <input type="submit"></input>
           </form>`;
           }
         }
@@ -132,6 +152,10 @@
                   </div>
                   ${this._selectedCallToActionHash
                     ? html`
+                        <call-to-action-need-progress
+                          .callToActionHash=${this._selectedCallToActionHash}
+                          .needIndex=${0}
+                        ></call-to-action-need-progress>
                         <call-to-action-needs
                           .callToActionHash=${this._selectedCallToActionHash}
                         ></call-to-action-needs>

@@ -123,7 +123,7 @@ export class CreateCommitment extends LitElement {
               ${onSubmit(fields => this.createCommitment(fields))}
             >
               ${this.callToAction.entry.needs[this.needIndex].min_necessary !==
-                1 &&
+                1 ||
               this.callToAction.entry.needs[this.needIndex].max_possible !== 1
                 ? html`
                     <sl-input

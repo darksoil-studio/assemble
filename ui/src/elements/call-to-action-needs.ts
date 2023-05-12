@@ -4,17 +4,19 @@ import {
   sharedStyles,
   wrapPathInSvg,
 } from '@holochain-open-dev/elements';
-import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
   AsyncReadable,
   StoreSubscriber,
   join,
 } from '@holochain-open-dev/stores';
+import { LitElement, TemplateResult, html } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import { mdiDelete, mdiPencil } from '@mdi/js';
+
+import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
@@ -22,12 +24,11 @@ import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
-import { LitElement, TemplateResult, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
 import { Commitment, CallToAction, Need, Satisfaction } from '../types.js';
+import './call-to-action-need-progress.js';
 import './create-commitment.js';
 import { CreateCommitment } from './create-commitment.js';
 import './create-satisfaction.js';
@@ -42,6 +43,9 @@ export class CallToActionNeeds extends LitElement {
   // REQUIRED. The hash of the CallToAction to show
   @property(hashProperty('call-to-action-hash'))
   callToActionHash!: ActionHash;
+
+  @property()
+  hideNeeds: Array<number> = [];
 
   /**
    * @internal
@@ -161,11 +165,7 @@ export class CallToActionNeeds extends LitElement {
     commitments: Array<EntryRecord<Commitment>>
   ) {
     if (needs.length === 0)
-      return html`<span
-        >${msg(
-          'There are no unmet needs! This call to action has succeeded.'
-        )}</span
-      >`;
+      return html`<span>${msg('There are no unmet needs.')}</span>`;
 
     return needs.map(
       ([need, i]) => html`
@@ -173,10 +173,15 @@ export class CallToActionNeeds extends LitElement {
           <div class="row " slot="header" style="align-items: center">
             <span class="title">${need.description} </span>
             ${need.min_necessary !== 1 || need.max_possible !== 1
-              ? this.renderNeedProgress(i, need, commitments)
+              ? html`<call-to-action-need-progress
+                  .callToActionHash=${this.callToActionHash}
+                  .needIndex=${i}
+                  style="flex: 1"
+                ></call-to-action-need-progress>`
               : html``}
           </div>
           <div class="column" style="flex: 1">
+            <span style="margin-bottom: 8px">${msg('Commitments:')}</span>
             ${this.renderCommitmentsForNeed(callToAction, i, commitments)}
             <div class="row" style="flex: 1; margin-top: 16px">
               <sl-button
@@ -217,73 +222,6 @@ export class CallToActionNeeds extends LitElement {
     );
   }
 
-  renderNeedProgress(
-    needIndex: number,
-    need: Need,
-    commitments: Array<EntryRecord<Commitment>>
-  ) {
-    const amountContributed = commitments
-      .filter(p => p.entry.need_index === needIndex)
-      .reduce((count, p) => count + p.entry.amount, 0);
-    return html`
-      <div class="row" style="flex: 1; margin-left: 16px; position: relative">
-        <sl-progress-bar
-          style="flex: 1; --indicator-color: ${need.min_necessary === 0 ||
-          amountContributed >= need.min_necessary
-            ? 'green'
-            : 'var(--sl-color-primary-700)'}"
-          .value=${(100 * amountContributed) /
-          (need.max_possible ? need.max_possible : need.min_necessary)}
-        >
-          ${commitments
-            .filter(p => p.entry.need_index === needIndex)
-            .reduce((count, p) => count + p.entry.amount, 0)}
-        </sl-progress-bar>
-
-        ${need.min_necessary !== need.max_possible
-          ? html`
-              ${need.min_necessary !== 0
-                ? html`
-                    <sl-tooltip
-                      open
-                      trigger="manual"
-                      .content=${`${msg('Min.')} ${need.min_necessary}`}
-                    >
-                      <span
-                        style="position: absolute; top: 0; left: ${need.max_possible
-                          ? (100 * need.min_necessary) / need.max_possible
-                          : 100}%; background-color: grey; width: 1px; height: 100%"
-                      ></span>
-                    </sl-tooltip>
-                  `
-                : html``}
-              ${need.max_possible
-                ? html`
-                    <sl-tooltip
-                      open
-                      trigger="manual"
-                      .content=${`${msg('Max.')} ${need.max_possible}`}
-                    >
-                      <span
-                        style="position: absolute; top: 0; left: 100%;"
-                      ></span>
-                    </sl-tooltip>
-                  `
-                : html``}
-            `
-          : html`
-              <sl-tooltip
-                open
-                trigger="manual"
-                .content=${`${msg('Min. and Max.')} ${need.max_possible}`}
-              >
-                <span style="position: absolute; top: 0; left: 100%;"></span>
-              </sl-tooltip>
-            `}
-      </div>
-    `;
-  }
-
   renderMetNeeds(
     callToAction: EntryRecord<CallToAction>,
     needs: Array<[Need, number]>,
@@ -300,19 +238,11 @@ export class CallToActionNeeds extends LitElement {
           <div class="row " slot="header" style="align-items: center">
             <span class="title">${need.description} </span>
             ${need.min_necessary !== 1 || need.max_possible !== 1
-              ? this.renderNeedProgress(
-                  i,
-                  need,
-                  commitments.filter(p =>
-                    satisfactions.find(
-                      s =>
-                        s.entry.need_index === i &&
-                        s.entry.commitments_hashes.find(
-                          ph => ph.toString() === p.actionHash.toString()
-                        )
-                    )
-                  )
-                )
+              ? html`<call-to-action-need-progress
+                  .callToActionHash=${this.callToActionHash}
+                  .needIndex=${i}
+                  style="flex: 1"
+                ></call-to-action-need-progress>`
               : html``}
           </div>
           <div class="column" style="flex: 1">
@@ -341,10 +271,8 @@ export class CallToActionNeeds extends LitElement {
                   .map(commitment =>
                     this.renderCommitment(
                       commitment,
-                      !(
-                        callToAction.entry.needs[i].min_necessary === 1 ||
-                        callToAction.entry.needs[i].max_possible === 1
-                      )
+                      callToAction.entry.needs[i].min_necessary !== 1 ||
+                        callToAction.entry.needs[i].max_possible !== 1
                     )
                   )
               : html`<span class="placeholder"
@@ -423,12 +351,16 @@ export class CallToActionNeeds extends LitElement {
             >${msg('The requested call to action was not found.')}</span
           >`;
 
-        const unmetNeeds = callToAction.entry.needs
+        const needs = callToAction.entry.needs.filter(
+          (need, i) => !this.hideNeeds.includes(i)
+        );
+
+        const unmetNeeds = needs
           .map((need, i) => [need, i])
           .filter(
             ([_need, i]) => !satisfactions.find(s => s.entry.need_index === i)
           ) as Array<[Need, number]>;
-        const metNeeds = callToAction.entry.needs
+        const metNeeds = needs
           .map((need, i) => [need, i])
           .filter(
             ([_need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
