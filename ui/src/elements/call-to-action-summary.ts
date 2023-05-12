@@ -19,7 +19,8 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import { Commitment, CallToAction, Satisfaction } from '../types';
+import { CallToAction, Commitment, Satisfaction } from '../types';
+import './call-to-action-progress.js';
 
 /**
  * @element call-to-action-summary
@@ -63,38 +64,6 @@ export class CallToActionSummary extends LitElement {
       >
   );
 
-  renderProgress(callToAction: EntryRecord<CallToAction>) {
-    switch (this._commitmentsAndSatisfactionsForCall.value.status) {
-      case 'pending':
-        return html`<sl-skeleton></sl-skeleton>`;
-      case 'complete':
-        const commitments =
-          this._commitmentsAndSatisfactionsForCall.value.value[0];
-        const satisfactions =
-          this._commitmentsAndSatisfactionsForCall.value.value[1];
-        const needsCount = callToAction.entry.needs
-          .filter(
-            (_, index) => !satisfactions.find(s => s.entry.need_index === index)
-          )
-          .reduce((count, need) => count + need.min_necessary, 0);
-
-        return html` <sl-progress-bar
-          .value=${(100 *
-            commitments.reduce(
-              (count, commitment) => count + commitment.entry.amount,
-              0
-            )) /
-          needsCount}
-        ></sl-progress-bar>`;
-      case 'error':
-        return html`<display-error
-          .headline=${msg('Error fetching the progress of the call')}
-          .error=${this._commitmentsAndSatisfactionsForCall.value.error.data
-            .data}
-        ></display-error>`;
-    }
-  }
-
   renderSummary(entryRecord: EntryRecord<CallToAction>) {
     return html`
       <div style="display: flex; flex-direction: column">
@@ -118,7 +87,9 @@ export class CallToActionSummary extends LitElement {
               `
             : html``}
         </div>
-        ${this.renderProgress(entryRecord)}
+        <call-to-action-progress
+          .callToActionHash=${this.callToActionHash}
+        ></call-to-action-progress>
       </div>
     `;
   }

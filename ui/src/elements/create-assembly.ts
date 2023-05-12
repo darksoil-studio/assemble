@@ -83,9 +83,7 @@ export class CreateAssembly extends LitElement {
     try {
       this.committing = true;
       const record: EntryRecord<Assembly> =
-        await this.assembleStore.client.createAssembly(
-          assembly
-        );
+        await this.assembleStore.client.createAssembly(assembly);
 
       this.dispatchEvent(
         new CustomEvent('assembly-created', {

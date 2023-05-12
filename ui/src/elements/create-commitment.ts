@@ -21,7 +21,7 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Commitment, CallToAction } from '../types.js';
+import { CallToAction, Commitment } from '../types.js';
 
 /**
  * @element create-commitment

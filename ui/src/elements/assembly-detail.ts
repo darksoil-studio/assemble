@@ -51,9 +51,7 @@ export class AssemblyDetail extends LitElement {
     return html`
       <sl-card>
         <div slot="header" style="display: flex; flex-direction: row">
-          <span style="font-size: 18px; flex: 1;"
-            >${msg('Assembly')}</span
-          >
+          <span style="font-size: 18px; flex: 1;">${msg('Assembly')}</span>
         </div>
 
         <div style="display: flex; flex-direction: column"></div>

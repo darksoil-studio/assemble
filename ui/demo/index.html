@@ -72,7 +72,6 @@
           }
 
           async createCallToAction(fields) {
-            console.log(fields);
             const needsFields = Array.isArray(fields.need)
               ? fields.need
               : [fields.need];
@@ -80,7 +79,7 @@
             const needs = needsFields.map(n => JSON.parse(n));
             await this._assembleStore.value.client.createCallToAction({
               custom_content: encode({}),
-              expiration_time: (Date.now() + 2 * 60 * 1000) * 1000,
+              expiration_time: undefined, // (Date.now() + 2 * 60 * 1000) * 1000,
               needs,
             });
             this.shadowRoot.getElementById('needs-form').reset();

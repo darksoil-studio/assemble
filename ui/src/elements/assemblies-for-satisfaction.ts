@@ -40,9 +40,7 @@ export class AssembliesForSatisfaction extends LitElement {
    * @internal
    */
   _assemblies = new StoreSubscriber(this, () =>
-    this.assembleStore.assembliesForSatisfaction.get(
-      this.satisfactionHash
-    )
+    this.assembleStore.assembliesForSatisfaction.get(this.satisfactionHash)
   );
 
   renderList(hashes: Array<ActionHash>) {
@@ -61,9 +59,7 @@ export class AssembliesForSatisfaction extends LitElement {
       <div style="display: flex; flex-direction: column">
         ${hashes.map(
           hash =>
-            html`<assembly-summary
-              .assemblyHash=${hash}
-            ></assembly-summary>`
+            html`<assembly-summary .assemblyHash=${hash}></assembly-summary>`
         )}
       </div>
     `;

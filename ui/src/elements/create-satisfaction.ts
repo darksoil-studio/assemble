@@ -20,7 +20,7 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Commitment, CallToAction, Satisfaction } from '../types.js';
+import { CallToAction, Commitment, Satisfaction } from '../types.js';
 
 /**
  * @element create-satisfaction

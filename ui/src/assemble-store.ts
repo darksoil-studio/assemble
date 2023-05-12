@@ -1,9 +1,15 @@
 import {
+  asyncReadable,
+  completed,
   lazyLoadAndPoll,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
-import { EntryRecord, LazyHoloHashMap } from '@holochain-open-dev/utils';
+import {
+  EntryRecord,
+  HoloHashMap,
+  LazyHoloHashMap,
+} from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 
 import { AssembleClient } from './assemble-client';
@@ -101,23 +107,32 @@ export class AssembleStore {
 
   /** All Calls To Action */
 
-  openCallsToAction = lazyLoadAndPoll(async () => {
-    const records = await this.client.getOpenCallsToAction();
-    const openCalls: Array<EntryRecord<CallToAction>> = [];
+  openCallsToAction = pipe(
+    lazyLoadAndPoll(async () => this.client.getOpenCallsToAction(), 4000),
+    callsToActionHashes =>
+      sliceAndJoin(this.callToActions, callsToActionHashes),
+    callsToActions => {
+      const openCalls: HoloHashMap<
+        ActionHash,
+        EntryRecord<CallToAction>
+      > = new HoloHashMap();
 
-    for (const record of records) {
-      if (
-        record.entry.expiration_time !== undefined &&
-        record.entry.expiration_time < Date.now() * 1000
-      ) {
-        await this.client.closeCallToAction(record.actionHash);
-      } else {
-        openCalls.push(record);
+      for (const [callToActionHash, callToAction] of Array.from(
+        callsToActions.entries()
+      )) {
+        if (
+          callToAction.entry.expiration_time &&
+          callToAction.entry.expiration_time < Date.now() * 1000
+        ) {
+          this.client.closeCallToAction(callToAction.actionHash);
+        } else {
+          openCalls.set(callToActionHash, callToAction);
+        }
       }
-    }
 
-    return openCalls.map(r => r.actionHash);
-  }, 4000);
+      return completed(openCalls);
+    }
+  );
 
   /** All Assemblies */
 
@@ -128,8 +143,18 @@ export class AssembleStore {
 
   /** My Calls To Action */
 
-  myCallsToAction = pipe(
-    lazyLoadAndPoll(async () => this.client.getMyCallsToAction(), 4000),
-    callsToActionHashes => sliceAndJoin(this.callToActions, callsToActionHashes)
-  );
+  myCallsToAction = asyncReadable<Array<ActionHash>>(async set => {
+    let myCallsToAction = await this.client.getMyCallsToAction();
+    set(myCallsToAction);
+
+    return this.client.onSignal(async signal => {
+      if (
+        signal.type === 'LinkDeleted' &&
+        signal.link_type === 'MyCallsToAction'
+      ) {
+        myCallsToAction = await this.client.getMyCallsToAction();
+        set(myCallsToAction);
+      }
+    });
+  });
 }

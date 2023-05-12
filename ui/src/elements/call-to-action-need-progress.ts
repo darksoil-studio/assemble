@@ -11,17 +11,17 @@ import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
+import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Commitment, CallToAction, Need } from '../types.js';
+import { CallToAction, Commitment, Need, Satisfaction } from '../types.js';
 
 /**
  * @element call-to-action-needs
@@ -54,8 +54,15 @@ export class CallToActionNeedProgress extends LitElement {
         this.assembleStore.commitmentsForCallToAction.get(
           this.callToActionHash
         ),
+        this.assembleStore.satisfactionsForCallToAction.get(
+          this.callToActionHash
+        ),
       ]) as AsyncReadable<
-        [EntryRecord<CallToAction> | undefined, Array<EntryRecord<Commitment>>]
+        [
+          EntryRecord<CallToAction> | undefined,
+          Array<EntryRecord<Commitment>>,
+          Array<EntryRecord<Satisfaction>>
+        ]
       >,
     () => [this.callToActionHash, this.needIndex]
   );
@@ -70,9 +77,14 @@ export class CallToActionNeedProgress extends LitElement {
 
   renderNeedProgress(
     callToAction: EntryRecord<CallToAction>,
-    commitments: Array<EntryRecord<Commitment>>
+    commitments: Array<EntryRecord<Commitment>>,
+    satisfactions: Array<EntryRecord<Satisfaction>>
   ) {
     const need: Need = callToAction.entry.needs[this.needIndex];
+
+    const satisfied = !!satisfactions.find(
+      s => s.entry.need_index === this.needIndex
+    );
 
     if (need.min_necessary === 1 && need.max_possible === 1)
       return html`<div class="row" style="flex: 1">
@@ -89,7 +101,8 @@ export class CallToActionNeedProgress extends LitElement {
     return html`
       <div class="row" style="flex: 1; margin-left: 16px; position: relative">
         <sl-progress-bar
-          style="flex: 1; --indicator-color: ${need.min_necessary === 0 ||
+          style="flex: 1; --indicator-color: ${satisfied ||
+          need.min_necessary === 0 ||
           amountContributed >= need.min_necessary
             ? 'green'
             : 'var(--sl-color-primary-700)'}"
@@ -152,13 +165,18 @@ export class CallToActionNeedProgress extends LitElement {
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
         const commitments = this._callToActionInfo.value.value[1];
+        const satisfactions = this._callToActionInfo.value.value[2];
 
         if (!callToAction)
           return html`<span
             >${msg('The requested call to action was not found.')}</span
           >`;
 
-        return this.renderNeedProgress(callToAction, commitments);
+        return this.renderNeedProgress(
+          callToAction,
+          commitments,
+          satisfactions
+        );
       case 'error':
         return html`<display-error
           tooltip

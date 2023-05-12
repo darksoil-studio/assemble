@@ -19,7 +19,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import { Commitment, CallToAction, Satisfaction } from '../types';
+import { CallToAction, Commitment, Satisfaction } from '../types';
 
 /**
  * @element call-to-action-progress
@@ -46,18 +46,11 @@ export class CallToActionProgress extends LitElement {
     () =>
       join([
         this.assembleStore.callToActions.get(this.callToActionHash),
-        this.assembleStore.commitmentsForCallToAction.get(
-          this.callToActionHash
-        ),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
       ]) as AsyncReadable<
-        [
-          EntryRecord<CallToAction>,
-          Array<EntryRecord<Commitment>>,
-          Array<EntryRecord<Satisfaction>>
-        ]
+        [EntryRecord<CallToAction>, Array<EntryRecord<Satisfaction>>]
       >,
     () => [this.callToActionHash]
   );
@@ -68,22 +61,30 @@ export class CallToActionProgress extends LitElement {
         return html`<sl-skeleton></sl-skeleton>`;
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
-        const commitments = this._callToActionInfo.value.value[1];
-        const satisfactions = this._callToActionInfo.value.value[2];
-        const needsCount = callToAction.entry.needs
-          .filter(
-            (_, index) => !satisfactions.find(s => s.entry.need_index === index)
-          )
-          .reduce((count, need) => count + need.min_necessary, 0);
-
-        const amountContributed = commitments.reduce(
-          (count, commitment) => count + commitment.entry.amount,
+        const satisfactions = this._callToActionInfo.value.value[1];
+        const needsCount = callToAction.entry.needs.reduce(
+          (count, need) => count + need.min_necessary,
           0
         );
+
+        if (needsCount === 0)
+          return html`<span class="placeholder"
+            >${msg("This call to action doesn't have required needs.")}</span
+          >`;
+
+        const amountContributed = satisfactions
+          .map(s => s.entry.need_index)
+          .reduce(
+            (count, needIndex) =>
+              count + callToAction.entry.needs[needIndex].min_necessary,
+            0
+          );
+        const satisfied = amountContributed === needsCount;
         return html` <sl-progress-bar
-          .value=${needsCount > 0
-            ? (100 * amountContributed) / needsCount
-            : 100}
+          .value=${(100 * amountContributed) / needsCount}
+          style="--indicator-color: ${satisfied
+            ? 'green'
+            : 'var(--sl-color-primary-700)'}"
         ></sl-progress-bar>`;
       case 'error':
         return html`<display-error

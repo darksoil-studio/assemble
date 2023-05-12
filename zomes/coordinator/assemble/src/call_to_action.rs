@@ -1,7 +1,9 @@
 use assemble_integrity::*;
 use hdk::prelude::*;
 
-use crate::my_calls_to_action::add_to_my_calls_to_action;
+use crate::{
+    my_calls_to_action::add_to_my_calls_to_action, open_calls_to_action::open_calls_to_action_path,
+};
 
 #[hdk_extern]
 pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Record> {
@@ -20,7 +22,7 @@ pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Recor
         ))
     ))?;
 
-    let path = Path::from("open_calls_to_action");
+    let path = open_calls_to_action_path();
     create_link(
         path.path_entry_hash()?,
         call_to_action_hash.clone(),

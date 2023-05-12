@@ -70,7 +70,9 @@ export class OpenCallsToAction extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        return this.renderList(this._openCallsToAction.value.value);
+        return this.renderList(
+          Array.from(this._openCallsToAction.value.value.keys())
+        );
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the call to actions')}

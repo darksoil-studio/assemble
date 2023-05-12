@@ -4,21 +4,20 @@ import {
   serialize,
   sharedStyles,
 } from '@holochain-open-dev/elements';
-import { LitElement, html } from 'lit';
-import { localized, msg } from '@lit/localize';
-
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
+import { localized, msg } from '@lit/localize';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-
+import { LitElement, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
+
 import { Need } from '../types';
 
 /**
@@ -29,6 +28,9 @@ import { Need } from '../types';
 export class CallToActionNeedForm extends LitElement implements FormField {
   @property()
   name = 'need';
+
+  @property()
+  description: string | undefined;
 
   /**
    * The default value of the field if this element is used inside a form
@@ -57,7 +59,9 @@ export class CallToActionNeedForm extends LitElement implements FormField {
       : undefined;
 
     const need: Need = {
-      description: fields.description as string,
+      description: this.description
+        ? this.description
+        : (fields.description as string),
       min_necessary,
       max_possible,
     };
@@ -105,13 +109,17 @@ export class CallToActionNeedForm extends LitElement implements FormField {
     return html`
       <form id="need-form" class="column">
         <div class="row" style="align-items: center; margin-top: 8px">
-          <sl-input
-            name="description"
-            required
-            style="flex: 1"
-            .placeholder=${msg('Need description*')}
-            .defaultValue=${this.defaultValue?.description || ''}
-          ></sl-input>
+          ${this.description
+            ? html``
+            : html`
+                <sl-input
+                  name="description"
+                  required
+                  style="flex: 1"
+                  .placeholder=${msg('Need description*')}
+                  .defaultValue=${this.defaultValue?.description || ''}
+                ></sl-input>
+              `}
 
           <slot name="action"></slot>
         </div>

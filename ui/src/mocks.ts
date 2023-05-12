@@ -345,13 +345,14 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
       .map(er => er?.record)
       .filter(r => !!r) as Record[];
   }
-  
+
   async get_my_calls_to_action(author: AgentPubKey): Promise<Array<Record>> {
     const actionHashes: ActionHash[] = this.callToAction.authorMap.get(author);
-    return actionHashes.map(actionHash => this.callToAction.entryRecord(actionHash)).map(er => er?.record).filter(r => !!r) as Record[];
+    return actionHashes
+      .map(actionHash => this.callToAction.entryRecord(actionHash))
+      .map(er => er?.record)
+      .filter(r => !!r) as Record[];
   }
-
-
 }
 
 export function sampleCallToAction(): CallToAction {

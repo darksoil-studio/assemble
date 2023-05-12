@@ -1,10 +1,5 @@
 import { EntryRecord, ZomeClient } from '@holochain-open-dev/utils';
-import {
-  ActionHash,
-  AgentPubKey,
-  AppAgentClient,
-  Record,
-} from '@holochain/client';
+import { ActionHash, AppAgentClient, Record } from '@holochain/client';
 
 import { Assembly } from './types';
 import { Satisfaction } from './types';
@@ -184,12 +179,8 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   /** All Calls To Action */
 
-  async getOpenCallsToAction(): Promise<Array<EntryRecord<CallToAction>>> {
-    const records: Record[] = await this.callZome(
-      'get_open_calls_to_action',
-      null
-    );
-    return records.map(r => new EntryRecord(r));
+  async getOpenCallsToAction(): Promise<Array<ActionHash>> {
+    return this.callZome('get_open_calls_to_action', null);
   }
 
   closeCallToAction(callToActionHash: ActionHash): Promise<void> {
