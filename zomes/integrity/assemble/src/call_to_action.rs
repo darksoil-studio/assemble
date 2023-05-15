@@ -149,15 +149,19 @@ pub fn validate_create_link_my_calls_to_action(
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_my_calls_to_action(
-    _action: DeleteLink,
-    _original_action: CreateLink,
+    action: DeleteLink,
+    original_action: CreateLink,
     _base: AnyLinkableHash,
     _target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(
+if !action.author.eq(&original_action.author) {
+    
+return    Ok(
         ValidateCallbackResult::Invalid(
-            String::from("MyCallsToAction links cannot be deleted"),
-        ),
-    )
+            String::from("MyCallsToAction links can only be deleted by their author")
+        )    );
+    }
+
+    Ok(ValidateCallbackResult::Valid)
 }

@@ -378,7 +378,7 @@ export class CallToActionNeeds extends LitElement {
               >
               ${this.renderUnmetNeeds(
                 callToAction,
-                unmetNeeds.filter((need, i) => !this.hideNeeds.includes(i)),
+                unmetNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
                 commitments
               )}
             </div>
@@ -389,7 +389,7 @@ export class CallToActionNeeds extends LitElement {
               >
               ${this.renderMetNeeds(
                 callToAction,
-                metNeeds.filter((need, i) => !this.hideNeeds.includes(i)),
+                metNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
                 commitments,
                 satisfactions
               )}
