@@ -1668,15 +1668,6 @@
           "members": [
             {
               "kind": "field",
-              "name": "name",
-              "type": {
-                "text": "string"
-              },
-              "default": "'needs'",
-              "attribute": "name"
-            },
-            {
-              "kind": "field",
               "name": "defaultValue",
               "type": {
                 "text": "Array<Need>"
@@ -1721,14 +1712,6 @@
             }
           ],
           "attributes": [
-            {
-              "name": "name",
-              "type": {
-                "text": "string"
-              },
-              "default": "'needs'",
-              "fieldName": "name"
-            },
             {
               "name": "defaultValue",
               "type": {

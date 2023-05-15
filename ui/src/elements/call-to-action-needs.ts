@@ -228,12 +228,10 @@ export class CallToActionNeeds extends LitElement {
     satisfactions: Array<EntryRecord<Satisfaction>>
   ) {
     if (needs.length === 0)
-      return html`<span style="margin-top: 16px"
-        >${msg('There are no satisfied needs yet.')}</span
-      >`;
+      return html`<span>${msg('There are no satisfied needs.')}</span>`;
     return needs.map(
       ([need, i]) => html`
-        <sl-card>
+        <sl-card style="margin-bottom: 16px">
           <div class="row " slot="header" style="align-items: center">
             <span class="title">${need.description} </span>
             ${need.min_necessary !== 1 || need.max_possible !== 1
@@ -350,16 +348,12 @@ export class CallToActionNeeds extends LitElement {
             >${msg('The requested call to action was not found.')}</span
           >`;
 
-        const needs = callToAction.entry.needs.filter(
-          (need, i) => !this.hideNeeds.includes(i)
-        );
-
-        const unmetNeeds = needs
+        const unmetNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
           .filter(
             ([_need, i]) => !satisfactions.find(s => s.entry.need_index === i)
           ) as Array<[Need, number]>;
-        const metNeeds = needs
+        const metNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
           .filter(
             ([_need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
@@ -382,7 +376,11 @@ export class CallToActionNeeds extends LitElement {
               <span style="margin-top: 24px; margin-bottom: 16px"
                 ><strong>${msg('Unmet Needs')}</strong></span
               >
-              ${this.renderUnmetNeeds(callToAction, unmetNeeds, commitments)}
+              ${this.renderUnmetNeeds(
+                callToAction,
+                unmetNeeds.filter((need, i) => !this.hideNeeds.includes(i)),
+                commitments
+              )}
             </div>
 
             <div class="column" style="flex: 1; margin-left: 16px">
@@ -391,7 +389,7 @@ export class CallToActionNeeds extends LitElement {
               >
               ${this.renderMetNeeds(
                 callToAction,
-                metNeeds,
+                metNeeds.filter((need, i) => !this.hideNeeds.includes(i)),
                 commitments,
                 satisfactions
               )}

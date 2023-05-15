@@ -34,9 +34,6 @@ import { CallToActionNeedForm } from './call-to-action-need-form.js';
 @localized()
 @customElement('call-to-action-needs-form')
 export class CallToActionNeedsForm extends LitElement {
-  @property()
-  name = 'needs';
-
   /**
    * The default value of the field if this element is used inside a form
    */
@@ -101,7 +98,7 @@ export class CallToActionNeedsForm extends LitElement {
 
   render() {
     return html`
-      <div id="needs-form" style="margin-bottom: 16px; margin-top: 16px;">
+      <div id="needs-form">
         <div style="display: flex; flex-direction: column">
           <div class="row" style="align-items: center;">
             <span class="title">${msg('Needs')}</span>
@@ -109,10 +106,11 @@ export class CallToActionNeedsForm extends LitElement {
               <sl-icon-button
                 style="margin-left: 4px"
                 @click=${() => {
-                  this._needsIds = [
-                    ...this._needsIds,
-                    Math.max(...this._needsIds.map(i => i)) + 1,
-                  ];
+                  const nextId =
+                    this._needsIds.length === 0
+                      ? 0
+                      : Math.max(...this._needsIds.map(i => i)) + 1;
+                  this._needsIds = [...this._needsIds, nextId];
                 }}
                 .src=${wrapPathInSvg(mdiPlus)}
               ></sl-icon-button
