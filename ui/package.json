@@ -1,8 +1,8 @@
 {
   "name": "@darksoil/assemble",
-  "version": "0.3.0-alpha.4",
+  "version": "0.3.0-alpha.5",
   "scripts": {
-    "start": "vite --clearScreen false --port $UI_PORT",
+    "start": "vite --clearScreen false --port $UI_PORT --force",
     "build": "npm run format && tsc && npm run analyze -- --exclude dist",
     "lint": "eslint --ext .ts && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --fix --ext .ts && prettier \"**/*.ts\" --write --ignore-path .gitignore",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@holochain/client": "^0.14.1",
-    "@holochain-open-dev/elements": "^0.5.1",
+    "@holochain-open-dev/elements": "^0.5.2",
     "@holochain-open-dev/profiles": "^0.14.1",
     "@holochain-open-dev/stores": "^0.5.1",
     "@holochain-open-dev/utils": "^0.14.0",

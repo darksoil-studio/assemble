@@ -34,8 +34,10 @@ export class CommitmentSummary extends LitElement {
   /**
    * @internal
    */
-  _commitment = new StoreSubscriber(this, () =>
-    this.assembleStore.commitments.get(this.commitmentHash)
+  _commitment = new StoreSubscriber(
+    this,
+    () => this.assembleStore.commitments.get(this.commitmentHash),
+    () => [this.commitmentHash]
   );
 
   renderSummary(entryRecord: EntryRecord<Commitment>) {

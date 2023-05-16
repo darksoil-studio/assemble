@@ -34,8 +34,10 @@ export class AssemblySummary extends LitElement {
   /**
    * @internal
    */
-  _assembly = new StoreSubscriber(this, () =>
-    this.assembleStore.assemblies.get(this.assemblyHash)
+  _assembly = new StoreSubscriber(
+    this,
+    () => this.assembleStore.assemblies.get(this.assemblyHash),
+    () => [this.assemblyHash]
   );
 
   renderSummary(entryRecord: EntryRecord<Assembly>) {

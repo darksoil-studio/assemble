@@ -72,6 +72,7 @@
           }
 
           async createCallToAction(fields) {
+            console.log('he');
             const needsFields = Array.isArray(fields.need)
               ? fields.need
               : [fields.need];
@@ -87,11 +88,6 @@
 
           render() {
             return html`<form ${onSubmit(f => this.createCallToAction(f))}>
-              <call-to-action-need-form name="participants" .defaultValue=${{
-                description: 'participants',
-                min_necessary: 4,
-                max_possible: 8,
-              }}></call-to-action-need-form>
               <call-to-action-needs-form id="needs-form"
               .allowEmpty=${true}
 .defaultValue=${[
@@ -168,6 +164,14 @@
                 <span>Collective Commitments</span>
                 <all-assemblies></all-assemblies>
               </div>
+              <sl-button
+                @click=${async () => {
+                  await this._assembleStore.client.clearCallsToAction([
+                    this._selectedCallToActionHash,
+                  ]);
+                }}
+                >Clear</sl-button
+              >
             </assemble-context>
           `;
         }

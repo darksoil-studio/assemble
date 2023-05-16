@@ -35,7 +35,8 @@ export class OpenCallsToAction extends LitElement {
    */
   _openCallsToAction = new StoreSubscriber(
     this,
-    () => this.assembleStore.openCallsToAction
+    () => this.assembleStore.openCallsToAction,
+    () => []
   );
 
   renderList(hashes: Array<ActionHash>) {

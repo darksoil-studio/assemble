@@ -35,7 +35,8 @@ export class AllAssemblies extends LitElement {
    */
   _allAssemblies = new StoreSubscriber(
     this,
-    () => this.assembleStore.allAssemblies
+    () => this.assembleStore.allAssemblies,
+    () => []
   );
 
   renderList(hashes: Array<ActionHash>) {

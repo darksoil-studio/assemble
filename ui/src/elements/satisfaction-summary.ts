@@ -34,8 +34,10 @@ export class SatisfactionSummary extends LitElement {
   /**
    * @internal
    */
-  _satisfaction = new StoreSubscriber(this, () =>
-    this.assembleStore.satisfactions.get(this.satisfactionHash)
+  _satisfaction = new StoreSubscriber(
+    this,
+    () => this.assembleStore.satisfactions.get(this.satisfactionHash),
+    () => [this.satisfactionHash]
   );
 
   renderSummary(entryRecord: EntryRecord<Satisfaction>) {

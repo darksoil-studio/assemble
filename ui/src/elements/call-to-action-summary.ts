@@ -42,8 +42,10 @@ export class CallToActionSummary extends LitElement {
   /**
    * @internal
    */
-  _callToAction = new StoreSubscriber(this, () =>
-    this.assembleStore.callToActions.get(this.callToActionHash)
+  _callToAction = new StoreSubscriber(
+    this,
+    () => this.assembleStore.callToActions.get(this.callToActionHash),
+    () => [this.callToActionHash]
   );
 
   /**
@@ -61,7 +63,8 @@ export class CallToActionSummary extends LitElement {
         ),
       ]) as AsyncReadable<
         [Array<EntryRecord<Commitment>>, Array<EntryRecord<Satisfaction>>]
-      >
+      >,
+    () => [this.callToActionHash]
   );
 
   renderSummary(entryRecord: EntryRecord<CallToAction>) {

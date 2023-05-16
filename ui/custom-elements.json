@@ -472,9 +472,21 @@
               "description": "All Assemblies"
             },
             {
-              "kind": "field",
-              "name": "myCallsToAction",
+              "kind": "method",
+              "name": "clearCallsToAction",
+              "parameters": [
+                {
+                  "name": "callsToActionHashes",
+                  "type": {
+                    "text": "ActionHash[]"
+                  }
+                }
+              ],
               "description": "My Calls To Action"
+            },
+            {
+              "kind": "field",
+              "name": "myCallsToAction"
             }
           ]
         }

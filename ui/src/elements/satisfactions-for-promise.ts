@@ -39,8 +39,11 @@ export class SatisfactionsForCommitment extends LitElement {
   /**
    * @internal
    */
-  _satisfactions = new StoreSubscriber(this, () =>
-    this.assembleStore.satisfactionsForCommitment.get(this.commitmentHash)
+  _satisfactions = new StoreSubscriber(
+    this,
+    () =>
+      this.assembleStore.satisfactionsForCommitment.get(this.commitmentHash),
+    () => [this.commitmentHash]
   );
 
   renderList(hashes: Array<ActionHash>) {

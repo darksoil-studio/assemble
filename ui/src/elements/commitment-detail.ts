@@ -43,8 +43,10 @@ export class CommitmentDetail extends LitElement {
   /**
    * @internal
    */
-  _commitment = new StoreSubscriber(this, () =>
-    this.assembleStore.commitments.get(this.commitmentHash)
+  _commitment = new StoreSubscriber(
+    this,
+    () => this.assembleStore.commitments.get(this.commitmentHash),
+    () => [this.commitmentHash]
   );
 
   renderDetail(entryRecord: EntryRecord<Commitment>) {

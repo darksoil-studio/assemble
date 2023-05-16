@@ -2,6 +2,7 @@ import {
   asyncReadable,
   completed,
   lazyLoadAndPoll,
+  manualReloadStore,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
@@ -143,18 +144,12 @@ export class AssembleStore {
 
   /** My Calls To Action */
 
-  myCallsToAction = asyncReadable<Array<ActionHash>>(async set => {
-    let myCallsToAction = await this.client.getMyCallsToAction();
-    set(myCallsToAction);
+  async clearCallsToAction(callsToActionHashes: ActionHash[]) {
+    await this.client.clearCallsToAction(callsToActionHashes);
+    await this.myCallsToAction.reload();
+  }
 
-    return this.client.onSignal(async signal => {
-      if (
-        signal.type === 'LinkDeleted' &&
-        signal.link_type === 'MyCallsToAction'
-      ) {
-        myCallsToAction = await this.client.getMyCallsToAction();
-        set(myCallsToAction);
-      }
-    });
-  });
+  myCallsToAction = manualReloadStore(async () =>
+    this.client.getMyCallsToAction()
+  );
 }

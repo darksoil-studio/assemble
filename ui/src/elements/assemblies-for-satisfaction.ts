@@ -39,8 +39,11 @@ export class AssembliesForSatisfaction extends LitElement {
   /**
    * @internal
    */
-  _assemblies = new StoreSubscriber(this, () =>
-    this.assembleStore.assembliesForSatisfaction.get(this.satisfactionHash)
+  _assemblies = new StoreSubscriber(
+    this,
+    () =>
+      this.assembleStore.assembliesForSatisfaction.get(this.satisfactionHash),
+    () => [this.satisfactionHash]
   );
 
   renderList(hashes: Array<ActionHash>) {

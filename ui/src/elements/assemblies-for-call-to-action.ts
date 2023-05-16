@@ -39,8 +39,11 @@ export class AssembliesForCallToAction extends LitElement {
   /**
    * @internal
    */
-  _assemblies = new StoreSubscriber(this, () =>
-    this.assembleStore.assembliesForCallToAction.get(this.callToActionHash)
+  _assemblies = new StoreSubscriber(
+    this,
+    () =>
+      this.assembleStore.assembliesForCallToAction.get(this.callToActionHash),
+    () => [this.callToActionHash]
   );
 
   renderList(hashes: Array<ActionHash>) {
