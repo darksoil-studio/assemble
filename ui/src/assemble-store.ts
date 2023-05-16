@@ -1,5 +1,4 @@
 import {
-  asyncReadable,
   completed,
   lazyLoadAndPoll,
   manualReloadStore,
@@ -144,12 +143,8 @@ export class AssembleStore {
 
   /** My Calls To Action */
 
-  async clearCallsToAction(callsToActionHashes: ActionHash[]) {
-    await this.client.clearCallsToAction(callsToActionHashes);
-    await this.myCallsToAction.reload();
-  }
-
-  myCallsToAction = manualReloadStore(async () =>
-    this.client.getMyCallsToAction()
+  myCallsToAction = lazyLoadAndPoll(
+    async () => this.client.getMyCallsToAction(),
+    1000
   );
 }

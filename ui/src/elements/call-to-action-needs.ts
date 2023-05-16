@@ -150,7 +150,7 @@ export class CallToActionNeeds extends LitElement {
         this.renderCommitment(
           commitment,
           !(
-            callToAction.entry.needs[needIndex].min_necessary === 1 ||
+            callToAction.entry.needs[needIndex].min_necessary === 1 &&
             callToAction.entry.needs[needIndex].max_possible === 1
           )
         )
@@ -246,24 +246,28 @@ export class CallToActionNeeds extends LitElement {
             <span style="margin-bottom: 8px"
               >${msg('Commitments that satisfied the need:')}</span
             >
-            ${commitments.filter(p =>
-              satisfactions.find(
-                s =>
-                  s.entry.need_index === i &&
-                  s.entry.commitments_hashes.find(
-                    ph => ph.toString() === p.actionHash.toString()
-                  )
-              )
+            ${commitments.filter(
+              c =>
+                c.entry.need_index === i &&
+                satisfactions.find(
+                  s =>
+                    s.entry.need_index === i &&
+                    s.entry.commitments_hashes.find(
+                      ph => ph.toString() === c.actionHash.toString()
+                    )
+                )
             ).length > 0
               ? commitments
-                  .filter(p =>
-                    satisfactions.find(
-                      s =>
-                        s.entry.need_index === i &&
-                        s.entry.commitments_hashes.find(
-                          ph => ph.toString() === p.actionHash.toString()
-                        )
-                    )
+                  .filter(
+                    c =>
+                      c.entry.need_index === i &&
+                      satisfactions.find(
+                        s =>
+                          s.entry.need_index === i &&
+                          s.entry.commitments_hashes.find(
+                            ph => ph.toString() === c.actionHash.toString()
+                          )
+                      )
                   )
                   .map(commitment =>
                     this.renderCommitment(
@@ -279,33 +283,33 @@ export class CallToActionNeeds extends LitElement {
               >${msg('Additional Commitments: ')}</span
             >
             ${commitments.filter(
-              p =>
+              c =>
+                c.entry.need_index === i &&
                 !satisfactions.find(
                   s =>
                     s.entry.need_index === i &&
                     s.entry.commitments_hashes.find(
-                      ph => ph.toString() === p.actionHash.toString()
+                      ph => ph.toString() === c.actionHash.toString()
                     )
                 )
             ).length > 0
               ? commitments
                   .filter(
-                    p =>
+                    c =>
+                      c.entry.need_index === i &&
                       !satisfactions.find(
                         s =>
                           s.entry.need_index === i &&
                           s.entry.commitments_hashes.find(
-                            ph => ph.toString() === p.actionHash.toString()
+                            ph => ph.toString() === c.actionHash.toString()
                           )
                       )
                   )
                   .map(commitment =>
                     this.renderCommitment(
                       commitment,
-                      !(
-                        callToAction.entry.needs[i].min_necessary === 1 ||
-                        callToAction.entry.needs[i].max_possible === 1
-                      )
+                      callToAction.entry.needs[i].min_necessary !== 1 ||
+                        callToAction.entry.needs[i].max_possible !== 1
                     )
                   )
               : html`<span class="placeholder" style="margin-top: 8px"
