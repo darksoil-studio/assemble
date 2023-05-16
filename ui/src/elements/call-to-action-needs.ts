@@ -171,13 +171,11 @@ export class CallToActionNeeds extends LitElement {
         <sl-card style="margin-bottom: 16px">
           <div class="row " slot="header" style="align-items: center">
             <span class="title">${need.description} </span>
-            ${need.min_necessary !== 1 || need.max_possible !== 1
-              ? html`<call-to-action-need-progress
-                  .callToActionHash=${this.callToActionHash}
-                  .needIndex=${i}
-                  style="flex: 1"
-                ></call-to-action-need-progress>`
-              : html``}
+            <call-to-action-need-progress
+              .callToActionHash=${this.callToActionHash}
+              .needIndex=${i}
+              style="flex: 1"
+            ></call-to-action-need-progress>
           </div>
           <div class="column" style="flex: 1">
             <span style="margin-bottom: 8px">${msg('Commitments:')}</span>
