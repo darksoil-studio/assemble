@@ -14,7 +14,7 @@ pub fn get_my_calls_to_action(_: ()) -> ExternResult<Vec<ActionHash>> {
     )?;
     let hashes: Vec<ActionHash> = links
         .into_iter()
-        .map(|link| ActionHash::from(link.target))
+        .filter_map(|link| ActionHash::try_from(link.target).ok())
         .collect();
     Ok(hashes)
 }
@@ -26,7 +26,7 @@ pub fn add_to_my_calls_to_action(call_to_action_hash: ActionHash) -> ExternResul
     let links = get_links(my_pub_key.clone(), LinkTypes::MyCallsToAction, None)?;
     let hashes: Vec<ActionHash> = links
         .into_iter()
-        .map(|link| ActionHash::from(link.target))
+        .filter_map(|link| ActionHash::try_from(link.target).ok())
         .collect();
     if let None = hashes.into_iter().find(|h| h.eq(&call_to_action_hash)) {
         create_link(
@@ -48,9 +48,11 @@ pub fn clear_calls_to_action(calls_to_action_hashes: Vec<ActionHash>) -> ExternR
     let links = get_links(my_pub_key, LinkTypes::MyCallsToAction, None)?;
 
     for link in links {
+        let action_hash = ActionHash::try_from(link.target.clone())
+            .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
         if let Some(_) = calls_to_action_hashes
             .iter()
-            .find(|hash| ActionHash::from(link.target.clone()).eq(hash))
+            .find(|hash| action_hash.eq(hash))
         {
             delete_link(link.create_link_hash)?;
         }

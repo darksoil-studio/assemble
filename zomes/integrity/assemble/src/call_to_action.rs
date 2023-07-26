@@ -52,7 +52,8 @@ pub fn validate_create_link_call_to_action_to_call_to_actions(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::from(base_address);
+    let action_hash = ActionHash::try_from(base_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
@@ -63,7 +64,8 @@ pub fn validate_create_link_call_to_action_to_call_to_actions(
                 WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
             ),
         )?;
-    let action_hash = ActionHash::from(target_address);
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
@@ -95,7 +97,8 @@ pub fn validate_create_link_open_calls_to_action(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::from(target_address);
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
@@ -115,7 +118,9 @@ pub fn validate_delete_link_open_calls_to_action(
     target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let record = must_get_valid_record(ActionHash::from(target))?;
+    let action_hash = ActionHash::try_from(target)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
+    let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
@@ -134,7 +139,8 @@ pub fn validate_create_link_my_calls_to_action(
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
     // Check the entry type for the given action hash
-    let action_hash = ActionHash::from(target_address);
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
@@ -156,7 +162,7 @@ pub fn validate_delete_link_my_calls_to_action(
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
 if !action.author.eq(&original_action.author) {
-    
+
 return    Ok(
         ValidateCallbackResult::Invalid(
             String::from("MyCallsToAction links can only be deleted by their author")

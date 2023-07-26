@@ -91,7 +91,11 @@ pub fn get_call_to_actions_for_call_to_action(
     )?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(ActionHash::from(link.target).into(), GetOptions::default()))
+        .filter_map(|link| ActionHash::try_from(link.target).ok())
+        .map(|action_hash| GetInput::new(
+            action_hash.into(),
+            GetOptions::default(),
+        ))
         .collect();
     let records: Vec<Record> = HDK
         .with(|hdk| hdk.borrow().get(get_input))?

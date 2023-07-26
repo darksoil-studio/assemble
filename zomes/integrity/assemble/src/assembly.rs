@@ -54,7 +54,8 @@ pub fn validate_create_link_call_to_action_to_assemblies(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::from(base_address);
+    let action_hash = ActionHash::try_from(base_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
@@ -65,8 +66,8 @@ pub fn validate_create_link_call_to_action_to_assemblies(
                 WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
             ),
         )?;
-    let action_hash = ActionHash::from(target_address);
-    let record = must_get_valid_record(action_hash)?;
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;    let record = must_get_valid_record(action_hash)?;
     let _assembly: crate::Assembly = record
         .entry()
         .to_app_option()
@@ -97,8 +98,8 @@ pub fn validate_create_link_satisfaction_to_assemblies(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::from(base_address);
-    let record = must_get_valid_record(action_hash)?;
+    let action_hash = ActionHash::try_from(base_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;    let record = must_get_valid_record(action_hash)?;
     let _satisfaction: crate::Satisfaction = record
         .entry()
         .to_app_option()
@@ -108,8 +109,8 @@ pub fn validate_create_link_satisfaction_to_assemblies(
                 WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
             ),
         )?;
-    let action_hash = ActionHash::from(target_address);
-    let record = must_get_valid_record(action_hash)?;
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;    let record = must_get_valid_record(action_hash)?;
     let _assembly: crate::Assembly = record
         .entry()
         .to_app_option()
@@ -140,7 +141,8 @@ pub fn validate_create_link_all_assemblies(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::from(target_address);
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
     let record = must_get_valid_record(action_hash)?;
     let _assembly: crate::Assembly = record
         .entry()

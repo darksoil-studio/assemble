@@ -82,8 +82,9 @@ pub fn get_satisfactions_for_call_to_action(
     )?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(
-            ActionHash::from(link.target).into(),
+        .filter_map(|link| ActionHash::try_from(link.target).ok())
+        .map(|action_hash| GetInput::new(
+            action_hash.into(),
             GetOptions::default(),
         ))
         .collect();
@@ -101,8 +102,9 @@ pub fn get_satisfactions_for_commitment(
     let links = get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(
-            ActionHash::from(link.target).into(),
+        .filter_map(|link| ActionHash::try_from(link.target).ok())
+        .map(|action_hash| GetInput::new(
+            action_hash.into(),
             GetOptions::default(),
         ))
         .collect();

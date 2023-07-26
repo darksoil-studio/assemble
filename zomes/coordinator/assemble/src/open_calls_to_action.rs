@@ -9,7 +9,7 @@ pub fn get_open_calls_to_action(_: ()) -> ExternResult<Vec<ActionHash>> {
     let links = get_links(path.path_entry_hash()?, LinkTypes::OpenCallsToAction, None)?;
     let hashes: Vec<ActionHash> = links
         .into_iter()
-        .map(|link| ActionHash::from(link.target))
+        .filter_map(|link| ActionHash::try_from(link.target).ok())
         .collect();
     Ok(hashes)
 }
@@ -18,7 +18,9 @@ pub fn close_call_to_action(call_to_action_hash: ActionHash) -> ExternResult<()>
     let path = open_calls_to_action_path();
     let links = get_links(path.path_entry_hash()?, LinkTypes::OpenCallsToAction, None)?;
     for link in links {
-        if ActionHash::from(link.target.clone()).eq(&call_to_action_hash) {
+        let action_hash = ActionHash::try_from(link.target.clone())
+            .map_err(|e| wasm_error!(WasmErrorInner::from(e)))?;
+        if action_hash.eq(&call_to_action_hash) {
             delete_link(link.create_link_hash)?;
         }
     }
