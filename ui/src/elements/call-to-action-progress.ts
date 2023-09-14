@@ -4,7 +4,7 @@ import '@holochain-open-dev/profiles/dist/elements/agent-avatar.js';
 import {
   AsyncReadable,
   StoreSubscriber,
-  join,
+  joinAsync,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
@@ -19,7 +19,6 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
-import { CallToAction, Commitment, Satisfaction } from '../types';
 
 /**
  * @element call-to-action-progress
@@ -44,14 +43,12 @@ export class CallToActionProgress extends LitElement {
   _callToActionInfo = new StoreSubscriber(
     this,
     () =>
-      join([
+      joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
-      ]) as AsyncReadable<
-        [EntryRecord<CallToAction>, Array<EntryRecord<Satisfaction>>]
-      >,
+      ]),
     () => [this.callToActionHash]
   );
 
@@ -62,10 +59,12 @@ export class CallToActionProgress extends LitElement {
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
         const satisfactions = this._callToActionInfo.value.value[1];
-        const needsCount = callToAction.entry.needs.reduce(
-          (count, need) => count + need.min_necessary,
-          0
-        );
+        const needsCount = callToAction
+          ? callToAction.entry.needs.reduce(
+              (count, need) => count + need.min_necessary,
+              0
+            )
+          : 0;
 
         if (needsCount === 0)
           return html`<span class="placeholder"
@@ -76,7 +75,7 @@ export class CallToActionProgress extends LitElement {
           .map(s => s.entry.need_index)
           .reduce(
             (count, needIndex) =>
-              count + callToAction.entry.needs[needIndex].min_necessary,
+              count + callToAction!.entry.needs[needIndex].min_necessary,
             0
           );
         const satisfied = amountContributed === needsCount;

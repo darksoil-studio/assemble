@@ -4,7 +4,7 @@ import '@holochain-open-dev/profiles/dist/elements/agent-avatar.js';
 import {
   AsyncReadable,
   StoreSubscriber,
-  join,
+  joinAsync,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
@@ -54,16 +54,14 @@ export class CallToActionSummary extends LitElement {
   _commitmentsAndSatisfactionsForCall = new StoreSubscriber(
     this,
     () =>
-      join([
+      joinAsync([
         this.assembleStore.commitmentsForCallToAction.get(
           this.callToActionHash
         ),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
-      ]) as AsyncReadable<
-        [Array<EntryRecord<Commitment>>, Array<EntryRecord<Satisfaction>>]
-      >,
+      ]),
     () => [this.callToActionHash]
   );
 

@@ -3,7 +3,7 @@ import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
   AsyncReadable,
   StoreSubscriber,
-  join,
+  joinAsync,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
@@ -49,7 +49,7 @@ export class CallToActionNeedProgress extends LitElement {
   _callToActionInfo = new StoreSubscriber(
     this,
     () =>
-      join([
+      joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
         this.assembleStore.commitmentsForCallToAction.get(
           this.callToActionHash
@@ -57,13 +57,7 @@ export class CallToActionNeedProgress extends LitElement {
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
-      ]) as AsyncReadable<
-        [
-          EntryRecord<CallToAction> | undefined,
-          Array<EntryRecord<Commitment>>,
-          Array<EntryRecord<Satisfaction>>
-        ]
-      >,
+      ]),
     () => [this.callToActionHash, this.needIndex]
   );
 

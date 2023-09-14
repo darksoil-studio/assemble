@@ -130,7 +130,7 @@ export class AssembleStore {
         }
       }
 
-      return completed(openCalls);
+      return openCalls;
     }
   );
 
