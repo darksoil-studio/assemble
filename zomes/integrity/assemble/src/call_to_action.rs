@@ -23,11 +23,9 @@ pub fn validate_create_call_to_action(
             .entry()
             .to_app_option()
             .map_err(|e| wasm_error!(e))?
-            .ok_or(
-                wasm_error!(
-                    WasmErrorInner::Guest(String::from("Dependant action must be accompanied by an entry"))
-                ),
-            )?;
+            .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+                "Dependant action must be accompanied by an entry"
+            ))))?;
     }
     Ok(ValidateCallbackResult::Valid)
 }
@@ -52,28 +50,26 @@ pub fn validate_create_link_call_to_action_to_call_to_actions(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::from(base_address);
+    let action_hash =
+        ActionHash::try_from(base_address).map_err(|err| wasm_error!(WasmErrorInner::from(err)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
-            ),
-        )?;
-    let action_hash = ActionHash::from(target_address);
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Linked action must reference an entry"
+        ))))?;
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|err| wasm_error!(WasmErrorInner::from(err)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
-            ),
-        )?;
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Linked action must reference an entry"
+        ))))?;
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_call_to_action_to_call_to_actions(
@@ -83,11 +79,9 @@ pub fn validate_delete_link_call_to_action_to_call_to_actions(
     _target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(
-        ValidateCallbackResult::Invalid(
-            String::from("CallToActionToCallToActions links cannot be deleted"),
-        ),
-    )
+    Ok(ValidateCallbackResult::Invalid(String::from(
+        "CallToActionToCallToActions links cannot be deleted",
+    )))
 }
 pub fn validate_create_link_open_calls_to_action(
     _action: CreateLink,
@@ -95,17 +89,16 @@ pub fn validate_create_link_open_calls_to_action(
     target_address: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::from(target_address);
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|err| wasm_error!(WasmErrorInner::from(err)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
-            ),
-        )?;
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Linked action must reference an entry"
+        ))))?;
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_delete_link_open_calls_to_action(
@@ -115,16 +108,16 @@ pub fn validate_delete_link_open_calls_to_action(
     target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    let record = must_get_valid_record(ActionHash::from(target))?;
+    let record = must_get_valid_record(
+        ActionHash::try_from(target).map_err(|err| wasm_error!(WasmErrorInner::from(err)))?,
+    )?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
-            ),
-        )?;
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Linked action must reference an entry"
+        ))))?;
     Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_create_link_my_calls_to_action(
@@ -134,17 +127,16 @@ pub fn validate_create_link_my_calls_to_action(
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
     // Check the entry type for the given action hash
-    let action_hash = ActionHash::from(target_address);
+    let action_hash = ActionHash::try_from(target_address)
+        .map_err(|err| wasm_error!(WasmErrorInner::from(err)))?;
     let record = must_get_valid_record(action_hash)?;
     let _call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Linked action must reference an entry"))
-            ),
-        )?;
+        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
+            "Linked action must reference an entry"
+        ))))?;
     // TODO: add the appropriate validation rules
     Ok(ValidateCallbackResult::Valid)
 }
@@ -155,12 +147,10 @@ pub fn validate_delete_link_my_calls_to_action(
     _target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-if !action.author.eq(&original_action.author) {
-    
-return    Ok(
-        ValidateCallbackResult::Invalid(
-            String::from("MyCallsToAction links can only be deleted by their author")
-        )    );
+    if !action.author.eq(&original_action.author) {
+        return Ok(ValidateCallbackResult::Invalid(String::from(
+            "MyCallsToAction links can only be deleted by their author",
+        )));
     }
 
     Ok(ValidateCallbackResult::Valid)

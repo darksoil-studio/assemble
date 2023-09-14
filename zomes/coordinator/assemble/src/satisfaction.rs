@@ -1,10 +1,8 @@
-use hdk::prelude::*;
 use assemble_integrity::*;
+use hdk::prelude::*;
 #[hdk_extern]
 pub fn create_satisfaction(satisfaction: Satisfaction) -> ExternResult<Record> {
-    let satisfaction_hash = create_entry(
-        &EntryTypes::Satisfaction(satisfaction.clone()),
-    )?;
+    let satisfaction_hash = create_entry(&EntryTypes::Satisfaction(satisfaction.clone()))?;
     create_link(
         satisfaction.call_to_action_hash.clone(),
         satisfaction_hash.clone(),
@@ -19,29 +17,25 @@ pub fn create_satisfaction(satisfaction: Satisfaction) -> ExternResult<Record> {
             (),
         )?;
     }
-    let record = get(satisfaction_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly created Satisfaction"))
-            ),
-        )?;
+    let record = get(satisfaction_hash.clone(), GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest(String::from(
+            "Could not find the newly created Satisfaction"
+        ))
+    ))?;
     Ok(record)
 }
 #[hdk_extern]
-pub fn get_satisfaction(
-    original_satisfaction_hash: ActionHash,
-) -> ExternResult<Option<Record>> {
+pub fn get_satisfaction(original_satisfaction_hash: ActionHash) -> ExternResult<Option<Record>> {
     get_latest_satisfaction(original_satisfaction_hash)
 }
-fn get_latest_satisfaction(
-    satisfaction_hash: ActionHash,
-) -> ExternResult<Option<Record>> {
-    let details = get_details(satisfaction_hash, GetOptions::default())?
-        .ok_or(wasm_error!(WasmErrorInner::Guest("Satisfaction not found".into())))?;
+fn get_latest_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Option<Record>> {
+    let details = get_details(satisfaction_hash, GetOptions::default())?.ok_or(wasm_error!(
+        WasmErrorInner::Guest("Satisfaction not found".into())
+    ))?;
     let record_details = match details {
-        Details::Entry(_) => {
-            Err(wasm_error!(WasmErrorInner::Guest("Malformed details".into())))
-        }
+        Details::Entry(_) => Err(wasm_error!(WasmErrorInner::Guest(
+            "Malformed details".into()
+        ))),
         Details::Record(record_details) => Ok(record_details),
     }?;
     if record_details.deletes.len() > 0 {
@@ -63,12 +57,11 @@ pub fn update_satisfaction(input: UpdateSatisfactionInput) -> ExternResult<Recor
         input.previous_satisfaction_hash,
         &input.updated_satisfaction,
     )?;
-    let record = get(updated_satisfaction_hash.clone(), GetOptions::default())?
-        .ok_or(
-            wasm_error!(
-                WasmErrorInner::Guest(String::from("Could not find the newly updated Satisfaction"))
-            ),
-        )?;
+    let record = get(updated_satisfaction_hash.clone(), GetOptions::default())?.ok_or(
+        wasm_error!(WasmErrorInner::Guest(String::from(
+            "Could not find the newly updated Satisfaction"
+        ))),
+    )?;
     Ok(record)
 }
 #[hdk_extern]
@@ -82,10 +75,8 @@ pub fn get_satisfactions_for_call_to_action(
     )?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(
-            ActionHash::from(link.target).into(),
-            GetOptions::default(),
-        ))
+        .filter_map(|link| link.target.into_any_dht_hash())
+        .map(|target| GetInput::new(target, GetOptions::default()))
         .collect();
     let records: Vec<Record> = HDK
         .with(|hdk| hdk.borrow().get(get_input))?
@@ -95,16 +86,12 @@ pub fn get_satisfactions_for_call_to_action(
     Ok(records)
 }
 #[hdk_extern]
-pub fn get_satisfactions_for_commitment(
-    commitment_hash: ActionHash,
-) -> ExternResult<Vec<Record>> {
+pub fn get_satisfactions_for_commitment(commitment_hash: ActionHash) -> ExternResult<Vec<Record>> {
     let links = get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(
-            ActionHash::from(link.target).into(),
-            GetOptions::default(),
-        ))
+        .filter_map(|link| link.target.into_any_dht_hash())
+        .map(|target| GetInput::new(target, GetOptions::default()))
         .collect();
     let records: Vec<Record> = HDK
         .with(|hdk| hdk.borrow().get(get_input))?

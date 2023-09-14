@@ -37,7 +37,8 @@ pub fn get_commitments_for_call_to_action(
     )?;
     let get_input: Vec<GetInput> = links
         .into_iter()
-        .map(|link| GetInput::new(ActionHash::from(link.target).into(), GetOptions::default()))
+        .filter_map(|link| link.target.into_any_dht_hash())
+        .map(|any_dht_hash| GetInput::new(any_dht_hash, GetOptions::default()))
         .collect();
     let records: Vec<Record> = HDK
         .with(|hdk| hdk.borrow().get(get_input))?
