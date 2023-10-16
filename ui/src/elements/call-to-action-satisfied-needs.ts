@@ -108,16 +108,22 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     displayAmount: boolean
   ) {
     return html`
-      <div class="row" style="align-items: center; gap: 8px">
-        <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
-        <div class="column" style="gap: 8px">
-          <span
-            >${msg('committed to contribute')}${displayAmount
-              ? html`&nbsp;${commitment.entry.amount}`
-              : ''}</span
-          >
-          <span>${commitment.entry.comment || msg('No comment')}</span>
+      <div class="class" style="gap: 8px">
+        <div class="row" style="align-items: center; gap: 8px">
+          <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
+          <div class="column" style="gap: 8px">
+            <span
+              >${msg('committed to contribute')}${displayAmount
+                ? html`&nbsp;${commitment.entry.amount}`
+                : ''}</span
+            >
+            <span>${commitment.entry.comment || msg('No comment')}</span>
+          </div>
         </div>
+        <cancellations-for
+          hide-no-cancellations-notice
+          .cancelledHash=${commitment.actionHash}
+        ></cancellations-for>
       </div>
     `;
   }
@@ -259,10 +265,10 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     switch (this._callToActionInfo.value.status) {
       case 'pending':
         return html`
-          <div class="column">
+          <div class="column" style="gap: 8px">
             <sl-skeleton></sl-skeleton>
-            <sl-skeleton style="margin-top: 8px"></sl-skeleton>
-            <sl-skeleton style="margin-top: 8px"></sl-skeleton>
+            <sl-skeleton></sl-skeleton>
+            <sl-skeleton></sl-skeleton>
           </div>
         `;
       case 'complete':
