@@ -45,6 +45,9 @@ export class CallToActionProgress extends LitElement {
     () =>
       joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
+        this.assembleStore.commitmentsForCallToAction.get(
+          this.callToActionHash
+        ),
         this.assembleStore.satisfactionsForCallToAction.get(
           this.callToActionHash
         ),
@@ -58,29 +61,50 @@ export class CallToActionProgress extends LitElement {
         return html`<sl-skeleton></sl-skeleton>`;
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
-        const satisfactions = this._callToActionInfo.value.value[1];
-        const needsCount = callToAction
-          ? callToAction.entry.needs.reduce(
-              (count, need) => count + need.min_necessary,
-              0
-            )
-          : 0;
+        const commitments = this._callToActionInfo.value.value[1];
+        const satisfactions = this._callToActionInfo.value.value[2];
+        const needsCount = callToAction.entry.needs.reduce(
+          (count, need) => count + need.min_necessary,
+          0
+        );
 
         if (needsCount === 0)
           return html`<span class="placeholder"
             >${msg("This call to action doesn't have required needs.")}</span
           >`;
 
-        const amountContributed = satisfactions
-          .map(s => s.entry.need_index)
-          .reduce(
-            (count, needIndex) =>
-              count + callToAction!.entry.needs[needIndex].min_necessary,
-            0
-          );
-        const satisfied = amountContributed === needsCount;
+        let amountSatisfied = 0;
+        let satisfied = true;
+
+        for (
+          let needIndex = 0;
+          needIndex < callToAction.entry.needs.length;
+          needIndex++
+        ) {
+          const need = callToAction.entry.needs[needIndex];
+
+          if (satisfactions.find(s => s.entry.need_index)) {
+            amountSatisfied += need.min_necessary;
+          } else {
+            satisfied = false;
+            const commitmentsForThisNeed = commitments.filter(
+              c => c.entry.need_index === needIndex
+            );
+
+            const amountContributed = commitmentsForThisNeed.reduce(
+              (acc, next) => acc + next.entry.amount,
+              0
+            );
+
+            if (amountContributed > need.min_necessary) {
+              amountSatisfied += need.min_necessary;
+            } else {
+              amountSatisfied += amountSatisfied;
+            }
+          }
+        }
         return html` <sl-progress-bar
-          .value=${(100 * amountContributed) / needsCount}
+          .value=${(100 * amountSatisfied) / needsCount}
           style="--indicator-color: ${satisfied
             ? 'green'
             : 'var(--sl-color-primary-700)'}"

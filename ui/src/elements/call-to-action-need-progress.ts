@@ -24,7 +24,7 @@ import { assembleStoreContext } from '../context.js';
 import { CallToAction, Commitment, Need, Satisfaction } from '../types.js';
 
 /**
- * @element call-to-action-needs
+ * @element call-to-action-need-progress
  */
 @localized()
 @customElement('call-to-action-need-progress')

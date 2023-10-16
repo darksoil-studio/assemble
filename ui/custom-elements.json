@@ -410,7 +410,7 @@
             {
               "kind": "field",
               "name": "callToActions",
-              "default": "new LazyHoloHashMap((callToActionHash: ActionHash) =>\n    lazyLoadAndPoll(\n      async () => this.client.getCallToAction(callToActionHash),\n      4000\n    )\n  )",
+              "default": "new LazyHoloHashMap((callToActionHash: ActionHash) =>\n    pipe(\n      lazyLoadAndPoll(\n        async () => this.client.getCallToAction(callToActionHash),\n        4000\n      ),\n      c => {\n        if (!c) throw new Error('Call to action was not found');\n        return c;\n      }\n    )\n  )",
               "description": "Call To Action"
             },
             {
@@ -520,7 +520,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "./assemble-store"
+            "package": "./assemble-store.js"
           }
         },
         {
@@ -528,7 +528,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "./assemble-client"
+            "package": "./assemble-client.js"
           }
         },
         {
@@ -536,7 +536,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "./context"
+            "package": "./context.js"
           }
         },
         {
@@ -544,7 +544,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "./types"
+            "package": "./types.js"
           }
         }
       ]
@@ -1759,12 +1759,329 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/call-to-action-needs.ts",
+      "path": "src/elements/call-to-action-progress.ts",
       "declarations": [
         {
           "kind": "class",
           "description": "",
-          "name": "CallToActionNeeds",
+          "name": "CallToActionProgress",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            }
+          ],
+          "events": [
+            {
+              "description": "detail will contain { callToActionHash }",
+              "name": "call-to-action-selected:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-action-progress",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionProgress",
+          "declaration": {
+            "name": "CallToActionProgress",
+            "module": "src/elements/call-to-action-progress.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-action-progress",
+          "declaration": {
+            "name": "CallToActionProgress",
+            "module": "src/elements/call-to-action-progress.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/call-to-action-satisfied-needs.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionSatisfiedNeeds",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "field",
+              "name": "hideNeeds",
+              "type": {
+                "text": "Array<number>"
+              },
+              "default": "[]",
+              "attribute": "hideNeeds"
+            },
+            {
+              "kind": "method",
+              "name": "amIAuthor",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "createAssembly",
+              "parameters": [
+                {
+                  "name": "satisfactions_hashes",
+                  "type": {
+                    "text": "Array<ActionHash>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderCommitment",
+              "parameters": [
+                {
+                  "name": "commitment",
+                  "type": {
+                    "text": "EntryRecord<Commitment>"
+                  }
+                },
+                {
+                  "name": "displayAmount",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderCommitmentsForNeed",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                },
+                {
+                  "name": "needIndex",
+                  "type": {
+                    "text": "number"
+                  }
+                },
+                {
+                  "name": "commitments",
+                  "type": {
+                    "text": "Array<EntryRecord<Commitment>>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderMetNeeds",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                },
+                {
+                  "name": "needs",
+                  "type": {
+                    "text": "Array<[Need, number]>"
+                  }
+                },
+                {
+                  "name": "commitments",
+                  "type": {
+                    "text": "Array<EntryRecord<Commitment>>"
+                  }
+                },
+                {
+                  "name": "satisfactions",
+                  "type": {
+                    "text": "Array<EntryRecord<Satisfaction>>"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "name": "assembly-created",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            },
+            {
+              "name": "hideNeeds",
+              "type": {
+                "text": "Array<number>"
+              },
+              "default": "[]",
+              "fieldName": "hideNeeds"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-action-satisfied-needs",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionSatisfiedNeeds",
+          "declaration": {
+            "name": "CallToActionSatisfiedNeeds",
+            "module": "src/elements/call-to-action-satisfied-needs.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-action-satisfied-needs",
+          "declaration": {
+            "name": "CallToActionSatisfiedNeeds",
+            "module": "src/elements/call-to-action-satisfied-needs.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/call-to-action-summary.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionSummary",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderSummary",
+              "parameters": [
+                {
+                  "name": "entryRecord",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "renderCallToAction"
+            }
+          ],
+          "events": [
+            {
+              "name": "call-to-action-selected",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "description": "detail will contain { callToActionHash }",
+              "name": "call-to-action-selected:"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-action-summary",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionSummary",
+          "declaration": {
+            "name": "CallToActionSummary",
+            "module": "src/elements/call-to-action-summary.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-action-summary",
+          "declaration": {
+            "name": "CallToActionSummary",
+            "module": "src/elements/call-to-action-summary.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/call-to-action-unsatisfied-needs.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionUnsatisfiedNeeds",
           "members": [
             {
               "kind": "field",
@@ -1872,36 +2189,6 @@
                   }
                 }
               ]
-            },
-            {
-              "kind": "method",
-              "name": "renderMetNeeds",
-              "parameters": [
-                {
-                  "name": "callToAction",
-                  "type": {
-                    "text": "EntryRecord<CallToAction>"
-                  }
-                },
-                {
-                  "name": "needs",
-                  "type": {
-                    "text": "Array<[Need, number]>"
-                  }
-                },
-                {
-                  "name": "commitments",
-                  "type": {
-                    "text": "Array<EntryRecord<Commitment>>"
-                  }
-                },
-                {
-                  "name": "satisfactions",
-                  "type": {
-                    "text": "Array<EntryRecord<Satisfaction>>"
-                  }
-                }
-              ]
             }
           ],
           "events": [
@@ -1940,160 +2227,18 @@
       "exports": [
         {
           "kind": "js",
-          "name": "CallToActionNeeds",
+          "name": "CallToActionUnsatisfiedNeeds",
           "declaration": {
-            "name": "CallToActionNeeds",
-            "module": "src/elements/call-to-action-needs.ts"
+            "name": "CallToActionUnsatisfiedNeeds",
+            "module": "src/elements/call-to-action-unsatisfied-needs.ts"
           }
         },
         {
           "kind": "custom-element-definition",
-          "name": "call-to-action-needs",
+          "name": "call-to-action-unsatisfied-needs",
           "declaration": {
-            "name": "CallToActionNeeds",
-            "module": "src/elements/call-to-action-needs.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/elements/call-to-action-progress.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "CallToActionProgress",
-          "members": [
-            {
-              "kind": "field",
-              "name": "callToActionHash",
-              "type": {
-                "text": "ActionHash"
-              },
-              "attribute": "callToActionHash"
-            }
-          ],
-          "events": [
-            {
-              "description": "detail will contain { callToActionHash }",
-              "name": "call-to-action-selected:"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "callToActionHash",
-              "type": {
-                "text": "ActionHash"
-              },
-              "fieldName": "callToActionHash"
-            }
-          ],
-          "superclass": {
-            "name": "LitElement",
-            "package": "lit"
-          },
-          "tagName": "call-to-action-progress",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "CallToActionProgress",
-          "declaration": {
-            "name": "CallToActionProgress",
-            "module": "src/elements/call-to-action-progress.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "call-to-action-progress",
-          "declaration": {
-            "name": "CallToActionProgress",
-            "module": "src/elements/call-to-action-progress.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/elements/call-to-action-summary.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "CallToActionSummary",
-          "members": [
-            {
-              "kind": "field",
-              "name": "callToActionHash",
-              "type": {
-                "text": "ActionHash"
-              },
-              "attribute": "callToActionHash"
-            },
-            {
-              "kind": "method",
-              "name": "renderSummary",
-              "parameters": [
-                {
-                  "name": "entryRecord",
-                  "type": {
-                    "text": "EntryRecord<CallToAction>"
-                  }
-                }
-              ]
-            },
-            {
-              "kind": "method",
-              "name": "renderCallToAction"
-            }
-          ],
-          "events": [
-            {
-              "name": "call-to-action-selected",
-              "type": {
-                "text": "CustomEvent"
-              }
-            },
-            {
-              "description": "detail will contain { callToActionHash }",
-              "name": "call-to-action-selected:"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "callToActionHash",
-              "type": {
-                "text": "ActionHash"
-              },
-              "fieldName": "callToActionHash"
-            }
-          ],
-          "superclass": {
-            "name": "LitElement",
-            "package": "lit"
-          },
-          "tagName": "call-to-action-summary",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "CallToActionSummary",
-          "declaration": {
-            "name": "CallToActionSummary",
-            "module": "src/elements/call-to-action-summary.ts"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "call-to-action-summary",
-          "declaration": {
-            "name": "CallToActionSummary",
-            "module": "src/elements/call-to-action-summary.ts"
+            "name": "CallToActionUnsatisfiedNeeds",
+            "module": "src/elements/call-to-action-unsatisfied-needs.ts"
           }
         }
       ]

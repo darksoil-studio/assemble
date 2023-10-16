@@ -1,5 +1,6 @@
 use assemble_integrity::*;
 use hdk::prelude::*;
+
 #[hdk_extern]
 pub fn get_all_assemblies(_: ()) -> ExternResult<Vec<Record>> {
     let path = Path::from("all_assemblies");

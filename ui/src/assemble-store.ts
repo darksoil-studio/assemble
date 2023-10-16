@@ -12,8 +12,8 @@ import {
 } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 
-import { AssembleClient } from './assemble-client';
-import { CallToAction } from './types';
+import { AssembleClient } from './assemble-client.js';
+import { CallToAction } from './types.js';
 
 export class AssembleStore {
   constructor(public client: AssembleClient) {}
@@ -21,9 +21,15 @@ export class AssembleStore {
   /** Call To Action */
 
   callToActions = new LazyHoloHashMap((callToActionHash: ActionHash) =>
-    lazyLoadAndPoll(
-      async () => this.client.getCallToAction(callToActionHash),
-      4000
+    pipe(
+      lazyLoadAndPoll(
+        async () => this.client.getCallToAction(callToActionHash),
+        4000
+      ),
+      c => {
+        if (!c) throw new Error('Call to action was not found');
+        return c;
+      }
     )
   );
 

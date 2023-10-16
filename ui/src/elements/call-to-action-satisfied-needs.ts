@@ -31,14 +31,13 @@ import './call-to-action-need-progress.js';
 import './create-commitment.js';
 import { CreateCommitment } from './create-commitment.js';
 import './create-satisfaction.js';
-import { CreateSatisfaction } from './create-satisfaction.js';
 
 /**
- * @element call-to-action-needs
+ * @element call-to-action-satisfied-needs
  */
 @localized()
-@customElement('call-to-action-needs')
-export class CallToActionNeeds extends LitElement {
+@customElement('call-to-action-satisfied-needs')
+export class CallToActionSatisfiedNeeds extends LitElement {
   // REQUIRED. The hash of the CallToAction to show
   @property(hashProperty('call-to-action-hash'))
   callToActionHash!: ActionHash;
@@ -109,17 +108,15 @@ export class CallToActionNeeds extends LitElement {
     displayAmount: boolean
   ) {
     return html`
-      <div class="row" style="align-items: center; margin-bottom: 8px">
+      <div class="row" style="align-items: center; gap: 8px">
         <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
-        <div class="column" style="margin-left: 8px">
+        <div class="column" style="gap: 8px">
+          <span
+            >${msg('committed to contribute')}${displayAmount
+              ? html`&nbsp;${commitment.entry.amount}`
+              : ''}</span
+          >
           <span>${commitment.entry.comment || msg('No comment')}</span>
-          ${displayAmount
-            ? html`
-                <span style="margin-top: 8px"
-                  >${msg('Amount')}: ${commitment.entry.amount}</span
-                >
-              `
-            : html``}
         </div>
       </div>
     `;
@@ -135,11 +132,11 @@ export class CallToActionNeeds extends LitElement {
     );
 
     if (commitmentsForThisNeed.length === 0)
-      return html`<span class="placeholder" style="margin-top: 8px"
+      return html`<span class="placeholder"
         >${msg('No one has contributed to this need yet.')}</span
       >`;
 
-    return html`<div class="column">
+    return html`<div class="column" style="gap: 8px">
       ${commitmentsForThisNeed.map(commitment =>
         this.renderCommitment(
           commitment,
@@ -152,67 +149,6 @@ export class CallToActionNeeds extends LitElement {
     </div>`;
   }
 
-  renderUnmetNeeds(
-    callToAction: EntryRecord<CallToAction>,
-    needs: Array<[Need, number]>,
-    commitments: Array<EntryRecord<Commitment>>
-  ) {
-    if (needs.length === 0)
-      return html`<span>${msg('There are no unmet needs.')}</span>`;
-
-    return needs.map(
-      ([need, i]) => html`
-        <sl-card style="margin-bottom: 16px">
-          <div class="row " slot="header" style="align-items: center">
-            <span class="title">${need.description} </span>
-            <call-to-action-need-progress
-              .callToActionHash=${this.callToActionHash}
-              .needIndex=${i}
-              style="flex: 1"
-            ></call-to-action-need-progress>
-          </div>
-          <div class="column" style="flex: 1">
-            <span style="margin-bottom: 8px">${msg('Commitments:')}</span>
-            ${this.renderCommitmentsForNeed(callToAction, i, commitments)}
-            <div class="row" style="flex: 1; margin-top: 16px">
-              <sl-button
-                style="flex: 1"
-                @click=${() => {
-                  const createCommitment = this.shadowRoot?.querySelector(
-                    'create-commitment'
-                  ) as CreateCommitment;
-                  createCommitment.needIndex = i;
-                  createCommitment.show();
-                }}
-                >${msg('Contribute')}</sl-button
-              >
-
-              ${this.amIAuthor(callToAction)
-                ? html`
-                    <sl-button
-                      style="flex: 1; margin-left: 16px"
-                      @click=${() => {
-                        const createSatisfaction =
-                          this.shadowRoot?.querySelector(
-                            'create-satisfaction'
-                          ) as CreateSatisfaction;
-                        createSatisfaction.needIndex = i;
-                        createSatisfaction.commitments = commitments.filter(
-                          p => p.entry.need_index === i
-                        );
-                        createSatisfaction.show();
-                      }}
-                      >${msg('Need is satisfied')}</sl-button
-                    >
-                  `
-                : html``}
-            </div>
-          </div>
-        </sl-card>
-      `
-    );
-  }
-
   renderMetNeeds(
     callToAction: EntryRecord<CallToAction>,
     needs: Array<[Need, number]>,
@@ -223,7 +159,7 @@ export class CallToActionNeeds extends LitElement {
       return html`<span>${msg('There are no satisfied needs.')}</span>`;
     return needs.map(
       ([need, i]) => html`
-        <sl-card style="margin-bottom: 16px">
+        <sl-card style="flex: 1;">
           <div class="row " slot="header" style="align-items: center">
             <span class="title">${need.description} </span>
             ${need.min_necessary !== 1 || need.max_possible !== 1
@@ -234,10 +170,8 @@ export class CallToActionNeeds extends LitElement {
                 ></call-to-action-need-progress>`
               : html``}
           </div>
-          <div class="column" style="flex: 1">
-            <span style="margin-bottom: 8px"
-              >${msg('Commitments that satisfied the need:')}</span
-            >
+          <div class="column" style="flex: 1; gap: 8px">
+            <span>${msg('Commitments that satisfied the need:')}</span>
             ${commitments.filter(
               c =>
                 c.entry.need_index === i &&
@@ -271,9 +205,7 @@ export class CallToActionNeeds extends LitElement {
               : html`<span class="placeholder"
                   >${msg('This need was satisfied with no commitments.')}</span
                 >`}
-            <span style="margin-top: 16px; margin-bottom: 8px"
-              >${msg('Additional Commitments: ')}</span
-            >
+            <span>${msg('Additional Commitments: ')}</span>
             ${commitments.filter(
               c =>
                 c.entry.need_index === i &&
@@ -304,11 +236,10 @@ export class CallToActionNeeds extends LitElement {
                         callToAction.entry.needs[i].max_possible !== 1
                     )
                   )
-              : html`<span class="placeholder" style="margin-top: 8px"
+              : html`<span class="placeholder"
                   >${msg('There are no additional commitments.')}</span
                 >`}
             <sl-button
-              style="margin-top: 16px"
               @click=${() => {
                 const createCommitment = this.shadowRoot?.querySelector(
                   'create-commitment'
@@ -339,16 +270,6 @@ export class CallToActionNeeds extends LitElement {
         const commitments = this._callToActionInfo.value.value[1];
         const satisfactions = this._callToActionInfo.value.value[2];
 
-        if (!callToAction)
-          return html`<span
-            >${msg('The requested call to action was not found.')}</span
-          >`;
-
-        const unmetNeeds = callToAction.entry.needs
-          .map((need, i) => [need, i])
-          .filter(
-            ([_need, i]) => !satisfactions.find(s => s.entry.need_index === i)
-          ) as Array<[Need, number]>;
         const metNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
           .filter(
@@ -356,40 +277,16 @@ export class CallToActionNeeds extends LitElement {
           ) as Array<[Need, number]>;
         return html`
           <create-commitment .callToAction=${callToAction}></create-commitment>
-          <div class="row" style="flex: 1">
+          <div class="row" style="flex: 1; gap: 16px">
             <create-satisfaction
               .callToAction=${callToAction}
-              @satisfaction-created=${async (e: CustomEvent) => {
-                if (unmetNeeds.length === 1) {
-                  await this.createAssembly([
-                    ...satisfactions.map(s => s.actionHash),
-                    e.detail.satisfactionHash,
-                  ]);
-                }
-              }}
             ></create-satisfaction>
-            <div class="column" style="flex: 1">
-              <span style="margin-top: 24px; margin-bottom: 16px"
-                ><strong>${msg('Unmet Needs')}</strong></span
-              >
-              ${this.renderUnmetNeeds(
-                callToAction,
-                unmetNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
-                commitments
-              )}
-            </div>
-
-            <div class="column" style="flex: 1; margin-left: 16px">
-              <span style="margin-top: 24px; margin-bottom: 16px"
-                ><strong>${msg('Satisfied Needs')}</strong></span
-              >
-              ${this.renderMetNeeds(
-                callToAction,
-                metNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
-                commitments,
-                satisfactions
-              )}
-            </div>
+            ${this.renderMetNeeds(
+              callToAction,
+              metNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
+              commitments,
+              satisfactions
+            )}
           </div>
         `;
       case 'error':

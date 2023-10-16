@@ -101,20 +101,22 @@ export class CallToActionNeedsForm extends LitElement {
       <div id="needs-form">
         <div style="display: flex; flex-direction: column">
           <div class="row" style="align-items: center;">
-            <span class="title">${msg('Needs')}</span>
-            <sl-tooltip .content=${msg('Add need')}>
-              <sl-icon-button
-                style="margin-left: 4px"
-                @click=${() => {
-                  const nextId =
-                    this._needsIds.length === 0
-                      ? 0
-                      : Math.max(...this._needsIds.map(i => i)) + 1;
-                  this._needsIds = [...this._needsIds, nextId];
-                }}
-                .src=${wrapPathInSvg(mdiPlus)}
-              ></sl-icon-button
-            ></sl-tooltip>
+            <span class="title" style="flex: 1">${msg('Needs')}</span>
+            <sl-button
+              variant="default"
+              outline
+              style="margin-left: 4px"
+              @click=${() => {
+                const nextId =
+                  this._needsIds.length === 0
+                    ? 0
+                    : Math.max(...this._needsIds.map(i => i)) + 1;
+                this._needsIds = [...this._needsIds, nextId];
+              }}
+            >
+              <sl-icon slot="prefix" .src=${wrapPathInSvg(mdiPlus)}></sl-icon
+              >${msg('Add Need')}</sl-button
+            >
           </div>
 
           ${this._needsIds.length > 0

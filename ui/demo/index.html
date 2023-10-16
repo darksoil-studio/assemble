@@ -42,7 +42,8 @@
       import '../src/elements/all-assemblies.ts';
       import '../src/elements/call-to-action-need-form.ts';
       import '../src/elements/call-to-action-needs-form.ts';
-      import '../src/elements/call-to-action-needs.ts';
+      import '../src/elements/call-to-action-unsatisfied-needs.ts';
+      import '../src/elements/call-to-action-satisfied-needs.ts';
       import '../src/elements/call-to-action-need-progress.ts';
       import {
         AssembleStore,
@@ -153,10 +154,16 @@
                           .callToActionHash=${this._selectedCallToActionHash}
                           .needIndex=${0}
                         ></call-to-action-need-progress>
-                        <call-to-action-needs
-                          .hideNeeds=${[0]}
-                          .callToActionHash=${this._selectedCallToActionHash}
-                        ></call-to-action-needs>
+                        <div class="row">
+                          <call-to-action-unsatisfied-needs
+                            .hideNeeds=${[0]}
+                            .callToActionHash=${this._selectedCallToActionHash}
+                          ></call-to-action-unsatisfied-needs>
+                          <call-to-action-satisfied-needs
+                            .hideNeeds=${[0]}
+                            .callToActionHash=${this._selectedCallToActionHash}
+                          ></call-to-action-satisfied-needs>
+                        </div>
                       `
                     : html``}
                 </div>

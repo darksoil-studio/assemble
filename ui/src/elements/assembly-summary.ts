@@ -10,9 +10,9 @@ import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { LitElement, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
-import { AssembleStore } from '../assemble-store';
-import { assembleStoreContext } from '../context';
-import { Assembly } from '../types';
+import { AssembleStore } from '../assemble-store.js';
+import { assembleStoreContext } from '../context.js';
+import { Assembly } from '../types.js';
 
 /**
  * @element assembly-summary

@@ -34,6 +34,7 @@ pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Recor
 
     Ok(record)
 }
+
 #[hdk_extern]
 pub fn get_call_to_action(
     original_call_to_action_hash: ActionHash,
@@ -58,6 +59,7 @@ fn get_latest_call_to_action(call_to_action_hash: ActionHash) -> ExternResult<Op
         None => Ok(Some(record_details.record)),
     }
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpdateCallToActionInput {
     pub previous_call_to_action_hash: ActionHash,
