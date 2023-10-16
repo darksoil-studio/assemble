@@ -43,9 +43,7 @@ pub fn validate_delete_satisfaction(
     _original_action: EntryCreationAction,
     _original_satisfaction: Satisfaction,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(ValidateCallbackResult::Invalid(String::from(
-        "Satisfactions cannot be deleted",
-    )))
+    Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_create_link_call_to_action_to_satisfactions(
     _action: CreateLink,
@@ -82,9 +80,7 @@ pub fn validate_delete_link_call_to_action_to_satisfactions(
     _target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(ValidateCallbackResult::Invalid(String::from(
-        "CallToActionToSatisfactions links cannot be deleted",
-    )))
+    Ok(ValidateCallbackResult::Valid)
 }
 pub fn validate_create_link_commitment_to_satisfactions(
     _action: CreateLink,
@@ -121,7 +117,5 @@ pub fn validate_delete_link_commitment_to_satisfactions(
     _target: AnyLinkableHash,
     _tag: LinkTag,
 ) -> ExternResult<ValidateCallbackResult> {
-    Ok(ValidateCallbackResult::Invalid(String::from(
-        "CommitmentToSatisfactions links cannot be deleted",
-    )))
+    Ok(ValidateCallbackResult::Valid)
 }

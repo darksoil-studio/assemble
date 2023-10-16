@@ -1,5 +1,6 @@
 import {
   completed,
+  joinAsync,
   lazyLoadAndPoll,
   manualReloadStore,
   pipe,
@@ -10,13 +11,17 @@ import {
   HoloHashMap,
   LazyHoloHashMap,
 } from '@holochain-open-dev/utils';
+import { CancellationsStore } from '@holochain-open-dev/cancellations';
 import { ActionHash } from '@holochain/client';
 
 import { AssembleClient } from './assemble-client.js';
 import { CallToAction } from './types.js';
 
 export class AssembleStore {
-  constructor(public client: AssembleClient) {}
+  constructor(
+    public client: AssembleClient,
+    public cancellationsStore: CancellationsStore
+  ) {}
 
   /** Call To Action */
 
@@ -46,7 +51,12 @@ export class AssembleStore {
   /** Commitment */
 
   commitments = new LazyHoloHashMap((commitmentHash: ActionHash) =>
-    lazyLoadAndPoll(async () => this.client.getCommitment(commitmentHash), 4000)
+    lazyLoadAndPoll(async () => {
+      const c = await this.client.getCommitment(commitmentHash);
+
+      if (!c) throw new Error('Commitment was not found');
+      return c;
+    }, 4000)
   );
 
   commitmentsForCallToAction = new LazyHoloHashMap(
@@ -54,6 +64,38 @@ export class AssembleStore {
       lazyLoadAndPoll(
         async () => this.client.getCommitmentsForCallToAction(callToActionHash),
         4000
+      )
+  );
+
+  uncancelledCommitmentsForCallToAction = new LazyHoloHashMap(
+    (callToActionHash: ActionHash) =>
+      pipe(
+        this.commitmentsForCallToAction.get(callToActionHash),
+        commitmentsHashes => {
+          return joinAsync(
+            commitmentsHashes.map(c =>
+              this.cancellationsStore.cancellationsFor.get(c)
+            )
+          );
+        },
+        (cancellations, commitmentsHashes) =>
+          commitmentsHashes.filter((c, i) => cancellations[i].length === 0)
+      )
+  );
+
+  cancelledCommitmentsForCallToAction = new LazyHoloHashMap(
+    (callToActionHash: ActionHash) =>
+      pipe(
+        this.commitmentsForCallToAction.get(callToActionHash),
+        commitmentsHashes => {
+          return joinAsync(
+            commitmentsHashes.map(c =>
+              this.cancellationsStore.cancellationsFor.get(c)
+            )
+          );
+        },
+        (cancellations, commitmentsHashes) =>
+          commitmentsHashes.filter((c, i) => cancellations[i].length > 0)
       )
   );
 
@@ -77,12 +119,10 @@ export class AssembleStore {
 
   satisfactionsForCommitment = new LazyHoloHashMap(
     (commitmentHash: ActionHash) =>
-      lazyLoadAndPoll(async () => {
-        const records = await this.client.getSatisfactionsForCommitment(
-          commitmentHash
-        );
-        return records.map(r => r.actionHash);
-      }, 4000)
+      lazyLoadAndPoll(
+        async () => this.client.getSatisfactionsForCommitment(commitmentHash),
+        4000
+      )
   );
 
   /** Assembly */
@@ -93,64 +133,18 @@ export class AssembleStore {
 
   assembliesForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
-      lazyLoadAndPoll(async () => {
-        const records = await this.client.getAssembliesForCallToAction(
-          callToActionHash
-        );
-        return records.map(r => r.actionHash);
-      }, 4000)
+      lazyLoadAndPoll(
+        async () => this.client.getAssembliesForCallToAction(callToActionHash),
+        4000
+      )
   );
 
   assembliesForSatisfaction = new LazyHoloHashMap(
     (satisfactionHash: ActionHash) =>
-      lazyLoadAndPoll(async () => {
-        const records = await this.client.getAssembliesForSatisfaction(
-          satisfactionHash
-        );
-        return records.map(r => r.actionHash);
-      }, 4000)
-  );
-
-  /** All Calls To Action */
-
-  openCallsToAction = pipe(
-    lazyLoadAndPoll(async () => this.client.getOpenCallsToAction(), 4000),
-    callsToActionHashes =>
-      sliceAndJoin(this.callToActions, callsToActionHashes),
-    callsToActions => {
-      const openCalls: HoloHashMap<
-        ActionHash,
-        EntryRecord<CallToAction>
-      > = new HoloHashMap();
-
-      for (const [callToActionHash, callToAction] of Array.from(
-        callsToActions.entries()
-      )) {
-        if (
-          callToAction.entry.expiration_time &&
-          callToAction.entry.expiration_time < Date.now() * 1000
-        ) {
-          this.client.closeCallToAction(callToAction.actionHash);
-        } else {
-          openCalls.set(callToActionHash, callToAction);
-        }
-      }
-
-      return openCalls;
-    }
-  );
-
-  /** All Assemblies */
-
-  allAssemblies = lazyLoadAndPoll(async () => {
-    const records = await this.client.getAllAssemblies();
-    return records.map(r => r.actionHash);
-  }, 4000);
-
-  /** My Calls To Action */
-
-  myCallsToAction = lazyLoadAndPoll(
-    async () => this.client.getMyCallsToAction(),
-    1000
+      lazyLoadAndPoll(
+        async () =>
+          await this.client.getAssembliesForSatisfaction(satisfactionHash),
+        4000
+      )
   );
 }

@@ -126,32 +126,3 @@ pub fn validate_delete_link_satisfaction_to_assemblies(
         "SatisfactionToAssemblies links cannot be deleted",
     )))
 }
-pub fn validate_create_link_all_assemblies(
-    _action: CreateLink,
-    _base_address: AnyLinkableHash,
-    target_address: AnyLinkableHash,
-    _tag: LinkTag,
-) -> ExternResult<ValidateCallbackResult> {
-    let action_hash = ActionHash::try_from(target_address)
-        .map_err(|err| wasm_error!(WasmErrorInner::from(err)))?;
-    let record = must_get_valid_record(action_hash)?;
-    let _assembly: crate::Assembly = record
-        .entry()
-        .to_app_option()
-        .map_err(|e| wasm_error!(e))?
-        .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
-            "Linked action must reference an entry"
-        ))))?;
-    Ok(ValidateCallbackResult::Valid)
-}
-pub fn validate_delete_link_all_assemblies(
-    _action: DeleteLink,
-    _original_action: CreateLink,
-    _base: AnyLinkableHash,
-    _target: AnyLinkableHash,
-    _tag: LinkTag,
-) -> ExternResult<ValidateCallbackResult> {
-    Ok(ValidateCallbackResult::Invalid(String::from(
-        "AllAssemblies links cannot be deleted",
-    )))
-}

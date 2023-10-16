@@ -3,7 +3,7 @@ import { {{pascal_case entry_type.name}} } from './types.js';
 {{#merge_scope previous_file_content (concat "export class " (pascal_case app_name) "ZomeMock extends ZomeMock implements AppAgentClient {" ) }}
   {{previous_scope_content}}
   /** {{title_case entry_type.name}} */
-  {{camel_case entry_type.name}} = new RecordBag<{{title_case entry_type.name}}>();
+  {{camel_case entry_type.name}} = new RecordBag<{{pascal_case entry_type.name}}>();
   {{#each entry_type.fields}}
     {{#if linked_from}}
   {{camel_case (plural ../entry_type.name)}}For{{pascal_case linked_from.name}} = new HoloHashMap<ActionHash, ActionHash[]>();
@@ -103,8 +103,9 @@ import { {{pascal_case entry_type.name}} } from './types.js';
 
 {{/merge_scope}}
 
-export function sample{{pascal_case entry_type.name}}(): {{pascal_case entry_type.name}} {
-  return {
+export async function sample{{pascal_case entry_type.name}}(client: {{pascal_case app_name}}Client, partial{{pascal_case entry_type.name}}: Partial<{{pascal_case entry_type.name}}> = {}): Promise<{{ pascal_case entry_type.name }}> {
+    return {
+        ...{
 {{#each entry_type.fields}}
   {{#if linked_from}}
     {{#if (ne linked_from.hash_type "AgentPubKey")}}
@@ -113,9 +114,9 @@ export function sample{{pascal_case entry_type.name}}(): {{pascal_case entry_typ
           {{field_name}}: [],
         {{else}}
           {{#if (eq linked_from.hash_type "ActionHash")}}
-          {{field_name}}: [fakeActionHash()],
+          {{field_name}}: partial{{pascal_case ../entry_type.name}}.{{field_name}} || [(await client.create{{pascal_case linked_from.name}}(await sample{{pascal_case linked_from.name}}(client))).actionHash],
           {{else}}
-          {{field_name}}: [fakeEntryHash()],
+          {{field_name}}: partial{{pascal_case ../entry_type.name}}.{{field_name}} || [(await client.create{{pascal_case linked_from.name}}(await sample{{pascal_case linked_from.name}}(client))).entryHash],
           {{/if}}
         {{/if}}
       {{else}}
@@ -123,23 +124,24 @@ export function sample{{pascal_case entry_type.name}}(): {{pascal_case entry_typ
           {{field_name}}: undefined,
         {{else}}
 	  {{#if (eq linked_from.hash_type "ActionHash")}}
-          {{field_name}}: fakeActionHash(),
+          {{field_name}}: partial{{pascal_case ../entry_type.name}}.{{field_name}} || (await client.create{{pascal_case linked_from.name}}(await sample{{pascal_case linked_from.name}}(client))).actionHash,
           {{else}}
-          {{field_name}}: fakeEntryHash(),
+          {{field_name}}: partial{{pascal_case entry_type.name}}.{{field_name}} || (await client.create{{pascal_case linked_from.name}}(await sample{{pascal_case linked_from.name}}(client))).entryHash,
           {{/if}}
         {{/if}}
       {{/if}}
     {{else}}
-          {{field_name}}: fakeAgentPubKey(),
+          {{field_name}}: client.client.myPubKey,
     {{/if}}
   {{else}}
       {{#if (eq cardinality "vector")}}
-	  {{field_name}}: [{{> (concat field_type.type "/sample-js")}}],
+          {{field_name}}: [{{> (concat field_type.type "/sample-js") field_type=field_type}}],
       {{else}}
-	  {{field_name}}: {{> (concat field_type.type "/sample-js")}},
+          {{field_name}}: {{> (concat field_type.type "/sample-js") field_type=field_type}},
       {{/if}}
   {{/if}}
 {{/each}}
-    }
+        },
+        ...partial{{pascal_case entry_type.name}}
+    };
 }
-

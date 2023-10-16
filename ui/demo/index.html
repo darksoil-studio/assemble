@@ -38,8 +38,6 @@
       import { StoreSubscriber } from '@holochain-open-dev/stores';
       import { onSubmit, sharedStyles } from '@holochain-open-dev/elements';
       import '../src/elements/assemble-context.ts';
-      import '../src/elements/open-calls-to-action.ts';
-      import '../src/elements/all-assemblies.ts';
       import '../src/elements/call-to-action-need-form.ts';
       import '../src/elements/call-to-action-needs-form.ts';
       import '../src/elements/call-to-action-unsatisfied-needs.ts';
@@ -56,6 +54,11 @@
         ProfilesStore,
         profilesStoreContext,
       } from '@holochain-open-dev/profiles';
+      import {
+        CancellationsClient,
+        CancellationsStore,
+        cancellationsStoreContext,
+      } from '@holochain-open-dev/cancellations';
       import '@holochain-open-dev/profiles/dist/elements/profile-prompt.js';
       import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
       import { encode } from '@msgpack/msgpack';
@@ -74,33 +77,43 @@
           }
 
           async createCallToAction(fields) {
-            console.log('he');
             const needsFields = Array.isArray(fields.need)
               ? fields.need
               : [fields.need];
 
             const needs = needsFields.map(n => JSON.parse(n));
-            await this._assembleStore.value.client.createCallToAction({
-              custom_content: encode({}),
-              expiration_time: undefined, // (Date.now() + 2 * 60 * 1000) * 1000,
-              needs,
-            });
+            const callToAction =
+              await this._assembleStore.value.client.createCallToAction({
+                custom_content: encode({}),
+                expiration_time: undefined, // (Date.now() + 2 * 60 * 1000) * 1000,
+                needs,
+              });
+
+            this.dispatchEvent(
+              new CustomEvent('call-to-action-created', {
+                bubbles: true,
+                composed: true,
+                detail: {
+                  callToActionHash: callToAction.actionHash,
+                },
+              })
+            );
             this.shadowRoot.getElementById('needs-form').reset();
           }
 
           render() {
             return html`<form ${onSubmit(f => this.createCallToAction(f))}>
-              <call-to-action-needs-form id="needs-form"
-              .allowEmpty=${true}
-.defaultValue=${[
-              {
-                description: 'participants',
-                min_necessary: 4,
-                max_possible: 8,
-              },
-            ]}            ></call-to-action-needs-form>
-              <input type="submit"></input>
-          </form>`;
+                    <call-to-action-needs-form id="needs-form"
+                    .allowEmpty=${true}
+      .defaultValue=${[
+        {
+          description: 'participants',
+          min_necessary: 4,
+          max_possible: 8,
+        },
+      ]}            ></call-to-action-needs-form>
+                    <input type="submit"></input>
+                </form>`;
           }
         }
       );
@@ -126,9 +139,18 @@
             new ProfilesClient(appAgentClient, 'assemble_test')
           );
           new ContextProvider(this, profilesStoreContext, profilesStore);
+          const cancellationsStore = new CancellationsStore(
+            new CancellationsClient(appAgentClient, 'assemble_test')
+          );
 
           this._assembleStore = new AssembleStore(
-            new AssembleClient(appAgentClient, 'assemble_test')
+            new AssembleClient(appAgentClient, 'assemble_test'),
+            cancellationsStore
+          );
+          this._cancellationsStore = new ContextProvider(
+            this,
+            cancellationsStoreContext,
+            cancellationsStore
           );
         }
 
@@ -139,14 +161,14 @@
                 <span>CallsToAction</span>
                 <div class="column" style="flex: 1">
                   <div class="row">
-                    <create-call-to-action> </create-call-to-action>
-                    <open-calls-to-action
-                      @call-to-action-selected=${e => {
+                    <create-call-to-action
+                      @call-to-action-created=${e => {
                         this._selectedCallToActionHash =
                           e.detail.callToActionHash;
                         this.requestUpdate();
                       }}
-                    ></open-calls-to-action>
+                    >
+                    </create-call-to-action>
                   </div>
                   ${this._selectedCallToActionHash
                     ? html`
@@ -154,12 +176,14 @@
                           .callToActionHash=${this._selectedCallToActionHash}
                           .needIndex=${0}
                         ></call-to-action-need-progress>
-                        <div class="row">
+                        <div class="row" style="flex: 1">
                           <call-to-action-unsatisfied-needs
+                            style="flex: 1"
                             .hideNeeds=${[0]}
                             .callToActionHash=${this._selectedCallToActionHash}
                           ></call-to-action-unsatisfied-needs>
                           <call-to-action-satisfied-needs
+                            style="flex: 1"
                             .hideNeeds=${[0]}
                             .callToActionHash=${this._selectedCallToActionHash}
                           ></call-to-action-satisfied-needs>
@@ -168,18 +192,6 @@
                     : html``}
                 </div>
               </div>
-              <div class="column" style="flex: 1">
-                <span>Collective Commitments</span>
-                <all-assemblies></all-assemblies>
-              </div>
-              <sl-button
-                @click=${async () => {
-                  await this._assembleStore.client.clearCallsToAction([
-                    this._selectedCallToActionHash,
-                  ]);
-                }}
-                >Clear</sl-button
-              >
             </assemble-context>
           `;
         }

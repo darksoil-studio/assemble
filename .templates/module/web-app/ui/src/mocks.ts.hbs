@@ -6,10 +6,6 @@ import {
   fakeUpdateEntry,
   fakeDeleteEntry,
   fakeRecord,
-  fakeAgentPubKey,
-  fakeDnaHash,
-  fakeActionHash,
-  fakeEntryHash,
   pickBy,
   ZomeMock,
   RecordBag,
@@ -24,8 +20,13 @@ import {
   ActionHash,
   EntryHash,
   AppAgentClient,
+  fakeAgentPubKey,
+  fakeDnaHash,
+  fakeActionHash,
+  fakeEntryHash,
   Record,
 } from "@holochain/client";
+import { {{pascal_case app_name}}Client } from './{{kebab_case app_name}}-client.js'
 
 export class {{pascal_case app_name}}ZomeMock extends ZomeMock implements AppAgentClient {
   constructor(

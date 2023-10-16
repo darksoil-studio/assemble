@@ -9,6 +9,8 @@ import {
   AsyncReadable,
   StoreSubscriber,
   joinAsync,
+  pipe,
+  sliceAndJoin,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
@@ -21,7 +23,9 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import { LitElement, TemplateResult, html } from 'lit';
+import '@shoelace-style/shoelace/dist/components/details/details.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
+import { LitElement, TemplateResult, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
@@ -29,12 +33,14 @@ import { assembleStoreContext } from '../context.js';
 import { CallToAction, Commitment, Need, Satisfaction } from '../types.js';
 import './call-to-action-need-progress.js';
 import './create-commitment.js';
+import './commitment-detail.js';
 import { CreateCommitment } from './create-commitment.js';
 import './create-satisfaction.js';
 import { CreateSatisfaction } from './create-satisfaction.js';
+import { mdiInformationOutline } from '@mdi/js';
 
 /**
- * @element call-to-action-needs
+ * @element call-to-action-unsatisfied-needs
  */
 @localized()
 @customElement('call-to-action-unsatisfied-needs')
@@ -60,11 +66,23 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     () =>
       joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
-        this.assembleStore.commitmentsForCallToAction.get(
-          this.callToActionHash
+        pipe(
+          this.assembleStore.uncancelledCommitmentsForCallToAction.get(
+            this.callToActionHash
+          ),
+          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
         ),
-        this.assembleStore.satisfactionsForCallToAction.get(
-          this.callToActionHash
+        pipe(
+          this.assembleStore.cancelledCommitmentsForCallToAction.get(
+            this.callToActionHash
+          ),
+          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
+        ),
+        pipe(
+          this.assembleStore.satisfactionsForCallToAction.get(
+            this.callToActionHash
+          ),
+          hashes => sliceAndJoin(this.assembleStore.satisfactions, hashes)
         ),
       ]),
     () => [this.callToActionHash]
@@ -104,59 +122,50 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     }
   }
 
-  renderCommitment(
-    commitment: EntryRecord<Commitment>,
-    displayAmount: boolean
-  ) {
-    return html`
-      <div class="row" style="align-items: center; gap: 8px">
-        <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
-        <div class="column" style="gap: 8px">
-          <span
-            >${msg('committed to contribute')}${displayAmount
-              ? html`&nbsp;${commitment.entry.amount}`
-              : ''}</span
-          >
-          <span>${commitment.entry.comment || msg('No comment')}</span>
-        </div>
-      </div>
-    `;
-  }
-
   renderCommitmentsForNeed(
-    callToAction: EntryRecord<CallToAction>,
     needIndex: number,
-    commitments: Array<EntryRecord<Commitment>>
+    commitments: Array<EntryRecord<Commitment>>,
+    emptyPlaceholder = msg('No one has contributed to this need yet.')
   ) {
     const commitmentsForThisNeed = commitments.filter(
       p => p.entry.need_index === needIndex
     );
 
     if (commitmentsForThisNeed.length === 0)
-      return html`<span class="placeholder"
-        >${msg('No one has contributed to this need yet.')}</span
-      >`;
+      return html` <span class="placeholder">${emptyPlaceholder}</span>`;
 
-    return html`<div class="column" style="gap: 8px">
-      ${commitmentsForThisNeed.map(commitment =>
-        this.renderCommitment(
-          commitment,
-          !(
-            callToAction.entry.needs[needIndex].min_necessary === 1 &&
-            callToAction.entry.needs[needIndex].max_possible === 1
-          )
-        )
+    return html`<div class="column" style="flex: 1">
+      ${commitmentsForThisNeed.map(
+        (commitment, i) =>
+          html`<commitment-detail
+              .commitmentHash=${commitment.actionHash}
+            ></commitment-detail>
+            ${i === commitmentsForThisNeed.length - 1
+              ? html``
+              : html` <sl-divider></sl-divider> `} `
       )}
     </div>`;
   }
 
-  renderUnmetNeeds(
+  renderUnsatisfiedNeeds(
     callToAction: EntryRecord<CallToAction>,
     needs: Array<[Need, number]>,
-    commitments: Array<EntryRecord<Commitment>>
+    commitments: Array<EntryRecord<Commitment>>,
+    cancelledCommitments: Array<EntryRecord<Commitment>>
   ) {
     if (needs.length === 0)
-      return html`<span>${msg('There are no unmet needs.')}</span>`;
+      return html` <div
+        style="flex: 1; display: flex; align-items: center; flex-direction: column; margin: 48px; gap: 16px"
+      >
+        <sl-icon
+          .src=${wrapPathInSvg(mdiInformationOutline)}
+          style="font-size: 96px;"
+          class="placeholder"
+        ></sl-icon>
+        <span class="placeholder"
+          >${msg('There are no unsatisfied needs.')}</span
+        >
+      </div>`;
 
     return needs.map(
       ([need, i]) => html`
@@ -169,41 +178,54 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
               style="flex: 1"
             ></call-to-action-need-progress>
           </div>
-          <div class="column" style="flex: 1; gap: 16px">
-            ${this.renderCommitmentsForNeed(callToAction, i, commitments)}
-            <div class="row" style="flex: 1;">
-              <sl-button
-                style="flex: 1"
-                @click=${() => {
-                  const createCommitment = this.shadowRoot?.querySelector(
-                    'create-commitment'
-                  ) as CreateCommitment;
-                  createCommitment.needIndex = i;
-                  createCommitment.show();
-                }}
-                >${msg('Contribute')}</sl-button
-              >
-
-              ${this.amIAuthor(callToAction)
-                ? html`
-                    <sl-button
-                      style="flex: 1; margin-left: 16px"
-                      @click=${() => {
-                        const createSatisfaction =
-                          this.shadowRoot?.querySelector(
-                            'create-satisfaction'
-                          ) as CreateSatisfaction;
-                        createSatisfaction.needIndex = i;
-                        createSatisfaction.commitments = commitments.filter(
-                          p => p.entry.need_index === i
-                        );
-                        createSatisfaction.show();
-                      }}
-                      >${msg('Need is satisfied')}</sl-button
-                    >
-                  `
-                : html``}
-            </div>
+          <div class="column" style="flex: 1">
+            <sl-details .summary=${msg('Contributions')} open>
+              <div class="column" style="flex: 1; gap: 8px">
+                ${this.renderCommitmentsForNeed(i, commitments)}
+                <div class="row" style="flex: 1; gap: 16px;">
+                  ${this.amIAuthor(callToAction)
+                    ? html`
+                        <sl-button
+                          style="flex: 1;"
+                          @click=${() => {
+                            const createSatisfaction =
+                              this.shadowRoot?.querySelector(
+                                'create-satisfaction'
+                              ) as CreateSatisfaction;
+                            createSatisfaction.needIndex = i;
+                            createSatisfaction.commitments = commitments.filter(
+                              p => p.entry.need_index === i
+                            );
+                            createSatisfaction.show();
+                          }}
+                          >${msg('Need is satisfied')}</sl-button
+                        >
+                      `
+                    : html``}
+                  <sl-button
+                    style="flex: 1"
+                    variant="primary"
+                    @click=${() => {
+                      const createCommitment = this.shadowRoot?.querySelector(
+                        'create-commitment'
+                      ) as CreateCommitment;
+                      createCommitment.needIndex = i;
+                      createCommitment.show();
+                    }}
+                    >${msg('Contribute')}</sl-button
+                  >
+                </div>
+              </div>
+            </sl-details>
+            <sl-details .summary=${msg('Cancelled Commitments')}>
+              <div class="column" style="flex: 1; gap: 8px">
+                ${this.renderCommitmentsForNeed(
+                  i,
+                  cancelledCommitments,
+                  msg('There are no cancelled commitments.')
+                )}
+              </div>
+            </sl-details>
           </div>
         </sl-card>
       `
@@ -214,21 +236,25 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     switch (this._callToActionInfo.value.status) {
       case 'pending':
         return html`
-          <div class="column">
+          <div class="column" style="gap: 8px">
             <sl-skeleton></sl-skeleton>
-            <sl-skeleton style="margin-top: 8px"></sl-skeleton>
-            <sl-skeleton style="margin-top: 8px"></sl-skeleton>
+            <sl-skeleton></sl-skeleton>
+            <sl-skeleton></sl-skeleton>
           </div>
         `;
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
         const commitments = this._callToActionInfo.value.value[1];
-        const satisfactions = this._callToActionInfo.value.value[2];
+        const cancelledCommitments = this._callToActionInfo.value.value[2];
+        const satisfactions = this._callToActionInfo.value.value[3];
 
         const unsatisfiedNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
           .filter(
-            ([_need, i]) => !satisfactions.find(s => s.entry.need_index === i)
+            ([_need, i]) =>
+              !Array.from(satisfactions.values()).find(
+                s => s.entry.need_index === i
+              )
           ) as Array<[Need, number]>;
         return html`
           <create-commitment .callToAction=${callToAction}></create-commitment>
@@ -238,18 +264,21 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
               @satisfaction-created=${async (e: CustomEvent) => {
                 if (unsatisfiedNeeds.length === 1) {
                   await this.createAssembly([
-                    ...satisfactions.map(s => s.actionHash),
+                    ...Array.from(satisfactions.values()).map(
+                      s => s.actionHash
+                    ),
                     e.detail.satisfactionHash,
                   ]);
                 }
               }}
             ></create-satisfaction>
-            ${this.renderUnmetNeeds(
+            ${this.renderUnsatisfiedNeeds(
               callToAction,
               unsatisfiedNeeds.filter(
                 ([need, i]) => !this.hideNeeds.includes(i)
               ),
-              commitments
+              Array.from(commitments.values()),
+              Array.from(cancelledCommitments.values())
             )}
           </div>
         `;
@@ -263,5 +292,15 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     }
   }
 
-  static styles = [sharedStyles];
+  static styles = [
+    sharedStyles,
+    css`
+      sl-card::part(body) {
+        padding: 0 !important;
+      }
+      sl-details::part(base) {
+        border-radius: 0px !important;
+      }
+    `,
+  ];
 }

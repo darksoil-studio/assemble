@@ -9,6 +9,8 @@ import {
   AsyncReadable,
   StoreSubscriber,
   joinAsync,
+  pipe,
+  sliceAndJoin,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
@@ -21,7 +23,7 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import { LitElement, TemplateResult, html } from 'lit';
+import { LitElement, PropertyValueMap, TemplateResult, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
@@ -31,6 +33,7 @@ import './call-to-action-need-progress.js';
 import './create-commitment.js';
 import { CreateCommitment } from './create-commitment.js';
 import './create-satisfaction.js';
+import { mdiInformationOutline } from '@mdi/js';
 
 /**
  * @element call-to-action-satisfied-needs
@@ -59,11 +62,17 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     () =>
       joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
-        this.assembleStore.commitmentsForCallToAction.get(
-          this.callToActionHash
+        pipe(
+          this.assembleStore.commitmentsForCallToAction.get(
+            this.callToActionHash
+          ),
+          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
         ),
-        this.assembleStore.satisfactionsForCallToAction.get(
-          this.callToActionHash
+        pipe(
+          this.assembleStore.satisfactionsForCallToAction.get(
+            this.callToActionHash
+          ),
+          hashes => sliceAndJoin(this.assembleStore.satisfactions, hashes)
         ),
       ]),
     () => [this.callToActionHash]
@@ -103,69 +112,26 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     }
   }
 
-  renderCommitment(
-    commitment: EntryRecord<Commitment>,
-    displayAmount: boolean
-  ) {
-    return html`
-      <div class="class" style="gap: 8px">
-        <div class="row" style="align-items: center; gap: 8px">
-          <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
-          <div class="column" style="gap: 8px">
-            <span
-              >${msg('committed to contribute')}${displayAmount
-                ? html`&nbsp;${commitment.entry.amount}`
-                : ''}</span
-            >
-            <span>${commitment.entry.comment || msg('No comment')}</span>
-          </div>
-        </div>
-        <cancellations-for
-          hide-no-cancellations-notice
-          .cancelledHash=${commitment.actionHash}
-        ></cancellations-for>
-      </div>
-    `;
-  }
-
-  renderCommitmentsForNeed(
-    callToAction: EntryRecord<CallToAction>,
-    needIndex: number,
-    commitments: Array<EntryRecord<Commitment>>
-  ) {
-    const commitmentsForThisNeed = commitments.filter(
-      p => p.entry.need_index === needIndex
-    );
-
-    if (commitmentsForThisNeed.length === 0)
-      return html`<span class="placeholder"
-        >${msg('No one has contributed to this need yet.')}</span
-      >`;
-
-    return html`<div class="column" style="gap: 8px">
-      ${commitmentsForThisNeed.map(commitment =>
-        this.renderCommitment(
-          commitment,
-          !(
-            callToAction.entry.needs[needIndex].min_necessary === 1 &&
-            callToAction.entry.needs[needIndex].max_possible === 1
-          )
-        )
-      )}
-    </div>`;
-  }
-
-  renderMetNeeds(
-    callToAction: EntryRecord<CallToAction>,
+  renderSatisfiedNeeds(
     needs: Array<[Need, number]>,
     commitments: Array<EntryRecord<Commitment>>,
     satisfactions: Array<EntryRecord<Satisfaction>>
   ) {
     if (needs.length === 0)
-      return html`<span>${msg('There are no satisfied needs.')}</span>`;
+      return html` <div
+        style="display: flex; align-items: center; flex: 1; flex-direction: column; margin: 48px; gap: 16px"
+      >
+        <sl-icon
+          .src=${wrapPathInSvg(mdiInformationOutline)}
+          style="font-size: 96px;"
+          class="placeholder"
+        ></sl-icon>
+        <span class="placeholder">${msg('There are no satisfied needs.')}</span>
+      </div>`;
+
     return needs.map(
       ([need, i]) => html`
-        <sl-card style="flex: 1;">
+        <sl-card class="column" style="flex: 1;">
           <div class="row " slot="header" style="align-items: center">
             <span class="title">${need.description} </span>
             ${need.min_necessary !== 1 || need.max_possible !== 1
@@ -176,87 +142,93 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                 ></call-to-action-need-progress>`
               : html``}
           </div>
-          <div class="column" style="flex: 1; gap: 8px">
-            <span>${msg('Commitments that satisfied the need:')}</span>
-            ${commitments.filter(
-              c =>
-                c.entry.need_index === i &&
-                satisfactions.find(
-                  s =>
-                    s.entry.need_index === i &&
-                    s.entry.commitments_hashes.find(
-                      ph => ph.toString() === c.actionHash.toString()
+          <div class="column" style="flex: 1">
+            <sl-details .summary=${msg('Satisfied By')} open>
+              <div class="column" style="flex: 1; gap: 8px">
+                ${commitments.filter(
+                  c =>
+                    c.entry.need_index === i &&
+                    satisfactions.find(
+                      s =>
+                        s.entry.need_index === i &&
+                        s.entry.commitments_hashes.find(
+                          ph => ph.toString() === c.actionHash.toString()
+                        )
                     )
-                )
-            ).length > 0
-              ? commitments
-                  .filter(
-                    c =>
-                      c.entry.need_index === i &&
-                      satisfactions.find(
-                        s =>
-                          s.entry.need_index === i &&
-                          s.entry.commitments_hashes.find(
-                            ph => ph.toString() === c.actionHash.toString()
+                ).length > 0
+                  ? commitments
+                      .filter(
+                        c =>
+                          c.entry.need_index === i &&
+                          satisfactions.find(
+                            s =>
+                              s.entry.need_index === i &&
+                              s.entry.commitments_hashes.find(
+                                ph => ph.toString() === c.actionHash.toString()
+                              )
                           )
                       )
-                  )
-                  .map(commitment =>
-                    this.renderCommitment(
-                      commitment,
-                      callToAction.entry.needs[i].min_necessary !== 1 ||
-                        callToAction.entry.needs[i].max_possible !== 1
+                      .map(
+                        commitment =>
+                          html`<commitment-detail
+                            .commitmentHash=${commitment.actionHash}
+                          ></commitment-detail>`
+                      )
+                  : html`<span class="placeholder"
+                      >${msg(
+                        'This need was satisfied with no commitments.'
+                      )}</span
+                    >`}
+              </div>
+            </sl-details>
+            <sl-details .summary=${msg('Additional Contributions')}>
+              <div class="column" style="flex: 1; gap: 8px">
+                ${commitments.filter(
+                  c =>
+                    c.entry.need_index === i &&
+                    !satisfactions.find(
+                      s =>
+                        s.entry.need_index === i &&
+                        s.entry.commitments_hashes.find(
+                          ph => ph.toString() === c.actionHash.toString()
+                        )
                     )
-                  )
-              : html`<span class="placeholder"
-                  >${msg('This need was satisfied with no commitments.')}</span
-                >`}
-            <span>${msg('Additional Commitments: ')}</span>
-            ${commitments.filter(
-              c =>
-                c.entry.need_index === i &&
-                !satisfactions.find(
-                  s =>
-                    s.entry.need_index === i &&
-                    s.entry.commitments_hashes.find(
-                      ph => ph.toString() === c.actionHash.toString()
-                    )
-                )
-            ).length > 0
-              ? commitments
-                  .filter(
-                    c =>
-                      c.entry.need_index === i &&
-                      !satisfactions.find(
-                        s =>
-                          s.entry.need_index === i &&
-                          s.entry.commitments_hashes.find(
-                            ph => ph.toString() === c.actionHash.toString()
+                ).length > 0
+                  ? commitments
+                      .filter(
+                        c =>
+                          c.entry.need_index === i &&
+                          !satisfactions.find(
+                            s =>
+                              s.entry.need_index === i &&
+                              s.entry.commitments_hashes.find(
+                                ph => ph.toString() === c.actionHash.toString()
+                              )
                           )
                       )
-                  )
-                  .map(commitment =>
-                    this.renderCommitment(
-                      commitment,
-                      callToAction.entry.needs[i].min_necessary !== 1 ||
-                        callToAction.entry.needs[i].max_possible !== 1
-                    )
-                  )
-              : html`<span class="placeholder"
-                  >${msg('There are no additional commitments.')}</span
-                >`}
-            <sl-button
-              @click=${() => {
-                const createCommitment = this.shadowRoot?.querySelector(
-                  'create-commitment'
-                ) as CreateCommitment;
-                createCommitment.needIndex = i;
-                createCommitment.show();
-              }}
-              >${msg('Contribute')}</sl-button
+                      .map(
+                        commitment =>
+                          html`<commitment-detail
+                            .commitmentHash=${commitment.actionHash}
+                          ></commitment-detail>`
+                      )
+                  : html`<span class="placeholder"
+                      >${msg('There are no additional commitments.')}</span
+                    >`}
+                <sl-button
+                  @click=${() => {
+                    const createCommitment = this.shadowRoot?.querySelector(
+                      'create-commitment'
+                    ) as CreateCommitment;
+                    createCommitment.needIndex = i;
+                    createCommitment.show();
+                  }}
+                  >${msg('Contribute')}</sl-button
+                >
+              </div></sl-details
             >
-          </div></sl-card
-        >
+          </div>
+        </sl-card>
       `
     );
   }
@@ -276,10 +248,13 @@ export class CallToActionSatisfiedNeeds extends LitElement {
         const commitments = this._callToActionInfo.value.value[1];
         const satisfactions = this._callToActionInfo.value.value[2];
 
-        const metNeeds = callToAction.entry.needs
+        const satisfiedNeeds = callToAction.entry.needs
           .map((need, i) => [need, i])
           .filter(
-            ([_need, i]) => !!satisfactions.find(s => s.entry.need_index === i)
+            ([_need, i]) =>
+              !!Array.from(satisfactions.values()).find(
+                s => s.entry.need_index === i
+              )
           ) as Array<[Need, number]>;
         return html`
           <create-commitment .callToAction=${callToAction}></create-commitment>
@@ -287,11 +262,10 @@ export class CallToActionSatisfiedNeeds extends LitElement {
             <create-satisfaction
               .callToAction=${callToAction}
             ></create-satisfaction>
-            ${this.renderMetNeeds(
-              callToAction,
-              metNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
-              commitments,
-              satisfactions
+            ${this.renderSatisfiedNeeds(
+              satisfiedNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
+              Array.from(commitments.values()),
+              Array.from(satisfactions.values())
             )}
           </div>
         `;
@@ -305,5 +279,15 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     }
   }
 
-  static styles = [sharedStyles];
+  static styles = [
+    sharedStyles,
+    css`
+      sl-card::part(body) {
+        padding: 0 !important;
+      }
+      sl-details::part(base) {
+        border-radius: 0px !important;
+      }
+    `,
+  ];
 }

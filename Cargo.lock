@@ -627,6 +627,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "cancellations"
+version = "0.0.1"
+dependencies = [
+ "hc_zome_cancellations_coordinator",
+ "hc_zome_cancellations_integrity",
+ "hdk",
+ "serde",
+]
+
+[[package]]
+name = "cancellations_integrity"
+version = "0.0.1"
+dependencies = [
+ "hc_zome_cancellations_integrity",
+ "hdi",
+ "serde",
+]
+
+[[package]]
 name = "cargo-platform"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2017,6 +2036,25 @@ dependencies = [
 [[package]]
 name = "hc_zome_assemble_integrity"
 version = "0.0.1"
+dependencies = [
+ "hdi",
+ "serde",
+]
+
+[[package]]
+name = "hc_zome_cancellations_coordinator"
+version = "0.0.1"
+source = "git+https://github.com/holochain-open-dev/cancellations?branch=main#16662d8ecdce03450aeea71bcc98ad26184031d5"
+dependencies = [
+ "hc_zome_cancellations_integrity",
+ "hdk",
+ "serde",
+]
+
+[[package]]
+name = "hc_zome_cancellations_integrity"
+version = "0.0.1"
+source = "git+https://github.com/holochain-open-dev/cancellations?branch=main#16662d8ecdce03450aeea71bcc98ad26184031d5"
 dependencies = [
  "hdi",
  "serde",

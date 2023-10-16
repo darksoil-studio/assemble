@@ -9,20 +9,35 @@ integrity:
     - name: assemble_integrity
       hash: ~
       bundled: "../target/wasm32-unknown-unknown/release/hc_zome_assemble_integrity.wasm"
-      dependencies: ~    
+      dependencies: ~
+      dylib: ~
     - name: profiles_integrity
       hash: ~
       bundled: "../target/wasm32-unknown-unknown/release/profiles_integrity.wasm"
       dependencies: ~
+      dylib: ~
+    - name: cancellations_integrity
+      hash: ~
+      bundled: "../target/wasm32-unknown-unknown/release/cancellations_integrity.wasm"
+      dependencies: ~
+      dylib: ~
 coordinator:
   zomes:
     - name: assemble
       hash: ~
       bundled: "../target/wasm32-unknown-unknown/release/hc_zome_assemble_coordinator.wasm"
       dependencies:
-        - name: assemble_integrity    
+        - name: assemble_integrity
+      dylib: ~
     - name: profiles
       hash: ~
       bundled: "../target/wasm32-unknown-unknown/release/profiles.wasm"
       dependencies:
         - name: profiles_integrity
+      dylib: ~
+    - name: cancellations
+      hash: ~
+      bundled: "../target/wasm32-unknown-unknown/release/cancellations.wasm"
+      dependencies:
+        - name: cancellations_integrity
+      dylib: ~

@@ -84,12 +84,11 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getCommitmentsForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<EntryRecord<Commitment>>> {
-    const records: Record[] = await this.callZome(
+  ): Promise<Array<ActionHash>> {
+    return this.callZome(
       'get_commitments_for_call_to_action',
       callToActionHash
     );
-    return records.map(r => new EntryRecord(r));
   }
   /** Satisfaction */
 
@@ -126,23 +125,23 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getSatisfactionsForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<EntryRecord<Satisfaction>>> {
-    const records: Record[] = await this.callZome(
+  ): Promise<Array<ActionHash>> {
+    return this.callZome(
       'get_satisfactions_for_call_to_action',
       callToActionHash
     );
-    return records.map(r => new EntryRecord(r));
   }
 
   async getSatisfactionsForCommitment(
     commitmentHash: ActionHash
-  ): Promise<Array<EntryRecord<Satisfaction>>> {
-    const records: Record[] = await this.callZome(
-      'get_satisfactions_for_commitment',
-      commitmentHash
-    );
-    return records.map(r => new EntryRecord(r));
+  ): Promise<Array<ActionHash>> {
+    return this.callZome('get_satisfactions_for_commitment', commitmentHash);
   }
+
+  deleteSatisfaction(satisfactionHash: ActionHash): Promise<ActionHash> {
+    return this.callZome('delete_satisfaction', satisfactionHash);
+  }
+
   /** Assembly */
 
   async createAssembly(assembly: Assembly): Promise<EntryRecord<Assembly>> {
@@ -159,50 +158,13 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getAssembliesForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<EntryRecord<Assembly>>> {
-    const records: Record[] = await this.callZome(
-      'get_assemblies_for_call_to_action',
-      callToActionHash
-    );
-    return records.map(r => new EntryRecord(r));
+  ): Promise<Array<ActionHash>> {
+    return this.callZome('get_assemblies_for_call_to_action', callToActionHash);
   }
 
   async getAssembliesForSatisfaction(
     satisfactionHash: ActionHash
-  ): Promise<Array<EntryRecord<Assembly>>> {
-    const records: Record[] = await this.callZome(
-      'get_assemblies_for_satisfaction',
-      satisfactionHash
-    );
-    return records.map(r => new EntryRecord(r));
-  }
-
-  /** All Calls To Action */
-
-  async getOpenCallsToAction(): Promise<Array<ActionHash>> {
-    return this.callZome('get_open_calls_to_action', null);
-  }
-
-  closeCallToAction(callToActionHash: ActionHash): Promise<void> {
-    return this.callZome('close_call_to_action', callToActionHash);
-  }
-
-  /** All Assemblies */
-
-  async getAllAssemblies(): Promise<Array<EntryRecord<Assembly>>> {
-    const records: Record[] = await this.callZome('get_all_assemblies', null);
-    return records.map(r => new EntryRecord(r));
-  }
-
-  /** My Calls To Action */
-
-  async getMyCallsToAction(): Promise<Array<ActionHash>> {
-    return this.callZome('get_my_calls_to_action', null);
-  }
-
-  async clearCallsToAction(
-    callsToActionHashes: Array<ActionHash>
-  ): Promise<void> {
-    return this.callZome('clear_calls_to_action', callsToActionHashes);
+  ): Promise<Array<ActionHash>> {
+    return this.callZome('get_assemblies_for_satisfaction', satisfactionHash);
   }
 }

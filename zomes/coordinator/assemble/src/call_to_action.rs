@@ -1,10 +1,6 @@
 use assemble_integrity::*;
 use hdk::prelude::*;
 
-use crate::{
-    my_calls_to_action::add_to_my_calls_to_action, open_calls_to_action::open_calls_to_action_path,
-};
-
 #[hdk_extern]
 pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Record> {
     let call_to_action_hash = create_entry(&EntryTypes::CallToAction(call_to_action.clone()))?;
@@ -21,16 +17,6 @@ pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Recor
             "Could not find the newly created CallToAction"
         ))
     ))?;
-
-    let path = open_calls_to_action_path();
-    create_link(
-        path.path_entry_hash()?,
-        call_to_action_hash.clone(),
-        LinkTypes::OpenCallsToAction,
-        (),
-    )?;
-
-    add_to_my_calls_to_action(call_to_action_hash.clone())?;
 
     Ok(record)
 }
@@ -85,24 +71,15 @@ pub fn delete_call_to_action(original_call_to_action_hash: ActionHash) -> Extern
 #[hdk_extern]
 pub fn get_call_to_actions_for_call_to_action(
     call_to_action_hash: ActionHash,
-) -> ExternResult<Vec<Record>> {
+) -> ExternResult<Vec<ActionHash>> {
     let links = get_links(
         call_to_action_hash,
         LinkTypes::CallToActionToCallToActions,
         None,
     )?;
-    let get_input: Vec<GetInput> = links
+    let action_hashes: Vec<ActionHash> = links
         .into_iter()
-        .filter_map(|link| {
-            link.target
-                .into_any_dht_hash()
-                .map(|action_hash| GetInput::new(action_hash, GetOptions::default()))
-        })
+        .filter_map(|link| link.target.into_action_hash())
         .collect();
-    let records: Vec<Record> = HDK
-        .with(|hdk| hdk.borrow().get(get_input))?
-        .into_iter()
-        .filter_map(|r| r)
-        .collect();
-    Ok(records)
+    Ok(action_hashes)
 }

@@ -120,16 +120,6 @@ export class CreateSatisfaction extends LitElement {
     this.committing = false;
   }
 
-  renderAmount(commitment: EntryRecord<Commitment>) {
-    if (
-      this.callToAction.entry.needs[this.needIndex].min_necessary === 1 &&
-      this.callToAction.entry.needs[this.needIndex].max_possible === 1
-    )
-      return html``;
-
-    return html`${msg('Amount')}: ${commitment.entry.amount}`;
-  }
-
   render() {
     return html` <sl-dialog .label=${msg('Satisfy Need')}>
       ${this.commitments
@@ -161,18 +151,19 @@ export class CreateSatisfaction extends LitElement {
                     name="${encodeHashToBase64(p.actionHash)}"
                     .checked=${true}
                   >
-                    <div class="column">
-                      <div
-                        class="row"
-                        style="align-items: center; margin-bottom: 16px"
-                      >
-                        <agent-avatar
-                          .agentPubKey=${p.action.author}
-                          style="margin-right: 8px"
-                        ></agent-avatar>
-                        ${p.entry.comment || msg('No comment')}.
+                    <div class="row" style="align-items: center; gap: 16px">
+                      <agent-avatar
+                        .agentPubKey=${p.action.author}
+                      ></agent-avatar>
+                      <div class="column" style="gap: 8px">
+                        <span
+                          >${msg('committed to contribute')}&nbsp;${p.entry
+                            .amount}</span
+                        >
+                        <span class="placeholder">
+                          ${p.entry.comment || msg('No comment')}.
+                        </span>
                       </div>
-                      ${this.renderAmount(p)}
                     </div>
                   </sl-checkbox>`
               )}

@@ -4,14 +4,15 @@
   "scripts": {
     "start": "vite --clearScreen false --port $UI_PORT",
     "build": "npm run lint && tsc && npm run analyze -- --exclude dist",
-    "lint": "eslint --ext .ts,.html . && prettier \"**/*.ts\" --check --ignore-path .gitignore",
-    "format": "eslint --fix --ext .ts,.html . && prettier \"**/*.ts\" --write --ignore-path .gitignore",
+    "lint": "eslint --ext .ts . && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint --fix --ext .ts . && prettier \"**/*.ts\" --write --ignore-path .gitignore",
     "localize:extract": "lit-localize extract",
     "localize:build": "lit-localize build",
     "analyze": "cem analyze --litelement"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": ["dist"],
   "repository": {
     "type": "git",
@@ -19,21 +20,20 @@
   },
   "exports": {
     ".": "./dist/index.js",
-    "./elements/*": "./dist/elements/*",
-    "./mocks": "./dist/mocks.js"
+    "./dist/*": "./dist/*",
+    "./locales/*": "./locales/*"
   },
   "dependencies": {
-    "@holochain/client": "{{holochain_client_version}}",
-    "@holochain-open-dev/elements": "^0.3.10",
-    "@holochain-open-dev/profiles": "^0.12.0",
-    "@holochain-open-dev/stores": "^0.4.2",
-    "@holochain-open-dev/utils": "^0.13.0",
+    "@holochain/client": "^0.16.2",
+    "@holochain-open-dev/elements": "^0.7.0",
+    "@holochain-open-dev/profiles": "^0.16.1",
+    "@holochain-open-dev/stores": "^0.7.2",
+    "@holochain-open-dev/utils": "^0.15.1",
     "@lit-labs/context": "^0.2.0",
     "@lit/localize": "^0.11.4",
     "@mdi/js": "^7.2.0",
     "@msgpack/msgpack": "^2.7.2",
-    "@shoelace-style/shoelace": "^2.3.0",
-    "lit-flatpickr": "^0.4.0",
+    "@shoelace-style/shoelace": "^2.9.0",
     "lit": "^2.6.1"
   },
   "devDependencies": {

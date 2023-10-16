@@ -4,12 +4,17 @@ import {
   wrapPathInSvg,
 } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
-import { StoreSubscriber } from '@holochain-open-dev/stores';
+import { StoreSubscriber, joinAsync, pipe } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash, EntryHash, Record } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import { mdiAlertCircleOutline, mdiDelete, mdiPencil } from '@mdi/js';
+import {
+  mdiAlertCircleOutline,
+  mdiCancel,
+  mdiDelete,
+  mdiPencil,
+} from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
@@ -19,9 +24,15 @@ import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { LitElement, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
+import '@holochain-open-dev/cancellations/dist/elements/cancellation-detail.js';
+import '@holochain-open-dev/cancellations/dist/elements/create-cancellation-dialog.js';
+import '@holochain-open-dev/cancellations/dist/elements/cancellations-for.js';
+import { CreateCancellation as CreateCancellationDialog } from '@holochain-open-dev/cancellations/dist/elements/create-cancellation-dialog.js';
+
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { Commitment } from '../types.js';
+import { CallToAction, Commitment } from '../types.js';
+import { SatisfactionsForCommitment } from './satisfactions-for-promise.js';
 
 /**
  * @element commitment-detail
@@ -45,30 +56,91 @@ export class CommitmentDetail extends LitElement {
    */
   _commitment = new StoreSubscriber(
     this,
-    () => this.assembleStore.commitments.get(this.commitmentHash),
+    () =>
+      joinAsync([
+        pipe(
+          this.assembleStore.commitments.get(this.commitmentHash),
+          commitment =>
+            this.assembleStore.callToActions.get(
+              commitment.entry.call_to_action_hash
+            ),
+          (callToAction, commitment) =>
+            [callToAction, commitment] as [
+              EntryRecord<CallToAction>,
+              EntryRecord<Commitment>
+            ]
+        ),
+        this.assembleStore.cancellationsStore.cancellationsFor.get(
+          this.commitmentHash
+        ),
+        this.assembleStore.satisfactionsForCommitment.get(this.commitmentHash),
+      ]),
     () => [this.commitmentHash]
   );
 
-  renderDetail(entryRecord: EntryRecord<Commitment>) {
+  renderDetail(
+    commitment: EntryRecord<Commitment>,
+    callToAction: EntryRecord<CallToAction>,
+    satisfactions: Array<ActionHash>,
+    cancellations: ActionHash[]
+  ) {
+    const need = callToAction.entry.needs[commitment.entry.need_index];
+    const displayAmount = !(
+      need.max_possible === 1 && need.min_necessary === 1
+    );
     return html`
-      <sl-card>
-        <div slot="header" style="display: flex; flex-direction: row">
-          <span style="font-size: 18px; flex: 1;">${msg('Commitment')}</span>
-        </div>
-
-        <div style="display: flex; flex-direction: column">
-          <div
-            style="display: flex; flex-direction: column; margin-bottom: 16px"
-          >
-            <span style="margin-bottom: 8px"
-              ><strong>${msg('Description')}:</strong></span
+      <create-cancellation-dialog
+        .label=${msg('Cancel Contribution')}
+        .warning=${msg('This will notify all event participants.')}
+        .cancelledHash=${commitment.actionHash}
+        @cancellation-created=${() => {
+          for (const satisfactionHash of satisfactions) {
+            this.assembleStore.client.deleteSatisfaction(satisfactionHash);
+          }
+        }}
+      >
+      </create-cancellation-dialog>
+      <div class="column" style="gap: 16px">
+        <div class="row" style="align-items: center; gap: 16px; ">
+          <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
+          <div class="column" style="gap: 8px; flex: 1">
+            <span
+              >${msg('committed to contribute')}${displayAmount
+                ? html`&nbsp;${commitment.entry.amount}`
+                : ''}</span
             >
-            <span style="white-space: pre-line"
-              >${entryRecord.entry.comment}</span
+            <span class="placeholder"
+              >${commitment.entry.comment || msg('No comment')}</span
             >
           </div>
+          ${commitment.action.author.toString() ===
+            this.assembleStore.client.client.myPubKey.toString() &&
+          cancellations.length === 0
+            ? html`
+                <sl-button
+                  variant="warning"
+                  @click=${() =>
+                    (
+                      this.shadowRoot?.querySelector(
+                        'create-cancellation-dialog'
+                      ) as CreateCancellationDialog
+                    ).show()}
+                >
+                  <sl-icon
+                    slot="prefix"
+                    .src=${wrapPathInSvg(mdiCancel)}
+                  ></sl-icon
+                  >${msg('Cancel')}</sl-button
+                >
+              `
+            : html``}
         </div>
-      </sl-card>
+        <cancellations-for
+          .label=${msg('Contribution was cancelled')}
+          hide-no-cancellations-notice="true"
+          .cancelledHash=${commitment.actionHash}
+        ></cancellations-for>
+      </div>
     `;
   }
 
@@ -83,17 +155,21 @@ export class CommitmentDetail extends LitElement {
           </div>
         </sl-card>`;
       case 'complete':
-        const commitment = this._commitment.value.value;
+        const callToAction = this._commitment.value.value[0][0];
+        const commitment = this._commitment.value.value[0][1];
+        const cancellations = this._commitment.value.value[1];
+        const satisfactions = this._commitment.value.value[2];
 
-        if (!commitment)
-          return html`<span
-            >${msg("The requested commitment doesn't exist")}</span
-          >`;
-
-        return this.renderDetail(commitment);
+        return this.renderDetail(
+          commitment,
+          callToAction,
+          satisfactions,
+          cancellations
+        );
       case 'error':
         return html`<sl-card>
           <display-error
+            tooltip
             .headline=${msg('Error fetching the commitment')}
             .error=${this._commitment.value.error.data.data}
           ></display-error>

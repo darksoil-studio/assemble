@@ -64,39 +64,70 @@ pub fn update_satisfaction(input: UpdateSatisfactionInput) -> ExternResult<Recor
     )?;
     Ok(record)
 }
+
+#[hdk_extern]
+pub fn delete_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<()> {
+    let Some(satisfaction_record) = get_satisfaction(satisfaction_hash.clone())? else {
+      return Err(wasm_error!(WasmErrorInner::Guest("Satisfaction not found".into())));
+    };
+    let satisfaction = Satisfaction::try_from(satisfaction_record.entry().as_option().ok_or(
+        wasm_error!(WasmErrorInner::Guest("Could not find satisfaction".into())),
+    )?)?;
+
+    let links = get_links(
+        satisfaction.call_to_action_hash,
+        LinkTypes::CallToActionToSatisfactions,
+        None,
+    )?;
+
+    for link in links {
+        if let Some(target) = link.target.into_action_hash() {
+            if target.eq(&satisfaction_hash) {
+                delete_link(link.create_link_hash)?;
+            }
+        }
+    }
+
+    for commitment_hash in satisfaction.commitments_hashes {
+        let links = get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)?;
+        for link in links {
+            if let Some(target) = link.target.into_action_hash() {
+                if target.eq(&satisfaction_hash) {
+                    delete_link(link.create_link_hash)?;
+                }
+            }
+        }
+    }
+
+    delete_entry(satisfaction_hash)?;
+
+    Ok(())
+}
+
 #[hdk_extern]
 pub fn get_satisfactions_for_call_to_action(
     call_to_action_hash: ActionHash,
-) -> ExternResult<Vec<Record>> {
+) -> ExternResult<Vec<ActionHash>> {
     let links = get_links(
         call_to_action_hash,
         LinkTypes::CallToActionToSatisfactions,
         None,
     )?;
-    let get_input: Vec<GetInput> = links
+    let action_hashes: Vec<ActionHash> = links
         .into_iter()
-        .filter_map(|link| link.target.into_any_dht_hash())
-        .map(|target| GetInput::new(target, GetOptions::default()))
+        .filter_map(|link| link.target.into_action_hash())
         .collect();
-    let records: Vec<Record> = HDK
-        .with(|hdk| hdk.borrow().get(get_input))?
-        .into_iter()
-        .filter_map(|r| r)
-        .collect();
-    Ok(records)
+    Ok(action_hashes)
 }
+
 #[hdk_extern]
-pub fn get_satisfactions_for_commitment(commitment_hash: ActionHash) -> ExternResult<Vec<Record>> {
+pub fn get_satisfactions_for_commitment(
+    commitment_hash: ActionHash,
+) -> ExternResult<Vec<ActionHash>> {
     let links = get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)?;
-    let get_input: Vec<GetInput> = links
+    let action_hashes: Vec<ActionHash> = links
         .into_iter()
-        .filter_map(|link| link.target.into_any_dht_hash())
-        .map(|target| GetInput::new(target, GetOptions::default()))
+        .filter_map(|link| link.target.into_action_hash())
         .collect();
-    let records: Vec<Record> = HDK
-        .with(|hdk| hdk.borrow().get(get_input))?
-        .into_iter()
-        .filter_map(|r| r)
-        .collect();
-    Ok(records)
+    Ok(action_hashes)
 }

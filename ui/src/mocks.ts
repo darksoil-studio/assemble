@@ -6,13 +6,9 @@ import {
   ZomeMock,
   decodeEntry,
   entryState,
-  fakeActionHash,
-  fakeAgentPubKey,
   fakeCreateAction,
   fakeDeleteEntry,
-  fakeDnaHash,
   fakeEntry,
-  fakeEntryHash,
   fakeRecord,
   fakeUpdateEntry,
   hash,
@@ -32,6 +28,7 @@ import { Assembly } from './types.js';
 import { Satisfaction } from './types.js';
 import { Commitment } from './types.js';
 import { CallToAction } from './types.js';
+import { AssembleClient } from './assemble-client.js';
 
 export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   constructor(myPubKey?: AgentPubKey) {
@@ -44,8 +41,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   callToActionsForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_call_to_action(callToAction: CallToAction): Promise<Record> {
-    const record = fakeRecord(
-      fakeCreateAction(hash(callToAction, HashType.ENTRY)),
+    const record = await fakeRecord(
+      await fakeCreateAction(hash(callToAction, HashType.ENTRY)),
       fakeEntry(callToAction)
     );
 
@@ -78,7 +75,9 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   async delete_call_to_action(
     original_call_to_action_hash: ActionHash
   ): Promise<ActionHash> {
-    const record = fakeRecord(fakeDeleteEntry(original_call_to_action_hash));
+    const record = await fakeRecord(
+      await fakeDeleteEntry(original_call_to_action_hash)
+    );
 
     this.callToAction.add([record]);
 
@@ -89,9 +88,11 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     previous_call_to_action_hash: ActionHash;
     updated_call_to_action: CallToAction;
   }): Promise<Record> {
-    const record = fakeRecord(
-      fakeUpdateEntry(
+    const record = await fakeRecord(
+      await fakeUpdateEntry(
         input.previous_call_to_action_hash,
+        undefined,
+        undefined,
         fakeEntry(input.updated_call_to_action)
       ),
       fakeEntry(input.updated_call_to_action)
@@ -117,13 +118,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
 
   async get_call_to_actions_for_call_to_action(
     callToActionHash: ActionHash
-  ): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] =
-      this.callToActionsForCallToAction.get(callToActionHash) || [];
-
-    return actionHashes
-      .map(actionHash => this.callToAction.entryRecord(actionHash)?.record)
-      .filter(r => !!r) as Record[];
+  ): Promise<Array<ActionHash>> {
+    return this.callToActionsForCallToAction.get(callToActionHash) || [];
   }
 
   /** Promise */
@@ -132,8 +128,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   commitmentsForCallToAction = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_commitment(commitment: Commitment): Promise<Record> {
-    const record = fakeRecord(
-      fakeCreateAction(hash(commitment, HashType.ENTRY)),
+    const record = await fakeRecord(
+      await fakeCreateAction(hash(commitment, HashType.ENTRY)),
       fakeEntry(commitment)
     );
 
@@ -161,13 +157,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
 
   async get_commitments_for_call_to_action(
     callToActionHash: ActionHash
-  ): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] =
-      this.commitmentsForCallToAction.get(callToActionHash) || [];
-
-    return actionHashes
-      .map(actionHash => this.commitment.entryRecord(actionHash)?.record)
-      .filter(r => !!r) as Record[];
+  ): Promise<Array<ActionHash>> {
+    return this.commitmentsForCallToAction.get(callToActionHash) || [];
   }
 
   /** Satisfaction */
@@ -178,8 +169,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   satisfactionsForCommitment = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_satisfaction(satisfaction: Satisfaction): Promise<Record> {
-    const record = fakeRecord(
-      fakeCreateAction(hash(satisfaction, HashType.ENTRY)),
+    const record = await fakeRecord(
+      await fakeCreateAction(hash(satisfaction, HashType.ENTRY)),
       fakeEntry(satisfaction)
     );
 
@@ -218,9 +209,11 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
     previous_satisfaction_hash: ActionHash;
     updated_satisfaction: Satisfaction;
   }): Promise<Record> {
-    const record = fakeRecord(
-      fakeUpdateEntry(
+    const record = await fakeRecord(
+      await fakeUpdateEntry(
         input.previous_satisfaction_hash,
+        undefined,
+        undefined,
         fakeEntry(input.updated_satisfaction)
       ),
       fakeEntry(input.updated_satisfaction)
@@ -251,24 +244,14 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
 
   async get_satisfactions_for_call_to_action(
     callToActionHash: ActionHash
-  ): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] =
-      this.satisfactionsForCallToAction.get(callToActionHash) || [];
-
-    return actionHashes
-      .map(actionHash => this.satisfaction.entryRecord(actionHash)?.record)
-      .filter(r => !!r) as Record[];
+  ): Promise<Array<ActionHash>> {
+    return this.satisfactionsForCallToAction.get(callToActionHash) || [];
   }
 
   async get_satisfactions_for_commitment(
     commitmentHash: ActionHash
-  ): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] =
-      this.satisfactionsForCommitment.get(commitmentHash) || [];
-
-    return actionHashes
-      .map(actionHash => this.satisfaction.entryRecord(actionHash)?.record)
-      .filter(r => !!r) as Record[];
+  ): Promise<Array<ActionHash>> {
+    return this.satisfactionsForCommitment.get(commitmentHash) || [];
   }
 
   /** Assembly */
@@ -279,8 +262,8 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   assembliesForSatisfaction = new HoloHashMap<ActionHash, ActionHash[]>();
 
   async create_assembly(assembly: Assembly): Promise<Record> {
-    const record = fakeRecord(
-      fakeCreateAction(hash(assembly, HashType.ENTRY)),
+    const record = await fakeRecord(
+      await fakeCreateAction(hash(assembly, HashType.ENTRY)),
       fakeEntry(assembly)
     );
 
@@ -314,48 +297,21 @@ export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
 
   async get_assemblies_for_call_to_action(
     callToActionHash: ActionHash
-  ): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] =
-      this.assembliesForCallToAction.get(callToActionHash) || [];
-
-    return actionHashes
-      .map(actionHash => this.assembly.entryRecord(actionHash)?.record)
-      .filter(r => !!r) as Record[];
+  ): Promise<Array<ActionHash>> {
+    return this.assembliesForCallToAction.get(callToActionHash) || [];
   }
 
   async get_assemblies_for_satisfaction(
     satisfactionHash: ActionHash
-  ): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] =
-      this.assembliesForSatisfaction.get(satisfactionHash) || [];
-
-    return actionHashes
-      .map(actionHash => this.assembly.entryRecord(actionHash)?.record)
-      .filter(r => !!r) as Record[];
-  }
-
-  async get_open_calls_to_action(_: any): Promise<Array<Record>> {
-    return this.callToAction.entryRecords
-      .map(er => er?.record)
-      .filter(r => !!r) as Record[];
-  }
-
-  async get_all_assemblies(_: any): Promise<Array<Record>> {
-    return this.assembly.entryRecords
-      .map(er => er?.record)
-      .filter(r => !!r) as Record[];
-  }
-
-  async get_my_calls_to_action(author: AgentPubKey): Promise<Array<Record>> {
-    const actionHashes: ActionHash[] = this.callToAction.authorMap.get(author);
-    return actionHashes
-      .map(actionHash => this.callToAction.entryRecord(actionHash))
-      .map(er => er?.record)
-      .filter(r => !!r) as Record[];
+  ): Promise<Array<ActionHash>> {
+    return this.assembliesForSatisfaction.get(satisfactionHash) || [];
   }
 }
 
-export function sampleCallToAction(): CallToAction {
+export async function sampleCallToAction(
+  assembleClient: AssembleClient,
+  partialCallToAction: Partial<CallToAction> = {}
+): Promise<CallToAction> {
   return {
     parent_call_to_action_hash: undefined,
     expiration_time: undefined,
@@ -367,29 +323,82 @@ export function sampleCallToAction(): CallToAction {
         max_possible: 5,
       },
     ],
+    ...partialCallToAction,
   };
 }
 
-export function sampleCommitment(): Commitment {
+export async function sampleCommitment(
+  assembleClient: AssembleClient,
+  partialCommitment: Partial<Commitment> = {}
+): Promise<Commitment> {
+  if (!partialCommitment.call_to_action_hash) {
+    partialCommitment.call_to_action_hash = (
+      await assembleClient.createCallToAction(
+        await sampleCallToAction(assembleClient)
+      )
+    ).actionHash;
+  }
+
   return {
-    call_to_action_hash: fakeActionHash(),
     comment: 'Lorem ipsum 2',
     need_index: 3,
     amount: 1,
-  };
+    ...partialCommitment,
+  } as Commitment;
 }
 
-export function sampleSatisfaction(): Satisfaction {
+export async function sampleSatisfaction(
+  assembleClient: AssembleClient,
+  partialSatisfaction: Partial<Satisfaction> = {}
+): Promise<Satisfaction> {
+  if (!partialSatisfaction.call_to_action_hash) {
+    partialSatisfaction.call_to_action_hash = (
+      await assembleClient.createCallToAction(
+        await sampleCallToAction(assembleClient)
+      )
+    ).actionHash;
+  }
+
+  if (!partialSatisfaction.commitments_hashes) {
+    partialSatisfaction.commitments_hashes = [
+      (
+        await assembleClient.createCommitment(
+          await sampleCommitment(assembleClient, {
+            call_to_action_hash: partialSatisfaction.call_to_action_hash,
+          })
+        )
+      ).actionHash,
+    ];
+  }
+
   return {
-    call_to_action_hash: fakeActionHash(),
-    need_index: 3,
-    commitments_hashes: [fakeActionHash()],
-  };
+    need_index: 0,
+    ...partialSatisfaction,
+  } as Satisfaction;
 }
 
-export function sampleAssembly(): Assembly {
-  return {
-    call_to_action_hash: fakeActionHash(),
-    satisfactions_hashes: [fakeActionHash()],
-  };
+export async function sampleAssembly(
+  assembleClient: AssembleClient,
+  partialAssembly: Partial<Assembly> = {}
+): Promise<Assembly> {
+  if (!partialAssembly.call_to_action_hash) {
+    partialAssembly.call_to_action_hash = (
+      await assembleClient.createCallToAction(
+        await sampleCallToAction(assembleClient)
+      )
+    ).actionHash;
+  }
+
+  if (!partialAssembly.satisfactions_hashes) {
+    partialAssembly.satisfactions_hashes = [
+      (
+        await assembleClient.createSatisfaction(
+          await sampleSatisfaction(assembleClient, {
+            call_to_action_hash: partialAssembly.call_to_action_hash,
+          })
+        )
+      ).actionHash,
+    ];
+  }
+  return partialAssembly as Assembly;
 }

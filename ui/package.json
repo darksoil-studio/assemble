@@ -12,9 +12,7 @@
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holochain-open-dev/assemble.git"
@@ -27,8 +25,8 @@
     "@holochain-open-dev/cancellations": "^0.1.0",
     "@holochain-open-dev/elements": "^0.7.0",
     "@holochain-open-dev/profiles": "^0.16.1",
-    "@holochain-open-dev/stores": "^0.7.0",
-    "@holochain-open-dev/utils": "^0.15.0",
+    "@holochain-open-dev/stores": "^0.7.4",
+    "@holochain-open-dev/utils": "^0.16.0",
     "@holochain/client": "^0.16.1",
     "@lit-labs/context": "^0.2.0",
     "@lit/localize": "^0.11.4",

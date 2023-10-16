@@ -5,6 +5,8 @@ import {
   AsyncReadable,
   StoreSubscriber,
   joinAsync,
+  pipe,
+  sliceAndJoin,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
@@ -45,11 +47,17 @@ export class CallToActionProgress extends LitElement {
     () =>
       joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
-        this.assembleStore.commitmentsForCallToAction.get(
-          this.callToActionHash
+        pipe(
+          this.assembleStore.commitmentsForCallToAction.get(
+            this.callToActionHash
+          ),
+          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
         ),
-        this.assembleStore.satisfactionsForCallToAction.get(
-          this.callToActionHash
+        pipe(
+          this.assembleStore.satisfactionsForCallToAction.get(
+            this.callToActionHash
+          ),
+          hashes => sliceAndJoin(this.assembleStore.satisfactions, hashes)
         ),
       ]),
     () => [this.callToActionHash]
@@ -61,8 +69,12 @@ export class CallToActionProgress extends LitElement {
         return html`<sl-skeleton></sl-skeleton>`;
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
-        const commitments = this._callToActionInfo.value.value[1];
-        const satisfactions = this._callToActionInfo.value.value[2];
+        const commitments = Array.from(
+          this._callToActionInfo.value.value[1].values()
+        );
+        const satisfactions = Array.from(
+          this._callToActionInfo.value.value[2].values()
+        );
         const needsCount = callToAction.entry.needs.reduce(
           (count, need) => count + need.min_necessary,
           0
