@@ -159,8 +159,7 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
       >
         <sl-icon
           .src=${wrapPathInSvg(mdiInformationOutline)}
-          style="font-size: 96px;"
-          class="placeholder"
+          style="font-size: 64px; color: grey"
         ></sl-icon>
         <span class="placeholder"
           >${msg('There are no unsatisfied needs.')}</span

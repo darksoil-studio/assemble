@@ -43,6 +43,7 @@
       import '../src/elements/call-to-action-unsatisfied-needs.ts';
       import '../src/elements/call-to-action-satisfied-needs.ts';
       import '../src/elements/call-to-action-need-progress.ts';
+      import '../src/elements/my-commitments-for-call-to-action.ts';
       import {
         AssembleStore,
         AssembleClient,
@@ -187,6 +188,10 @@
                             .hideNeeds=${[0]}
                             .callToActionHash=${this._selectedCallToActionHash}
                           ></call-to-action-satisfied-needs>
+                          <my-commitments-for-call-to-action
+                            .callToActionHash=${this._selectedCallToActionHash}
+                          >
+                          </my-commitments-for-call-to-action>
                         </div>
                       `
                     : html``}

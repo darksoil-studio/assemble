@@ -32,7 +32,6 @@ import { CreateCancellation as CreateCancellationDialog } from '@holochain-open-
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
 import { CallToAction, Commitment } from '../types.js';
-import { SatisfactionsForCommitment } from './satisfactions-for-promise.js';
 
 /**
  * @element commitment-detail
