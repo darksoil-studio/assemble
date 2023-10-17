@@ -22,7 +22,7 @@
     "./dist/*": "./dist/*"
   },
   "dependencies": {
-    "@holochain-open-dev/cancellations": "^0.1.0",
+    "@holochain-open-dev/cancellations": "^0.1.1",
     "@holochain-open-dev/elements": "^0.7.0",
     "@holochain-open-dev/profiles": "^0.16.1",
     "@holochain-open-dev/stores": "^0.7.4",

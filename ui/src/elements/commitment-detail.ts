@@ -72,7 +72,6 @@ export class CommitmentDetail extends LitElement {
         this.assembleStore.cancellationsStore.cancellationsFor.get(
           this.commitmentHash
         ),
-        this.assembleStore.satisfactionsForCommitment.get(this.commitmentHash),
       ]),
     () => [this.commitmentHash]
   );
@@ -80,7 +79,6 @@ export class CommitmentDetail extends LitElement {
   renderDetail(
     commitment: EntryRecord<Commitment>,
     callToAction: EntryRecord<CallToAction>,
-    satisfactions: Array<ActionHash>,
     cancellations: ActionHash[]
   ) {
     const need = callToAction.entry.needs[commitment.entry.need_index];
@@ -92,11 +90,6 @@ export class CommitmentDetail extends LitElement {
         .label=${msg('Cancel Contribution')}
         .warning=${msg('This will notify all event participants.')}
         .cancelledHash=${commitment.actionHash}
-        @cancellation-created=${() => {
-          for (const satisfactionHash of satisfactions) {
-            this.assembleStore.client.deleteSatisfaction(satisfactionHash);
-          }
-        }}
       >
       </create-cancellation-dialog>
       <div class="column" style="gap: 16px">
@@ -157,14 +150,8 @@ export class CommitmentDetail extends LitElement {
         const callToAction = this._commitment.value.value[0][0];
         const commitment = this._commitment.value.value[0][1];
         const cancellations = this._commitment.value.value[1];
-        const satisfactions = this._commitment.value.value[2];
 
-        return this.renderDetail(
-          commitment,
-          callToAction,
-          satisfactions,
-          cancellations
-        );
+        return this.renderDetail(commitment, callToAction, cancellations);
       case 'error':
         return html`<sl-card>
           <display-error

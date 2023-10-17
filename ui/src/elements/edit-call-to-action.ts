@@ -61,7 +61,6 @@ export class EditCallToAction extends LitElement {
       parent_call_to_action_hash:
         this.currentRecord.entry.parent_call_to_action_hash,
       expiration_time: this.currentRecord.entry.expiration_time,
-      custom_content: this.currentRecord.entry.custom_content,
       needs: (Array.isArray(fields.needs) ? fields.needs : [fields.needs]).map(
         (el: any) => el
       ),

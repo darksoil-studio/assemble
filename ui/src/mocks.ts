@@ -315,7 +315,6 @@ export async function sampleCallToAction(
   return {
     parent_call_to_action_hash: undefined,
     expiration_time: undefined,
-    custom_content: encode({}),
     needs: [
       {
         description: 'Lorem ipsum 2',

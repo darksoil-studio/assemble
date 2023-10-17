@@ -7,7 +7,7 @@ pub mod commitment;
 pub use commitment::*;
 pub mod call_to_action;
 pub use call_to_action::*;
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 #[serde(tag = "type")]
 #[hdk_entry_defs]
 #[unit_enum(UnitEntryTypes)]

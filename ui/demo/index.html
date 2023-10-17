@@ -85,7 +85,6 @@
             const needs = needsFields.map(n => JSON.parse(n));
             const callToAction =
               await this._assembleStore.value.client.createCallToAction({
-                custom_content: encode({}),
                 expiration_time: undefined, // (Date.now() + 2 * 60 * 1000) * 1000,
                 needs,
               });

@@ -94,12 +94,17 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
   @state()
   _editing = false;
 
-  amIAuthor(callToAction: EntryRecord<CallToAction>) {
-    return (
-      callToAction.action.author.toString() ===
-      this.assembleStore.client.client.myPubKey.toString()
-    );
-  }
+  // canICreateSatisfactions(callToAction: EntryRecord<CallToAction>) {
+  //   return (
+  //     callToAction.action.author.toString() ===
+  //       this.assembleStore.client.client.myPubKey.toString() ||
+  //     !!callToAction.entry.admins.find(
+  //       admin =>
+  //         admin.toString() ===
+  //         this.assembleStore.client.client.myPubKey.toString()
+  //     )
+  //   );
+  // }
 
   async createAssembly(satisfactions_hashes: Array<ActionHash>) {
     try {
@@ -181,39 +186,17 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
             <sl-details .summary=${msg('Contributions')} open>
               <div class="column" style="flex: 1; gap: 8px">
                 ${this.renderCommitmentsForNeed(i, commitments)}
-                <div class="row" style="flex: 1; gap: 16px;">
-                  ${this.amIAuthor(callToAction)
-                    ? html`
-                        <sl-button
-                          style="flex: 1;"
-                          @click=${() => {
-                            const createSatisfaction =
-                              this.shadowRoot?.querySelector(
-                                'create-satisfaction'
-                              ) as CreateSatisfaction;
-                            createSatisfaction.needIndex = i;
-                            createSatisfaction.commitments = commitments.filter(
-                              p => p.entry.need_index === i
-                            );
-                            createSatisfaction.show();
-                          }}
-                          >${msg('Need is satisfied')}</sl-button
-                        >
-                      `
-                    : html``}
-                  <sl-button
-                    style="flex: 1"
-                    variant="primary"
-                    @click=${() => {
-                      const createCommitment = this.shadowRoot?.querySelector(
-                        'create-commitment'
-                      ) as CreateCommitment;
-                      createCommitment.needIndex = i;
-                      createCommitment.show();
-                    }}
-                    >${msg('Contribute')}</sl-button
-                  >
-                </div>
+                <sl-button
+                  variant="primary"
+                  @click=${() => {
+                    const createCommitment = this.shadowRoot?.querySelector(
+                      'create-commitment'
+                    ) as CreateCommitment;
+                    createCommitment.needIndex = i;
+                    createCommitment.show();
+                  }}
+                  >${msg('Contribute')}</sl-button
+                >
               </div>
             </sl-details>
             <sl-details .summary=${msg('Cancelled Commitments')}>

@@ -7,7 +7,6 @@ pub async fn sample_call_to_action_1(conductor: &SweetConductor, zome: &SweetZom
     CallToAction {
         parent_call_to_action_hash: None,
         expiration_time: None,
-        custom_content: SerializedBytes::default(),
         needs: vec![Need {
             min_necessary: 4,
             max_possible: Some(4),
@@ -20,7 +19,6 @@ pub async fn sample_call_to_action_2(conductor: &SweetConductor, zome: &SweetZom
     CallToAction {
         parent_call_to_action_hash: None,
         expiration_time: None,
-        custom_content: SerializedBytes::default(),
         needs: vec![Need {
             min_necessary: 4,
             max_possible: None,

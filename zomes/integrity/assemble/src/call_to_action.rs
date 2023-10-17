@@ -3,7 +3,6 @@ use hdi::prelude::*;
 #[derive(Clone, PartialEq)]
 pub struct CallToAction {
     pub parent_call_to_action_hash: Option<ActionHash>,
-    pub custom_content: SerializedBytes,
     pub expiration_time: Option<Timestamp>,
     pub needs: Vec<Need>,
 }

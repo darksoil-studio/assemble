@@ -84,34 +84,6 @@ export class CallToActionSatisfiedNeeds extends LitElement {
   @state()
   _editing = false;
 
-  amIAuthor(callToAction: EntryRecord<CallToAction>) {
-    return (
-      callToAction.action.author.toString() ===
-      this.assembleStore.client.client.myPubKey.toString()
-    );
-  }
-
-  async createAssembly(satisfactions_hashes: Array<ActionHash>) {
-    try {
-      const assembly = await this.assembleStore.client.createAssembly({
-        call_to_action_hash: this.callToActionHash,
-        satisfactions_hashes,
-      });
-      this.dispatchEvent(
-        new CustomEvent('assembly-created', {
-          bubbles: true,
-          composed: true,
-          detail: {
-            assemblyHash: assembly.actionHash,
-          },
-        })
-      );
-    } catch (e) {
-      notifyError(msg('Error accepting the commitment'));
-      console.error(e);
-    }
-  }
-
   renderSatisfiedNeeds(
     needs: Array<[Need, number]>,
     commitments: Array<EntryRecord<Commitment>>,

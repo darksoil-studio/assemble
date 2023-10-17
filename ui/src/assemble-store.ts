@@ -1,27 +1,42 @@
 import {
-  completed,
   joinAsync,
   lazyLoadAndPoll,
-  manualReloadStore,
   pipe,
-  sliceAndJoin,
+  toPromise,
 } from '@holochain-open-dev/stores';
-import {
-  EntryRecord,
-  HoloHashMap,
-  LazyHoloHashMap,
-} from '@holochain-open-dev/utils';
+import { LazyHoloHashMap } from '@holochain-open-dev/utils';
 import { CancellationsStore } from '@holochain-open-dev/cancellations';
 import { ActionHash } from '@holochain/client';
 
 import { AssembleClient } from './assemble-client.js';
-import { CallToAction } from './types.js';
 
 export class AssembleStore {
   constructor(
     public client: AssembleClient,
     public cancellationsStore: CancellationsStore
-  ) {}
+  ) {
+    cancellationsStore.client.onSignal(async signal => {
+      if (signal.type === 'EntryCreated') {
+        // If a commitment was cancelled, delete any satisfactions for it
+        try {
+          const commitmentHash = signal.app_entry.cancelled_hash;
+          const _commitment = await toPromise(
+            this.commitments.get(commitmentHash)
+          );
+          const satisfactionsForCommitment = await toPromise(
+            this.satisfactionsForCommitment.get(commitmentHash)
+          );
+
+          for (const satisfactionHash of satisfactionsForCommitment) {
+            await this.client.deleteSatisfaction(satisfactionHash);
+          }
+        } catch (e) {
+          // If this is not a commitment, nothing to do
+          console.warn(e);
+        }
+      }
+    });
+  }
 
   /** Call To Action */
 
