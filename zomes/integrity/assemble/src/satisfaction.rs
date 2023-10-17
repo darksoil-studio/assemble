@@ -7,17 +7,28 @@ pub struct Satisfaction {
     pub commitments_hashes: Vec<ActionHash>,
 }
 pub fn validate_create_satisfaction(
-    _action: EntryCreationAction,
+    action: EntryCreationAction,
     satisfaction: Satisfaction,
 ) -> ExternResult<ValidateCallbackResult> {
     let record = must_get_valid_record(satisfaction.call_to_action_hash.clone())?;
-    let _call_to_action: crate::CallToAction = record
+    let call_to_action: crate::CallToAction = record
         .entry()
         .to_app_option()
         .map_err(|e| wasm_error!(e))?
         .ok_or(wasm_error!(WasmErrorInner::Guest(String::from(
             "Dependant action must be accompanied by an entry"
         ))))?;
+
+    if call_to_action.needs[satisfaction.need_index as usize].requires_admin_approval {
+        let mut admins = call_to_action.admins.clone();
+        admins.push(record.action().author().clone());
+        if !admins.contains(action.author()) {
+            return Ok(ValidateCallbackResult::Invalid(String::from(
+                "Only the admins for this call to action can satisfy its needs",
+            )));
+        }
+    }
+
     for action_hash in satisfaction.commitments_hashes.clone() {
         let record = must_get_valid_record(action_hash)?;
         let _commitment: crate::Commitment = record

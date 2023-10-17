@@ -94,17 +94,17 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
   @state()
   _editing = false;
 
-  // canICreateSatisfactions(callToAction: EntryRecord<CallToAction>) {
-  //   return (
-  //     callToAction.action.author.toString() ===
-  //       this.assembleStore.client.client.myPubKey.toString() ||
-  //     !!callToAction.entry.admins.find(
-  //       admin =>
-  //         admin.toString() ===
-  //         this.assembleStore.client.client.myPubKey.toString()
-  //     )
-  //   );
-  // }
+  canICreateSatisfactions(callToAction: EntryRecord<CallToAction>) {
+    return (
+      callToAction.action.author.toString() ===
+        this.assembleStore.client.client.myPubKey.toString() ||
+      !!callToAction.entry.admins.find(
+        admin =>
+          admin.toString() ===
+          this.assembleStore.client.client.myPubKey.toString()
+      )
+    );
+  }
 
   async createAssembly(satisfactions_hashes: Array<ActionHash>) {
     try {
@@ -186,16 +186,35 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
             <sl-details .summary=${msg('Contributions')} open>
               <div class="column" style="flex: 1; gap: 8px">
                 ${this.renderCommitmentsForNeed(i, commitments)}
-                <sl-button
-                  @click=${() => {
-                    const createCommitment = this.shadowRoot?.querySelector(
-                      'create-commitment'
-                    ) as CreateCommitment;
-                    createCommitment.needIndex = i;
-                    createCommitment.show();
-                  }}
-                  >${msg('Contribute')}</sl-button
-                >
+                <div class="row" style="flex: 1; gap: 16px">
+                  <sl-button
+                    @click=${() => {
+                      const createCommitment = this.shadowRoot?.querySelector(
+                        'create-commitment'
+                      ) as CreateCommitment;
+                      createCommitment.needIndex = i;
+                      createCommitment.show();
+                    }}
+                    >${msg('Contribute')}</sl-button
+                  >
+                  ${need.requires_admin_approval &&
+                  this.canICreateSatisfactions(callToAction)
+                    ? html``
+                    : html`
+                        <sl-button
+                          @click=${() => {
+                            const createSatisfaction =
+                              this.shadowRoot?.querySelector(
+                                'create-satisfaction'
+                              ) as CreateSatisfaction;
+                            createSatisfaction.needIndex = i;
+                            createSatisfaction.commitments = commitments;
+                            createSatisfaction.show();
+                          }}
+                          >${msg('Satisfy Need')}</sl-button
+                        >
+                      `}
+                </div>
               </div>
             </sl-details>
             <sl-details .summary=${msg('Cancelled Commitments')}>
@@ -243,16 +262,6 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
           <div class="row" style="flex: 1">
             <create-satisfaction
               .callToAction=${callToAction}
-              @satisfaction-created=${async (e: CustomEvent) => {
-                if (unsatisfiedNeeds.length === 1) {
-                  await this.createAssembly([
-                    ...Array.from(satisfactions.values()).map(
-                      s => s.actionHash
-                    ),
-                    e.detail.satisfactionHash,
-                  ]);
-                }
-              }}
             ></create-satisfaction>
             ${this.renderUnsatisfiedNeeds(
               callToAction,

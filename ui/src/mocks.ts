@@ -313,6 +313,7 @@ export async function sampleCallToAction(
   partialCallToAction: Partial<CallToAction> = {}
 ): Promise<CallToAction> {
   return {
+    admins: [],
     parent_call_to_action_hash: undefined,
     expiration_time: undefined,
     needs: [
@@ -320,6 +321,7 @@ export async function sampleCallToAction(
         description: 'Lorem ipsum 2',
         min_necessary: 1,
         max_possible: 5,
+        requires_admin_approval: false,
       },
     ],
     ...partialCallToAction,

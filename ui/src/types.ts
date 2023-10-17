@@ -47,6 +47,7 @@ export type EntryTypes =
   | ({ type: 'CallToAction' } & CallToAction);
 
 export interface CallToAction {
+  admins: AgentPubKey[];
   parent_call_to_action_hash: ActionHash | undefined;
   expiration_time: number | undefined;
   needs: Array<Need>;
@@ -56,6 +57,7 @@ export interface Need {
   min_necessary: number;
   max_possible: number | undefined;
   description: string;
+  requires_admin_approval: boolean;
 }
 
 export interface Commitment {

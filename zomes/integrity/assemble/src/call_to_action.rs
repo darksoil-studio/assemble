@@ -1,17 +1,22 @@
 use hdi::prelude::*;
+
 #[hdk_entry_helper]
 #[derive(Clone, PartialEq)]
 pub struct CallToAction {
+    pub admins: Vec<AgentPubKey>,
     pub parent_call_to_action_hash: Option<ActionHash>,
     pub expiration_time: Option<Timestamp>,
     pub needs: Vec<Need>,
 }
+
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Need {
     pub min_necessary: u32,
     pub max_possible: Option<u32>,
     pub description: String,
+    pub requires_admin_approval: bool,
 }
+
 pub fn validate_create_call_to_action(
     _action: EntryCreationAction,
     call_to_action: CallToAction,

@@ -56,6 +56,10 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
         )),
     )?)?;
 
+    if call_to_action.needs[commitment.need_index as usize].requires_admin_approval {
+        return Ok(());
+    }
+
     let commitments_hashes = get_commitments_for_call_to_action(commitment.call_to_action_hash)?;
     let mut set: HashSet<ActionHash> = HashSet::from_iter(commitments_hashes);
     set.insert(action_hash);

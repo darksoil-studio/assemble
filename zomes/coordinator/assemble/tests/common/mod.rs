@@ -5,9 +5,11 @@ use assemble_integrity::*;
 
 pub async fn sample_call_to_action_1(conductor: &SweetConductor, zome: &SweetZome) -> CallToAction {
     CallToAction {
+        admins: vec![],
         parent_call_to_action_hash: None,
         expiration_time: None,
         needs: vec![Need {
+            requires_admin_approval: false,
             min_necessary: 4,
             max_possible: Some(4),
             description: "Lorem ipsum 1".to_string(),
@@ -17,9 +19,11 @@ pub async fn sample_call_to_action_1(conductor: &SweetConductor, zome: &SweetZom
 
 pub async fn sample_call_to_action_2(conductor: &SweetConductor, zome: &SweetZome) -> CallToAction {
     CallToAction {
+        admins: vec![],
         parent_call_to_action_hash: None,
         expiration_time: None,
         needs: vec![Need {
+            requires_admin_approval: false,
             min_necessary: 4,
             max_possible: None,
             description: "Lorem ipsum 2".to_string(),
