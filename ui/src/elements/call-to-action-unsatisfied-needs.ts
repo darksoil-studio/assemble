@@ -187,7 +187,6 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
               <div class="column" style="flex: 1; gap: 8px">
                 ${this.renderCommitmentsForNeed(i, commitments)}
                 <sl-button
-                  variant="primary"
                   @click=${() => {
                     const createCommitment = this.shadowRoot?.querySelector(
                       'create-commitment'
@@ -231,9 +230,10 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
         const satisfactions = this._callToActionInfo.value.value[3];
 
         const unsatisfiedNeeds = callToAction.entry.needs
-          .map((need, i) => [need, i])
+          .map((need, i) => [need, i] as [Need, number])
           .filter(
-            ([_need, i]) =>
+            ([need, i]) =>
+              need.min_necessary > 0 &&
               !Array.from(satisfactions.values()).find(
                 s => s.entry.need_index === i
               )

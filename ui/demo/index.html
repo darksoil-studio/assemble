@@ -43,6 +43,7 @@
       import '../src/elements/call-to-action-unsatisfied-needs.ts';
       import '../src/elements/call-to-action-satisfied-needs.ts';
       import '../src/elements/call-to-action-need-progress.ts';
+      import '../src/elements/call-to-action-progress.ts';
       import '../src/elements/my-commitments-for-call-to-action.ts';
       import {
         AssembleStore,
@@ -159,7 +160,7 @@
             <assemble-context .store=${this._assembleStore}>
               <div class="column" style="flex: 1">
                 <span>CallsToAction</span>
-                <div class="column" style="flex: 1">
+                <div class="column" style="flex: 1; gap: 16px;">
                   <div class="row">
                     <create-call-to-action
                       @call-to-action-created=${e => {
@@ -172,6 +173,9 @@
                   </div>
                   ${this._selectedCallToActionHash
                     ? html`
+                        <call-to-action-progress
+                          .callToActionHash=${this._selectedCallToActionHash}
+                        ></call-to-action-progress>
                         <call-to-action-need-progress
                           .callToActionHash=${this._selectedCallToActionHash}
                           .needIndex=${0}

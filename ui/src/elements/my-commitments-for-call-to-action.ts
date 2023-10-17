@@ -47,7 +47,7 @@ export class MyCommitmentsForCallToAction extends LitElement {
     this,
     () =>
       pipe(
-        this.assembleStore.commitmentsForCallToAction.get(
+        this.assembleStore.uncancelledCommitmentsForCallToAction.get(
           this.callToActionHash
         ),
         commitments =>

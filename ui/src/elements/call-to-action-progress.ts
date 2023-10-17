@@ -48,7 +48,7 @@ export class CallToActionProgress extends LitElement {
       joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
         pipe(
-          this.assembleStore.commitmentsForCallToAction.get(
+          this.assembleStore.uncancelledCommitmentsForCallToAction.get(
             this.callToActionHash
           ),
           hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
@@ -95,7 +95,9 @@ export class CallToActionProgress extends LitElement {
         ) {
           const need = callToAction.entry.needs[needIndex];
 
-          if (satisfactions.find(s => s.entry.need_index)) {
+          if (need.min_necessary === 0) continue;
+
+          if (satisfactions.find(s => s.entry.need_index === needIndex)) {
             amountSatisfied += need.min_necessary;
           } else {
             satisfied = false;
@@ -111,7 +113,7 @@ export class CallToActionProgress extends LitElement {
             if (amountContributed > need.min_necessary) {
               amountSatisfied += need.min_necessary;
             } else {
-              amountSatisfied += amountSatisfied;
+              amountSatisfied += amountContributed;
             }
           }
         }

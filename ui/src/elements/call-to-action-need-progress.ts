@@ -54,7 +54,7 @@ export class CallToActionNeedProgress extends LitElement {
       joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
         pipe(
-          this.assembleStore.commitmentsForCallToAction.get(
+          this.assembleStore.uncancelledCommitmentsForCallToAction.get(
             this.callToActionHash
           ),
           hashes => sliceAndJoin(this.assembleStore.commitments, hashes)

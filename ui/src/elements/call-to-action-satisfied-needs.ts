@@ -220,9 +220,10 @@ export class CallToActionSatisfiedNeeds extends LitElement {
         const satisfactions = this._callToActionInfo.value.value[2];
 
         const satisfiedNeeds = callToAction.entry.needs
-          .map((need, i) => [need, i])
+          .map((need, i) => [need, i] as [Need, number])
           .filter(
-            ([_need, i]) =>
+            ([need, i]) =>
+              need.min_necessary === 0 ||
               !!Array.from(satisfactions.values()).find(
                 s => s.entry.need_index === i
               )
