@@ -43,6 +43,7 @@ export class CallToActionNeedsForm extends LitElement {
       description: '',
       min_necessary: 0,
       max_possible: undefined,
+      requires_admin_approval: false,
     },
   ];
 
@@ -99,7 +100,7 @@ export class CallToActionNeedsForm extends LitElement {
   render() {
     return html`
       <div id="needs-form">
-        <div style="display: flex; flex-direction: column">
+        <div class="column" style="gap: 8px">
           <div class="row" style="align-items: center;">
             <span class="title" style="flex: 1">${msg('Needs')}</span>
             <sl-button

@@ -188,6 +188,7 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
                 ${this.renderCommitmentsForNeed(i, commitments)}
                 <div class="row" style="flex: 1; gap: 16px">
                   <sl-button
+                    style="flex: 1"
                     @click=${() => {
                       const createCommitment = this.shadowRoot?.querySelector(
                         'create-commitment'
@@ -199,9 +200,9 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
                   >
                   ${need.requires_admin_approval &&
                   this.canICreateSatisfactions(callToAction)
-                    ? html``
-                    : html`
+                    ? html`
                         <sl-button
+                          style="flex: 1"
                           @click=${() => {
                             const createSatisfaction =
                               this.shadowRoot?.querySelector(
@@ -213,7 +214,8 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
                           }}
                           >${msg('Satisfy Need')}</sl-button
                         >
-                      `}
+                      `
+                    : html``}
                 </div>
               </div>
             </sl-details>
@@ -259,10 +261,10 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
           ) as Array<[Need, number]>;
         return html`
           <create-commitment .callToAction=${callToAction}></create-commitment>
-          <div class="row" style="flex: 1">
-            <create-satisfaction
-              .callToAction=${callToAction}
-            ></create-satisfaction>
+          <create-satisfaction
+            .callToAction=${callToAction}
+          ></create-satisfaction>
+          <div class="column" style="flex: 1; gap: 16px">
             ${this.renderUnsatisfiedNeeds(
               callToAction,
               unsatisfiedNeeds.filter(

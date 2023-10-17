@@ -1,11 +1,13 @@
 import { EntryRecord, ZomeClient } from '@holochain-open-dev/utils';
 import { ActionHash, AppAgentClient, Record } from '@holochain/client';
 
-import { Assembly } from './types';
-import { Satisfaction } from './types';
-import { Commitment } from './types';
-import { CallToAction } from './types';
-import { AssembleSignal } from './types';
+import {
+  Assembly,
+  Satisfaction,
+  Commitment,
+  CallToAction,
+  AssembleSignal,
+} from './types.js';
 
 export class AssembleClient extends ZomeClient<AssembleSignal> {
   constructor(

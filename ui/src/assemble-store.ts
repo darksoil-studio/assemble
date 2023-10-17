@@ -2,6 +2,7 @@ import {
   joinAsync,
   lazyLoadAndPoll,
   pipe,
+  sliceAndJoin,
   toPromise,
 } from '@holochain-open-dev/stores';
 import { LazyHoloHashMap } from '@holochain-open-dev/utils';
@@ -20,15 +21,50 @@ export class AssembleStore {
         // If a commitment was cancelled, delete any satisfactions for it
         try {
           const commitmentHash = signal.app_entry.cancelled_hash;
-          const _commitment = await toPromise(
+          const commitment = await toPromise(
             this.commitments.get(commitmentHash)
           );
-          const satisfactionsForCommitment = await toPromise(
-            this.satisfactionsForCommitment.get(commitmentHash)
+          const callToActionHash = commitment.entry.call_to_action_hash;
+          const callToAction = await toPromise(
+            this.callToActions.get(callToActionHash)
           );
 
-          for (const satisfactionHash of satisfactionsForCommitment) {
-            await this.client.deleteSatisfaction(satisfactionHash);
+          const need = callToAction.entry.needs[commitment.entry.need_index];
+          if (need.requires_admin_approval) {
+            // If the admins need to approve this need, delete satisfactions
+            const satisfactionsForCommitment = await toPromise(
+              this.satisfactionsForCommitment.get(commitmentHash)
+            );
+
+            for (const satisfactionHash of satisfactionsForCommitment) {
+              await this.client.deleteSatisfaction(satisfactionHash);
+            }
+          } else {
+            // Only delete the satisfaction if there are not enough commitments to satisfy the need
+            let commitmentHashes = await toPromise(
+              this.uncancelledCommitmentsForCallToAction.get(callToActionHash)
+            );
+            commitmentHashes = commitmentHashes.filter(
+              h => h.toString() !== commitmentHash.toString()
+            );
+            const commitments = await toPromise(
+              sliceAndJoin(this.commitments, commitmentHashes)
+            );
+
+            const amountContributed = Array.from(commitments.values()).reduce(
+              (acc, next) => acc + next.entry.amount,
+              0
+            );
+
+            if (amountContributed < need.min_necessary) {
+              const satisfactionsForCommitment = await toPromise(
+                this.satisfactionsForCommitment.get(commitmentHash)
+              );
+
+              for (const satisfactionHash of satisfactionsForCommitment) {
+                await this.client.deleteSatisfaction(satisfactionHash);
+              }
+            }
           }
         } catch (e) {
           // If this is not a commitment, nothing to do

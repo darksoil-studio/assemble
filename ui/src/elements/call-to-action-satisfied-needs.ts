@@ -114,21 +114,11 @@ export class CallToActionSatisfiedNeeds extends LitElement {
               : html``}
           </div>
           <div class="column" style="flex: 1">
-            <sl-details .summary=${msg('Satisfied By')} open>
-              <div class="column" style="flex: 1; gap: 8px">
-                ${commitments.filter(
-                  c =>
-                    c.entry.need_index === i &&
-                    satisfactions.find(
-                      s =>
-                        s.entry.need_index === i &&
-                        s.entry.commitments_hashes.find(
-                          ph => ph.toString() === c.actionHash.toString()
-                        )
-                    )
-                ).length > 0
-                  ? commitments
-                      .filter(
+            ${need.requires_admin_approval
+              ? html`
+                  <sl-details .summary=${msg('Satisfied By')} open>
+                    <div class="column" style="flex: 1; gap: 8px">
+                      ${commitments.filter(
                         c =>
                           c.entry.need_index === i &&
                           satisfactions.find(
@@ -138,35 +128,37 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                                 ph => ph.toString() === c.actionHash.toString()
                               )
                           )
-                      )
-                      .map(
-                        commitment =>
-                          html`<commitment-detail
-                            .commitmentHash=${commitment.actionHash}
-                          ></commitment-detail>`
-                      )
-                  : html`<span class="placeholder"
-                      >${msg(
-                        'This need was satisfied with no commitments.'
-                      )}</span
-                    >`}
-              </div>
-            </sl-details>
-            <sl-details .summary=${msg('Additional Contributions')}>
-              <div class="column" style="flex: 1; gap: 8px">
-                ${commitments.filter(
-                  c =>
-                    c.entry.need_index === i &&
-                    !satisfactions.find(
-                      s =>
-                        s.entry.need_index === i &&
-                        s.entry.commitments_hashes.find(
-                          ph => ph.toString() === c.actionHash.toString()
-                        )
-                    )
-                ).length > 0
-                  ? commitments
-                      .filter(
+                      ).length > 0
+                        ? commitments
+                            .filter(
+                              c =>
+                                c.entry.need_index === i &&
+                                satisfactions.find(
+                                  s =>
+                                    s.entry.need_index === i &&
+                                    s.entry.commitments_hashes.find(
+                                      ph =>
+                                        ph.toString() ===
+                                        c.actionHash.toString()
+                                    )
+                                )
+                            )
+                            .map(
+                              commitment =>
+                                html`<commitment-detail
+                                  .commitmentHash=${commitment.actionHash}
+                                ></commitment-detail>`
+                            )
+                        : html`<span class="placeholder"
+                            >${msg(
+                              'This need was satisfied with no commitments.'
+                            )}</span
+                          >`}
+                    </div>
+                  </sl-details>
+                  <sl-details .summary=${msg('Additional Contributions')}>
+                    <div class="column" style="flex: 1; gap: 8px">
+                      ${commitments.filter(
                         c =>
                           c.entry.need_index === i &&
                           !satisfactions.find(
@@ -176,28 +168,73 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                                 ph => ph.toString() === c.actionHash.toString()
                               )
                           )
-                      )
-                      .map(
-                        commitment =>
-                          html`<commitment-detail
-                            .commitmentHash=${commitment.actionHash}
-                          ></commitment-detail>`
-                      )
-                  : html`<span class="placeholder"
-                      >${msg('There are no additional commitments.')}</span
-                    >`}
-                <sl-button
-                  @click=${() => {
-                    const createCommitment = this.shadowRoot?.querySelector(
-                      'create-commitment'
-                    ) as CreateCommitment;
-                    createCommitment.needIndex = i;
-                    createCommitment.show();
-                  }}
-                  >${msg('Contribute')}</sl-button
-                >
-              </div></sl-details
-            >
+                      ).length > 0
+                        ? commitments
+                            .filter(
+                              c =>
+                                c.entry.need_index === i &&
+                                !satisfactions.find(
+                                  s =>
+                                    s.entry.need_index === i &&
+                                    s.entry.commitments_hashes.find(
+                                      ph =>
+                                        ph.toString() ===
+                                        c.actionHash.toString()
+                                    )
+                                )
+                            )
+                            .map(
+                              commitment =>
+                                html`<commitment-detail
+                                  .commitmentHash=${commitment.actionHash}
+                                ></commitment-detail>`
+                            )
+                        : html`<span class="placeholder"
+                            >${msg(
+                              'There are no additional commitments.'
+                            )}</span
+                          >`}
+                      <sl-button
+                        @click=${() => {
+                          const createCommitment =
+                            this.shadowRoot?.querySelector(
+                              'create-commitment'
+                            ) as CreateCommitment;
+                          createCommitment.needIndex = i;
+                          createCommitment.show();
+                        }}
+                        >${msg('Contribute')}</sl-button
+                      >
+                    </div></sl-details
+                  >
+                `
+              : html`
+                  <div class="column" style="flex: 1; gap: 8px; margin: 8px">
+                    ${commitments.filter(c => c.entry.need_index === i).length >
+                    0
+                      ? commitments
+                          .filter(c => c.entry.need_index === i)
+                          .map(
+                            commitment =>
+                              html`<commitment-detail
+                                .commitmentHash=${commitment.actionHash}
+                              ></commitment-detail>`
+                          )
+                      : html`<span class="placeholder"
+                          >${msg('There are no additional commitments.')}</span
+                        >`}
+                    <sl-button
+                      @click=${() => {
+                        const createCommitment = this.shadowRoot?.querySelector(
+                          'create-commitment'
+                        ) as CreateCommitment;
+                        createCommitment.needIndex = i;
+                        createCommitment.show();
+                      }}
+                      >${msg('Contribute')}</sl-button
+                    >
+                  </div>
+                `}
           </div>
         </sl-card>
       `
@@ -230,10 +267,10 @@ export class CallToActionSatisfiedNeeds extends LitElement {
           ) as Array<[Need, number]>;
         return html`
           <create-commitment .callToAction=${callToAction}></create-commitment>
-          <div class="row" style="flex: 1; gap: 16px">
-            <create-satisfaction
-              .callToAction=${callToAction}
-            ></create-satisfaction>
+          <create-satisfaction
+            .callToAction=${callToAction}
+          ></create-satisfaction>
+          <div class="column" style="flex: 1; gap: 16px">
             ${this.renderSatisfiedNeeds(
               satisfiedNeeds.filter(([need, i]) => !this.hideNeeds.includes(i)),
               Array.from(commitments.values()),

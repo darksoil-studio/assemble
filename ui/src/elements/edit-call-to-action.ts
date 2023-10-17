@@ -58,6 +58,7 @@ export class EditCallToAction extends LitElement {
 
   async updateCallToAction(fields: any) {
     const callToAction: CallToAction = {
+      admins: this.currentRecord.entry.admins,
       parent_call_to_action_hash:
         this.currentRecord.entry.parent_call_to_action_hash,
       expiration_time: this.currentRecord.entry.expiration_time,

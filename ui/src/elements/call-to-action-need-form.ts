@@ -18,7 +18,7 @@ import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
 import { LitElement, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 
-import { Need } from '../types';
+import { Need } from '../types.js';
 
 /**
  * @element call-to-action-needs-form
@@ -37,6 +37,12 @@ export class CallToActionNeedForm extends LitElement implements FormField {
    */
   @property()
   defaultValue: Need | undefined;
+
+  /**
+   * Hides the requires admin approval switch, defaulting it to false
+   */
+  @property({ attribute: 'hide-requires-admin-approval' })
+  hideRequiresAdminApproval = false;
 
   /**
    * Whether this field is disabled if this element is used inside a form
@@ -64,6 +70,9 @@ export class CallToActionNeedForm extends LitElement implements FormField {
         : (fields.description as string),
       min_necessary,
       max_possible,
+      requires_admin_approval: this.hideRequiresAdminApproval
+        ? false
+        : fields.requires_admin_approval === 'on',
     };
 
     return JSON.stringify(need);
@@ -107,8 +116,8 @@ export class CallToActionNeedForm extends LitElement implements FormField {
 
   render() {
     return html`
-      <form id="need-form" class="column">
-        <div class="row" style="align-items: center; margin-top: 8px">
+      <form id="need-form" class="column" style="gap: 8px">
+        <div class="row" style="align-items: center;">
           ${this.description
             ? html``
             : html`
@@ -123,7 +132,7 @@ export class CallToActionNeedForm extends LitElement implements FormField {
 
           <slot name="action"></slot>
         </div>
-        <div class="row" style="align-items: center; margin-top: 8px">
+        <div class="row" style="align-items: center; gap: 8px">
           <sl-switch
             .defaultChecked=${this.defaultValue
               ? this.defaultValue.min_necessary > 0
@@ -143,11 +152,11 @@ export class CallToActionNeedForm extends LitElement implements FormField {
             .defaultValue=${this.defaultValue?.min_necessary || 1}
             .disabled=${!this._minRequired}
             required
-            style="width: 5rem; margin-left: 8px"
+            style="width: 5rem;"
             @input=${() => this.requestUpdate()}
           ></sl-input>
         </div>
-        <div class="row" style="align-items: center; margin-top: 8px">
+        <div class="row" style="align-items: center; gap: 8px">
           <sl-switch
             .defaultChecked=${this.defaultValue
               ? this.defaultValue.max_possible !== undefined
@@ -166,9 +175,20 @@ export class CallToActionNeedForm extends LitElement implements FormField {
             .min=${(this.shadowRoot?.getElementById(`inputmin`) as any)
               ?.value || 1}
             .disabled=${!this._maxPossible}
-            style="width: 5rem; margin-left: 8px"
+            style="width: 5rem;"
           ></sl-input>
         </div>
+        ${this.hideRequiresAdminApproval
+          ? html``
+          : html`
+              <sl-switch
+                .disabled=${!this._minRequired}
+                .defaultChecked=${false}
+                style="flex: 1"
+                name="requires_admin_approval"
+                >${msg('Requires admin approval')}</sl-switch
+              >
+            `}
       </form>
     `;
   }
