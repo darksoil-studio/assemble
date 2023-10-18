@@ -79,7 +79,9 @@ export class CallToActionProgress extends LitElement {
 
         if (needsCount === 0)
           return html`<span class="placeholder"
-            >${msg("This call to action doesn't have required needs.")}</span
+            >${msg(
+              "This call to action doesn't have any required needs."
+            )}</span
           >`;
 
         let amountSatisfied = 0;

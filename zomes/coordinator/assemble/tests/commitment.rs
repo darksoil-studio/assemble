@@ -8,7 +8,6 @@ use holochain::{conductor::config::ConductorConfig, sweettest::*};
 
 use assemble_integrity::*;
 
-
 mod common;
 use common::{create_commitment, sample_commitment_1, sample_commitment_2};
 
@@ -28,17 +27,16 @@ async fn create_commitment_test() {
     conductors.exchange_peer_info().await;
 
     let ((alice,), (_bobbo,)) = apps.into_tuples();
-    
+
     let alice_zome = alice.zome("assemble");
-    
-    let sample = sample_commitment_1(&conductors[0], &alice_zome).await;
-    
+
+    let sample = sample_commitment_1(&conductors[0], &alice_zome, None).await;
+
     // Alice creates a Commitment
     let record: Record = create_commitment(&conductors[0], &alice_zome, sample.clone()).await;
     let entry: Commitment = record.entry().to_app_option().unwrap().unwrap();
     assert!(entry.eq(&sample));
 }
-
 
 #[tokio::test(flavor = "multi_thread")]
 async fn create_and_read_commitment() {
@@ -54,22 +52,24 @@ async fn create_and_read_commitment() {
     conductors.exchange_peer_info().await;
 
     let ((alice,), (bobbo,)) = apps.into_tuples();
-    
+
     let alice_zome = alice.zome("assemble");
     let bob_zome = bobbo.zome("assemble");
-    
-    let sample = sample_commitment_1(&conductors[0], &alice_zome).await;
-    
+
+    let sample = sample_commitment_1(&conductors[0], &alice_zome, None).await;
+
     // Alice creates a Commitment
     let record: Record = create_commitment(&conductors[0], &alice_zome, sample.clone()).await;
-    
+
     consistency_10s([&alice, &bobbo]).await;
-    
+
     let get_record: Option<Record> = conductors[1]
-        .call(&bob_zome, "get_commitment", record.signed_action.action_address().clone())
+        .call(
+            &bob_zome,
+            "get_commitment",
+            record.signed_action.action_address().clone(),
+        )
         .await;
-        
-    assert_eq!(record, get_record.unwrap());    
+
+    assert_eq!(record, get_record.unwrap());
 }
-
-

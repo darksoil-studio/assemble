@@ -42,37 +42,57 @@ pub async fn create_call_to_action(
     record
 }
 
-pub async fn sample_commitment_1(conductor: &SweetConductor, zome: &SweetZome) -> Commitment {
+pub async fn sample_commitment_1(
+    conductor: &SweetConductor,
+    zome: &SweetZome,
+    call_to_action_hash: Option<ActionHash>,
+) -> Commitment {
+    let call_to_action_hash = match call_to_action_hash {
+        Some(h) => h,
+        None => {
+            create_call_to_action(
+                conductor,
+                zome,
+                sample_call_to_action_1(conductor, zome).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash
+        }
+    };
     Commitment {
-        call_to_action_hash: create_call_to_action(
-            conductor,
-            zome,
-            sample_call_to_action_1(conductor, zome).await,
-        )
-        .await
-        .signed_action
-        .hashed
-        .hash,
+        call_to_action_hash: call_to_action_hash.clone(),
         amount: 4,
         comment: Some("Lorem ipsum dolor sit amet, consectetur adipiscing elit.".to_string()),
-        need_index: 10,
+        need_index: 0,
     }
 }
 
-pub async fn sample_commitment_2(conductor: &SweetConductor, zome: &SweetZome) -> Commitment {
+pub async fn sample_commitment_2(
+    conductor: &SweetConductor,
+    zome: &SweetZome,
+    call_to_action_hash: Option<ActionHash>,
+) -> Commitment {
+    let call_to_action_hash = match call_to_action_hash {
+        Some(h) => h,
+        None => {
+            create_call_to_action(
+                conductor,
+                zome,
+                sample_call_to_action_2(conductor, zome).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash
+        }
+    };
     Commitment {
-        call_to_action_hash: create_call_to_action(
-            conductor,
-            zome,
-            sample_call_to_action_2(conductor, zome).await,
-        )
-        .await
-        .signed_action
-        .hashed
-        .hash,
+        call_to_action_hash: call_to_action_hash.clone(),
         amount: 1,
         comment: Some("Lorem ipsum 2".to_string()),
-        need_index: 3,
+        need_index: 0,
     }
 }
 
@@ -85,46 +105,74 @@ pub async fn create_commitment(
     record
 }
 
-pub async fn sample_satisfaction_1(conductor: &SweetConductor, zome: &SweetZome) -> Satisfaction {
+pub async fn sample_satisfaction_1(
+    conductor: &SweetConductor,
+    zome: &SweetZome,
+    call_to_action_hash: Option<ActionHash>,
+) -> Satisfaction {
+    let call_to_action_hash = match call_to_action_hash {
+        Some(h) => h,
+        None => {
+            create_call_to_action(
+                conductor,
+                zome,
+                sample_call_to_action_1(conductor, zome).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash
+        }
+    };
     Satisfaction {
-        call_to_action_hash: create_call_to_action(
-            conductor,
-            zome,
-            sample_call_to_action_1(conductor, zome).await,
-        )
-        .await
-        .signed_action
-        .hashed
-        .hash,
-        need_index: 10,
+        call_to_action_hash: call_to_action_hash.clone(),
+        need_index: 0,
         commitments_hashes: vec![
-            create_commitment(conductor, zome, sample_commitment_1(conductor, zome).await)
-                .await
-                .signed_action
-                .hashed
-                .hash,
+            create_commitment(
+                conductor,
+                zome,
+                sample_commitment_1(conductor, zome, Some(call_to_action_hash)).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash,
         ],
     }
 }
 
-pub async fn sample_satisfaction_2(conductor: &SweetConductor, zome: &SweetZome) -> Satisfaction {
+pub async fn sample_satisfaction_2(
+    conductor: &SweetConductor,
+    zome: &SweetZome,
+    call_to_action_hash: Option<ActionHash>,
+) -> Satisfaction {
+    let call_to_action_hash = match call_to_action_hash {
+        Some(h) => h,
+        None => {
+            create_call_to_action(
+                conductor,
+                zome,
+                sample_call_to_action_2(conductor, zome).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash
+        }
+    };
     Satisfaction {
-        call_to_action_hash: create_call_to_action(
-            conductor,
-            zome,
-            sample_call_to_action_2(conductor, zome).await,
-        )
-        .await
-        .signed_action
-        .hashed
-        .hash,
-        need_index: 3,
+        call_to_action_hash: call_to_action_hash.clone(),
+        need_index: 0,
         commitments_hashes: vec![
-            create_commitment(conductor, zome, sample_commitment_2(conductor, zome).await)
-                .await
-                .signed_action
-                .hashed
-                .hash,
+            create_commitment(
+                conductor,
+                zome,
+                sample_commitment_2(conductor, zome, Some(call_to_action_hash)).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash,
         ],
     }
 }
@@ -140,22 +188,32 @@ pub async fn create_satisfaction(
     record
 }
 
-pub async fn sample_assembly_1(conductor: &SweetConductor, zome: &SweetZome) -> Assembly {
+pub async fn sample_assembly_1(
+    conductor: &SweetConductor,
+    zome: &SweetZome,
+    call_to_action_hash: Option<ActionHash>,
+) -> Assembly {
+    let call_to_action_hash = match call_to_action_hash {
+        Some(h) => h,
+        None => {
+            create_call_to_action(
+                conductor,
+                zome,
+                sample_call_to_action_1(conductor, zome).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash
+        }
+    };
     Assembly {
-        call_to_action_hash: create_call_to_action(
-            conductor,
-            zome,
-            sample_call_to_action_1(conductor, zome).await,
-        )
-        .await
-        .signed_action
-        .hashed
-        .hash,
+        call_to_action_hash: call_to_action_hash.clone(),
         satisfactions_hashes: vec![
             create_satisfaction(
                 conductor,
                 zome,
-                sample_satisfaction_1(conductor, zome).await,
+                sample_satisfaction_1(conductor, zome, Some(call_to_action_hash)).await,
             )
             .await
             .signed_action
@@ -165,22 +223,32 @@ pub async fn sample_assembly_1(conductor: &SweetConductor, zome: &SweetZome) -> 
     }
 }
 
-pub async fn sample_assembly_2(conductor: &SweetConductor, zome: &SweetZome) -> Assembly {
+pub async fn sample_assembly_2(
+    conductor: &SweetConductor,
+    zome: &SweetZome,
+    call_to_action_hash: Option<ActionHash>,
+) -> Assembly {
+    let call_to_action_hash = match call_to_action_hash {
+        Some(h) => h,
+        None => {
+            create_call_to_action(
+                conductor,
+                zome,
+                sample_call_to_action_2(conductor, zome).await,
+            )
+            .await
+            .signed_action
+            .hashed
+            .hash
+        }
+    };
     Assembly {
-        call_to_action_hash: create_call_to_action(
-            conductor,
-            zome,
-            sample_call_to_action_2(conductor, zome).await,
-        )
-        .await
-        .signed_action
-        .hashed
-        .hash,
+        call_to_action_hash: call_to_action_hash.clone(),
         satisfactions_hashes: vec![
             create_satisfaction(
                 conductor,
                 zome,
-                sample_satisfaction_2(conductor, zome).await,
+                sample_satisfaction_2(conductor, zome, Some(call_to_action_hash)).await,
             )
             .await
             .signed_action

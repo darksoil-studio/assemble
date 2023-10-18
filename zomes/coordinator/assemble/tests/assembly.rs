@@ -8,7 +8,6 @@ use holochain::{conductor::config::ConductorConfig, sweettest::*};
 
 use assemble_integrity::*;
 
-
 mod common;
 use common::{create_assembly, sample_assembly_1, sample_assembly_2};
 
@@ -29,17 +28,16 @@ async fn create_assembly_test() {
     conductors.exchange_peer_info().await;
 
     let ((alice,), (_bobbo,)) = apps.into_tuples();
-    
+
     let alice_zome = alice.zome("assemble");
-    
-    let sample = sample_assembly_1(&conductors[0], &alice_zome).await;
-    
+
+    let sample = sample_assembly_1(&conductors[0], &alice_zome, None).await;
+
     // Alice creates a Assembly
     let record: Record = create_assembly(&conductors[0], &alice_zome, sample.clone()).await;
     let entry: Assembly = record.entry().to_app_option().unwrap().unwrap();
     assert!(entry.eq(&sample));
 }
-
 
 #[tokio::test(flavor = "multi_thread")]
 async fn create_and_read_assembly() {
@@ -55,22 +53,24 @@ async fn create_and_read_assembly() {
     conductors.exchange_peer_info().await;
 
     let ((alice,), (bobbo,)) = apps.into_tuples();
-    
+
     let alice_zome = alice.zome("assemble");
     let bob_zome = bobbo.zome("assemble");
-    
-    let sample = sample_assembly_1(&conductors[0], &alice_zome).await;
-    
+
+    let sample = sample_assembly_1(&conductors[0], &alice_zome, None).await;
+
     // Alice creates a Assembly
     let record: Record = create_assembly(&conductors[0], &alice_zome, sample.clone()).await;
-    
+
     consistency_10s([&alice, &bobbo]).await;
-    
+
     let get_record: Option<Record> = conductors[1]
-        .call(&bob_zome, "get_assembly", record.signed_action.action_address().clone())
+        .call(
+            &bob_zome,
+            "get_assembly",
+            record.signed_action.action_address().clone(),
+        )
         .await;
-        
-    assert_eq!(record, get_record.unwrap());    
+
+    assert_eq!(record, get_record.unwrap());
 }
-
-
