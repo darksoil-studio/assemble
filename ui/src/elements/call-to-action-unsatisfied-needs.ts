@@ -174,7 +174,11 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     return needs.map(
       ([need, i]) => html`
         <sl-card style="flex: 1;">
-          <div class="row " slot="header" style="align-items: center">
+          <div
+            class="row "
+            slot="header"
+            style="align-items: center; gap: 16px"
+          >
             <span class="title">${need.description} </span>
             <call-to-action-need-progress
               .callToActionHash=${this.callToActionHash}
@@ -209,7 +213,9 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
                                 'create-satisfaction'
                               ) as CreateSatisfaction;
                             createSatisfaction.needIndex = i;
-                            createSatisfaction.commitments = commitments;
+                            createSatisfaction.commitments = commitments.filter(
+                              c => c.entry.need_index === i
+                            );
                             createSatisfaction.show();
                           }}
                           >${msg('Satisfy Need')}</sl-button

@@ -63,7 +63,7 @@ export class CallToActionSatisfiedNeeds extends LitElement {
       joinAsync([
         this.assembleStore.callToActions.get(this.callToActionHash),
         pipe(
-          this.assembleStore.commitmentsForCallToAction.get(
+          this.assembleStore.uncancelledCommitmentsForCallToAction.get(
             this.callToActionHash
           ),
           hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
@@ -84,6 +84,31 @@ export class CallToActionSatisfiedNeeds extends LitElement {
   @state()
   _editing = false;
 
+  renderContributeButton(
+    needIndex: number,
+    disabledReason: string | undefined
+  ) {
+    const button = html`
+      <sl-button
+        .disabled=${!!disabledReason}
+        @click=${() => {
+          const createCommitment = this.shadowRoot?.querySelector(
+            'create-commitment'
+          ) as CreateCommitment;
+          createCommitment.needIndex = needIndex;
+          createCommitment.show();
+        }}
+        >${msg('Contribute')}</sl-button
+      >
+    `;
+
+    if (disabledReason)
+      return html`<sl-tooltip .content=${disabledReason}
+        >${button}</sl-tooltip
+      >`;
+    return button;
+  }
+
   renderSatisfiedNeeds(
     needs: Array<[Need, number]>,
     commitments: Array<EntryRecord<Commitment>>,
@@ -103,15 +128,22 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     return needs.map(
       ([need, i]) => html`
         <sl-card class="column" style="flex: 1;">
-          <div class="row " slot="header" style="align-items: center">
+          <div
+            class="row "
+            slot="header"
+            style="align-items: center; gap: 16px"
+          >
             <span class="title">${need.description} </span>
-            ${need.min_necessary !== 1 || need.max_possible !== 1
-              ? html`<call-to-action-need-progress
-                  .callToActionHash=${this.callToActionHash}
-                  .needIndex=${i}
-                  style="flex: 1"
-                ></call-to-action-need-progress>`
-              : html``}
+            ${need.min_necessary === 1 && need.max_possible === 1
+              ? html`<span style="flex: 1"></span
+                  ><span>${msg('Only one.')}</span>`
+              : html`
+                  <call-to-action-need-progress
+                    .callToActionHash=${this.callToActionHash}
+                    .needIndex=${i}
+                    style="flex: 1"
+                  ></call-to-action-need-progress>
+                `}
           </div>
           <div class="column" style="flex: 1">
             ${need.requires_admin_approval
@@ -151,7 +183,7 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                             )
                         : html`<span class="placeholder"
                             >${msg(
-                              'This need was satisfied with no commitments.'
+                              'This need was satisfied with no contributions.'
                             )}</span
                           >`}
                     </div>
@@ -191,7 +223,7 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                             )
                         : html`<span class="placeholder"
                             >${msg(
-                              'There are no additional commitments.'
+                              'There are no additional contributions.'
                             )}</span
                           >`}
                       <sl-button
@@ -209,7 +241,7 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                   >
                 `
               : html`
-                  <div class="column" style="flex: 1; gap: 8px; margin: 8px">
+                  <div class="column" style="flex: 1; gap: 8px; margin: 16px">
                     ${commitments.filter(c => c.entry.need_index === i).length >
                     0
                       ? commitments
@@ -221,18 +253,18 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                               ></commitment-detail>`
                           )
                       : html`<span class="placeholder"
-                          >${msg('There are no additional commitments.')}</span
+                          >${msg('There are no contributions yet.')}</span
                         >`}
-                    <sl-button
-                      @click=${() => {
-                        const createCommitment = this.shadowRoot?.querySelector(
-                          'create-commitment'
-                        ) as CreateCommitment;
-                        createCommitment.needIndex = i;
-                        createCommitment.show();
-                      }}
-                      >${msg('Contribute')}</sl-button
-                    >
+                    ${this.renderContributeButton(
+                      i,
+                      need.max_possible !== undefined &&
+                        commitments
+                          .filter(c => c.entry.need_index === i)
+                          .reduce((acc, next) => acc + next.entry.amount, 0) >=
+                          need.max_possible
+                        ? msg('Max. possible contributions reached')
+                        : undefined
+                    )}
                   </div>
                 `}
           </div>

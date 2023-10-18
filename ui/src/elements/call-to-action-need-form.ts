@@ -44,6 +44,9 @@ export class CallToActionNeedForm extends LitElement implements FormField {
   @property({ attribute: 'hide-requires-admin-approval' })
   hideRequiresAdminApproval = false;
 
+  @property({ attribute: 'requires-admin-approval-label' })
+  requiresAdminApprovalLabel = msg('Requires admin approval');
+
   /**
    * Whether this field is disabled if this element is used inside a form
    */
@@ -184,9 +187,9 @@ export class CallToActionNeedForm extends LitElement implements FormField {
               <sl-switch
                 .disabled=${!this._minRequired}
                 .defaultChecked=${false}
-                style="flex: 1"
+                style="flex: 1; margin-top: 8px"
                 name="requires_admin_approval"
-                >${msg('Requires admin approval')}</sl-switch
+                >${this.requiresAdminApprovalLabel}</sl-switch
               >
             `}
       </form>

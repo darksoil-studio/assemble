@@ -101,7 +101,7 @@ export class CallToActionNeedProgress extends LitElement {
       .filter(p => p.entry.need_index === this.needIndex)
       .reduce((count, p) => count + p.entry.amount, 0);
     return html`
-      <div class="row" style="flex: 1; margin-left: 16px; position: relative">
+      <div class="row" style="flex: 1; position: relative">
         <sl-progress-bar
           style="flex: 1; --indicator-color: ${satisfied ||
           need.min_necessary === 0 ||

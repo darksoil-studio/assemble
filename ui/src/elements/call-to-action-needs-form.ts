@@ -50,6 +50,12 @@ export class CallToActionNeedsForm extends LitElement {
   @property({ attribute: 'allow-empty' })
   allowEmpty = false;
 
+  @property({ attribute: 'hideRequiresAdminApproval' })
+  hideRequiresAdminApproval = false;
+
+  @property({ attribute: 'requires-admin-approval-label' })
+  requiresAdminApprovalLabel = msg('Requires admin approval');
+
   needForms(): CallToActionNeedForm[] {
     return Array.from(
       this.shadowRoot?.querySelectorAll('call-to-action-need-form')!
@@ -80,6 +86,8 @@ export class CallToActionNeedsForm extends LitElement {
         .defaultValue=${this.defaultValue
           ? this.defaultValue[index]
           : undefined}
+        .hideRequiresAdminApproval=${this.hideRequiresAdminApproval}
+        .requiresAdminApprovalLabel=${this.requiresAdminApprovalLabel}
       >
         <sl-icon-button
           slot="action"

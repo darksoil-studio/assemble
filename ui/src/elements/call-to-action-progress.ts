@@ -2,13 +2,11 @@ import { hashProperty, sharedStyles } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import '@holochain-open-dev/profiles/dist/elements/agent-avatar.js';
 import {
-  AsyncReadable,
   StoreSubscriber,
   joinAsync,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
-import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
@@ -17,14 +15,13 @@ import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/relative-time/relative-time.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { LitElement, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store';
 import { assembleStoreContext } from '../context';
 
 /**
  * @element call-to-action-progress
- * @fires call-to-action-selected: detail will contain { callToActionHash }
  */
 @localized()
 @customElement('call-to-action-progress')
@@ -122,7 +119,10 @@ export class CallToActionProgress extends LitElement {
           style="--indicator-color: ${satisfied
             ? 'green'
             : 'var(--sl-color-primary-700)'}"
-        ></sl-progress-bar>`;
+          >${amountSatisfied}&nbsp;${msg(
+            'of'
+          )}&nbsp;${needsCount}</sl-progress-bar
+        >`;
       case 'error':
         return html`<display-error
           tooltip

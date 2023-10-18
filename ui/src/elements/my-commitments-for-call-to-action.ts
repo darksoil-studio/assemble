@@ -64,9 +64,14 @@ export class MyCommitmentsForCallToAction extends LitElement {
               this.assembleStore.satisfactionsForCommitment.get(c.actionHash)
             )
           ),
-        (satisfactions, commitments) =>
+        _ => this.assembleStore.callToActions.get(this.callToActionHash),
+        (callToAction, satisfactions, commitments) =>
           commitments
-            .filter((c, i) => satisfactions[i].length > 0)
+            .filter(
+              (c, i) =>
+                !callToAction.entry.needs[c.entry.need_index]
+                  .requires_admin_approval || satisfactions[i].length > 0
+            )
             .map(c => c.actionHash)
       ),
     () => [this.callToActionHash]
