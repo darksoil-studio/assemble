@@ -90,29 +90,29 @@ export class CallToActionProgress extends LitElement {
         for (
           let needIndex = 0;
           needIndex < callToAction.entry.needs.length;
-          needIndex++
+          needIndex += 1
         ) {
           const need = callToAction.entry.needs[needIndex];
 
-          if (need.min_necessary === 0) continue;
-
-          if (satisfactions.find(s => s.entry.need_index === needIndex)) {
-            amountSatisfied += need.min_necessary;
-          } else {
-            satisfied = false;
-            const commitmentsForThisNeed = commitments.filter(
-              c => c.entry.need_index === needIndex
-            );
-
-            const amountContributed = commitmentsForThisNeed.reduce(
-              (acc, next) => acc + next.entry.amount,
-              0
-            );
-
-            if (amountContributed > need.min_necessary) {
+          if (need.min_necessary !== 0) {
+            if (satisfactions.find(s => s.entry.need_index === needIndex)) {
               amountSatisfied += need.min_necessary;
             } else {
-              amountSatisfied += amountContributed;
+              satisfied = false;
+              const commitmentsForThisNeed = commitments.filter(
+                c => c.entry.need_index === needIndex
+              );
+
+              const amountContributed = commitmentsForThisNeed.reduce(
+                (acc, next) => acc + next.entry.amount,
+                0
+              );
+
+              if (amountContributed > need.min_necessary) {
+                amountSatisfied += need.min_necessary;
+              } else {
+                amountSatisfied += amountContributed;
+              }
             }
           }
         }

@@ -1,10 +1,9 @@
+/* eslint-disable no-param-reassign */
 import {
-  AgentPubKeyMap,
   HashType,
   HoloHashMap,
   RecordBag,
   ZomeMock,
-  decodeEntry,
   entryState,
   fakeCreateAction,
   fakeDeleteEntry,
@@ -12,23 +11,19 @@ import {
   fakeRecord,
   fakeUpdateEntry,
   hash,
-  pickBy,
 } from '@holochain-open-dev/utils';
 import {
   ActionHash,
   AgentPubKey,
   AppAgentClient,
-  EntryHash,
   Record,
-  decodeHashFromBase64,
 } from '@holochain/client';
-import { encode } from '@msgpack/msgpack';
 
+import { AssembleClient } from './assemble-client.js';
 import { Assembly } from './types.js';
 import { Satisfaction } from './types.js';
 import { Commitment } from './types.js';
 import { CallToAction } from './types.js';
-import { AssembleClient } from './assemble-client.js';
 
 export class AssembleZomeMock extends ZomeMock implements AppAgentClient {
   constructor(myPubKey?: AgentPubKey) {

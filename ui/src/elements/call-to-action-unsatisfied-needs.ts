@@ -16,15 +16,16 @@ import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
+import { mdiInformationOutline } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
+import '@shoelace-style/shoelace/dist/components/details/details.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import '@shoelace-style/shoelace/dist/components/details/details.js';
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import { LitElement, TemplateResult, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
@@ -32,12 +33,11 @@ import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
 import { CallToAction, Commitment, Need, Satisfaction } from '../types.js';
 import './call-to-action-need-progress.js';
-import './create-commitment.js';
 import './commitment-detail.js';
+import './create-commitment.js';
 import { CreateCommitment } from './create-commitment.js';
 import './create-satisfaction.js';
 import { CreateSatisfaction } from './create-satisfaction.js';
-import { mdiInformationOutline } from '@mdi/js';
 
 /**
  * @element call-to-action-unsatisfied-needs

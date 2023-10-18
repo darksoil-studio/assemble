@@ -1,3 +1,7 @@
+import '@holochain-open-dev/cancellations/dist/elements/cancellation-detail.js';
+import '@holochain-open-dev/cancellations/dist/elements/cancellations-for.js';
+import '@holochain-open-dev/cancellations/dist/elements/create-cancellation-dialog.js';
+import { CreateCancellationDialog } from '@holochain-open-dev/cancellations/dist/elements/create-cancellation-dialog.js';
 import {
   hashProperty,
   sharedStyles,
@@ -23,11 +27,6 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { LitElement, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-
-import '@holochain-open-dev/cancellations/dist/elements/cancellation-detail.js';
-import '@holochain-open-dev/cancellations/dist/elements/create-cancellation-dialog.js';
-import '@holochain-open-dev/cancellations/dist/elements/cancellations-for.js';
-import { CreateCancellationDialog } from '@holochain-open-dev/cancellations/dist/elements/create-cancellation-dialog.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';

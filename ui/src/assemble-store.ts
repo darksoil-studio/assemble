@@ -1,3 +1,4 @@
+import { CancellationsStore } from '@holochain-open-dev/cancellations';
 import {
   joinAsync,
   lazyLoadAndPoll,
@@ -6,7 +7,6 @@ import {
   toPromise,
 } from '@holochain-open-dev/stores';
 import { LazyHoloHashMap } from '@holochain-open-dev/utils';
-import { CancellationsStore } from '@holochain-open-dev/cancellations';
 import { ActionHash } from '@holochain/client';
 
 import { AssembleClient } from './assemble-client.js';
@@ -122,13 +122,12 @@ export class AssembleStore {
     (callToActionHash: ActionHash) =>
       pipe(
         this.commitmentsForCallToAction.get(callToActionHash),
-        commitmentsHashes => {
-          return joinAsync(
+        commitmentsHashes =>
+          joinAsync(
             commitmentsHashes.map(c =>
               this.cancellationsStore.cancellationsFor.get(c)
             )
-          );
-        },
+          ),
         (cancellations, commitmentsHashes) =>
           commitmentsHashes.filter((c, i) => cancellations[i].length === 0)
       )
@@ -138,13 +137,12 @@ export class AssembleStore {
     (callToActionHash: ActionHash) =>
       pipe(
         this.commitmentsForCallToAction.get(callToActionHash),
-        commitmentsHashes => {
-          return joinAsync(
+        commitmentsHashes =>
+          joinAsync(
             commitmentsHashes.map(c =>
               this.cancellationsStore.cancellationsFor.get(c)
             )
-          );
-        },
+          ),
         (cancellations, commitmentsHashes) =>
           commitmentsHashes.filter((c, i) => cancellations[i].length > 0)
       )
@@ -193,8 +191,7 @@ export class AssembleStore {
   assembliesForSatisfaction = new LazyHoloHashMap(
     (satisfactionHash: ActionHash) =>
       lazyLoadAndPoll(
-        async () =>
-          await this.client.getAssembliesForSatisfaction(satisfactionHash),
+        async () => this.client.getAssembliesForSatisfaction(satisfactionHash),
         4000
       )
   );
