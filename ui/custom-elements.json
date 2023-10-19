@@ -1390,6 +1390,16 @@
             },
             {
               "kind": "field",
+              "name": "disableMinNecessary",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the minimum necessary fields",
+              "attribute": "disable-min-necessary"
+            },
+            {
+              "kind": "field",
               "name": "requiresAdminApprovalLabel",
               "attribute": "requires-admin-approval-label"
             },
@@ -1450,6 +1460,15 @@
               "default": "false",
               "description": "Hides the requires admin approval switch, defaulting it to false",
               "fieldName": "hideRequiresAdminApproval"
+            },
+            {
+              "name": "disable-min-necessary",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the minimum necessary fields",
+              "fieldName": "disableMinNecessary"
             },
             {
               "name": "requires-admin-approval-label",
@@ -1636,6 +1655,16 @@
               "attribute": "requires-admin-approval-label"
             },
             {
+              "kind": "field",
+              "name": "disableMinNecessary",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the minimum necessary fields",
+              "attribute": "disable-min-necessary"
+            },
+            {
               "kind": "method",
               "name": "needForms",
               "return": {
@@ -1690,6 +1719,15 @@
             {
               "name": "requires-admin-approval-label",
               "fieldName": "requiresAdminApprovalLabel"
+            },
+            {
+              "name": "disable-min-necessary",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the minimum necessary fields",
+              "fieldName": "disableMinNecessary"
             }
           ],
           "superclass": {
@@ -2207,6 +2245,15 @@
               "attribute": "commitmentHash"
             },
             {
+              "kind": "field",
+              "name": "hideAvatar",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "hideAvatar"
+            },
+            {
               "kind": "method",
               "name": "renderDetail",
               "parameters": [
@@ -2244,6 +2291,14 @@
                 "text": "ActionHash"
               },
               "fieldName": "commitmentHash"
+            },
+            {
+              "name": "hideAvatar",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "hideAvatar"
             }
           ],
           "superclass": {

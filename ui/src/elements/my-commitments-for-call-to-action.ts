@@ -97,6 +97,7 @@ export class MyCommitmentsForCallToAction extends LitElement {
         ${hashes.map(
           hash =>
             html`<commitment-detail
+              .hideAvatar=${true}
               .commitmentHash=${hash}
             ></commitment-detail>`
         )}

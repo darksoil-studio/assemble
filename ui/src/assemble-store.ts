@@ -24,6 +24,8 @@ export class AssembleStore {
           const commitment = await toPromise(
             this.commitments.get(commitmentHash)
           );
+          // TODO: better check on whether what was cancelled was a commitment
+          if (!commitment.entry.amount) return;
           const callToActionHash = commitment.entry.call_to_action_hash;
           const callToAction = await toPromise(
             this.callToActions.get(callToActionHash)

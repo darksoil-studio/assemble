@@ -56,6 +56,12 @@ export class CallToActionNeedsForm extends LitElement {
   @property({ attribute: 'requires-admin-approval-label' })
   requiresAdminApprovalLabel = msg('Requires admin approval');
 
+  /**
+   * Disables the minimum necessary fields
+   */
+  @property({ attribute: 'disable-min-necessary' })
+  disableMinNecessary = false;
+
   needForms(): CallToActionNeedForm[] {
     return Array.from(
       this.shadowRoot?.querySelectorAll('call-to-action-need-form')!
@@ -88,6 +94,7 @@ export class CallToActionNeedsForm extends LitElement {
           : undefined}
         .hideRequiresAdminApproval=${this.hideRequiresAdminApproval}
         .requiresAdminApprovalLabel=${this.requiresAdminApprovalLabel}
+        .disableMinNecessary=${this.disableMinNecessary}
       >
         <sl-icon-button
           slot="action"

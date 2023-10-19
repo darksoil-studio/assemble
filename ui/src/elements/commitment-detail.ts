@@ -49,6 +49,9 @@ export class CommitmentDetail extends LitElement {
   @consume({ context: assembleStoreContext, subscribe: true })
   assembleStore!: AssembleStore;
 
+  @property()
+  hideAvatar: boolean = false;
+
   /**
    * @internal
    */
@@ -93,7 +96,13 @@ export class CommitmentDetail extends LitElement {
       </create-cancellation-dialog>
       <div class="column" style="gap: 16px">
         <div class="row" style="align-items: center; gap: 16px; ">
-          <agent-avatar .agentPubKey=${commitment.action.author}></agent-avatar>
+          ${this.hideAvatar
+            ? html``
+            : html`
+                <agent-avatar
+                  .agentPubKey=${commitment.action.author}
+                ></agent-avatar>
+              `}
           <div class="column" style="gap: 8px; flex: 1">
             <span
               >${msg('committed to contribute')}${displayAmount

@@ -44,6 +44,12 @@ export class CallToActionNeedForm extends LitElement implements FormField {
   @property({ attribute: 'hide-requires-admin-approval' })
   hideRequiresAdminApproval = false;
 
+  /**
+   * Disables the minimum necessary fields
+   */
+  @property({ attribute: 'disable-min-necessary' })
+  disableMinNecessary = false;
+
   @property({ attribute: 'requires-admin-approval-label' })
   requiresAdminApprovalLabel = msg('Requires admin approval');
 
@@ -137,6 +143,7 @@ export class CallToActionNeedForm extends LitElement implements FormField {
         </div>
         <div class="row" style="align-items: center; gap: 8px">
           <sl-switch
+            .disabled=${this.disableMinNecessary}
             .defaultChecked=${this.defaultValue
               ? this.defaultValue.min_necessary > 0
               : false}
