@@ -40,6 +40,9 @@ export class MyCommitmentsForCallToAction extends LitElement {
   @consume({ context: assembleStoreContext, subscribe: true })
   assembleStore!: AssembleStore;
 
+  @property()
+  hideNeeds: Array<number> = [];
+
   /**
    * @internal
    */
@@ -67,6 +70,7 @@ export class MyCommitmentsForCallToAction extends LitElement {
         _ => this.assembleStore.callToActions.get(this.callToActionHash),
         (callToAction, satisfactions, commitments) =>
           commitments
+            .filter(c => this.hideNeeds.includes(c.entry.need_index))
             .filter(
               (c, i) =>
                 !callToAction.entry.needs[c.entry.need_index]

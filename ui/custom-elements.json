@@ -2898,6 +2898,15 @@
               "attribute": "callToActionHash"
             },
             {
+              "kind": "field",
+              "name": "hideNeeds",
+              "type": {
+                "text": "Array<number>"
+              },
+              "default": "[]",
+              "attribute": "hideNeeds"
+            },
+            {
               "kind": "method",
               "name": "renderList",
               "parameters": [
@@ -2917,6 +2926,14 @@
                 "text": "ActionHash"
               },
               "fieldName": "callToActionHash"
+            },
+            {
+              "name": "hideNeeds",
+              "type": {
+                "text": "Array<number>"
+              },
+              "default": "[]",
+              "fieldName": "hideNeeds"
             }
           ],
           "superclass": {
