@@ -78,7 +78,9 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
         .filter(|c| c.need_index == commitment.need_index)
         .fold(0, |acc, next| acc + next.amount);
 
-    if amount_contributed >= call_to_action.needs[commitment.need_index as usize].min_necessary {
+    let min_necessary = call_to_action.needs[commitment.need_index as usize].min_necessary;
+
+    if min_necessary > 0 &&  amount_contributed >= min_necessary {
         let my_pub_key = agent_info()?.agent_latest_pubkey;
         let result = call_remote(
             my_pub_key,
