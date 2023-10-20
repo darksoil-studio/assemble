@@ -257,7 +257,7 @@ export class CallToActionSatisfiedNeeds extends LitElement {
                         >`}
                     ${this.renderContributeButton(
                       i,
-                      need.max_possible !== undefined &&
+                      !!need.max_possible &&
                         commitments
                           .filter(c => c.entry.need_index === i)
                           .reduce((acc, next) => acc + next.entry.amount, 0) >=

@@ -17,13 +17,80 @@ export class AssembleStore {
     public cancellationsStore: CancellationsStore
   ) {
     cancellationsStore.client.onSignal(async signal => {
-      if (signal.type === 'EntryCreated') {
+      if (signal.type === 'LinkDeleted') {
+        // Something was uncancelled
+        try {
+          const commitmentHash = signal.action.hashed.content.base_address;
+          const commitment = await toPromise(
+            this.commitments.get(commitmentHash)
+          );
+
+          // TODO: better check on whether what was cancelled was a commitment
+          if (!commitment.entry.amount) return;
+
+          const callToActionHash = commitment.entry.call_to_action_hash;
+          const callToAction = await toPromise(
+            this.callToActions.get(callToActionHash)
+          );
+
+          const need = callToAction.entry.needs[commitment.entry.need_index];
+          if (!need.requires_admin_approval) {
+            // Create a new satisfaction if there are already enough commitments
+            let commitmentHashes = await toPromise(
+              this.uncancelledCommitmentsForCallToAction.get(callToActionHash)
+            );
+            commitmentHashes = [
+              ...commitmentHashes.filter(
+                h => h.toString() !== commitmentHash.toString()
+              ),
+              commitmentHash,
+            ];
+            const commitments = await toPromise(
+              sliceAndJoin(this.commitments, commitmentHashes)
+            );
+
+            const amountContributed = Array.from(commitments.values()).reduce(
+              (acc, next) => acc + next.entry.amount,
+              0
+            );
+
+            if (amountContributed >= need.min_necessary) {
+              const satisfactionsForCallToAction = await toPromise(
+                sliceAndJoin(
+                  this.satisfactions,
+                  await toPromise(
+                    this.satisfactionsForCallToAction.get(callToActionHash)
+                  )
+                )
+              );
+
+              if (
+                !Array.from(satisfactionsForCallToAction.values()).find(
+                  satisfaction =>
+                    satisfaction.entry.need_index ===
+                    commitment.entry.need_index
+                )
+              ) {
+                await this.client.createSatisfaction({
+                  need_index: commitment.entry.need_index,
+                  call_to_action_hash: callToActionHash,
+                  commitments_hashes: commitmentHashes,
+                });
+              }
+            }
+          }
+        } catch (e) {
+          // If this is not a commitment, nothing to do
+          console.warn(e);
+        }
+      } else if (signal.type === 'EntryCreated') {
         // If a commitment was cancelled, delete any satisfactions for it
         try {
           const commitmentHash = signal.app_entry.cancelled_hash;
           const commitment = await toPromise(
             this.commitments.get(commitmentHash)
           );
+
           // TODO: better check on whether what was cancelled was a commitment
           if (!commitment.entry.amount) return;
           const callToActionHash = commitment.entry.call_to_action_hash;
@@ -59,12 +126,23 @@ export class AssembleStore {
             );
 
             if (amountContributed < need.min_necessary) {
-              const satisfactionsForCommitment = await toPromise(
-                this.satisfactionsForCommitment.get(commitmentHash)
+              const satisfactionsForCallToAction = await toPromise(
+                sliceAndJoin(
+                  this.satisfactions,
+                  await toPromise(
+                    this.satisfactionsForCallToAction.get(callToActionHash)
+                  )
+                )
               );
 
-              for (const satisfactionHash of satisfactionsForCommitment) {
-                await this.client.deleteSatisfaction(satisfactionHash);
+              for (const satisfaction of Array.from(
+                satisfactionsForCallToAction.values()
+              )) {
+                if (
+                  satisfaction.entry.need_index === commitment.entry.need_index
+                ) {
+                  await this.client.deleteSatisfaction(satisfaction.actionHash);
+                }
               }
             }
           }
