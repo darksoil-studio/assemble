@@ -17,7 +17,7 @@ import { mdiInformationOutline } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { LitElement, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
@@ -70,7 +70,7 @@ export class MyCommitmentsForCallToAction extends LitElement {
         _ => this.assembleStore.callToActions.get(this.callToActionHash),
         (callToAction, satisfactions, commitments) =>
           commitments
-            .filter(c => this.hideNeeds.includes(c.entry.need_index))
+            .filter(c => !this.hideNeeds.includes(c.entry.need_index))
             .filter(
               (c, i) =>
                 !callToAction.entry.needs[c.entry.need_index]
@@ -102,6 +102,7 @@ export class MyCommitmentsForCallToAction extends LitElement {
           hash =>
             html`<commitment-detail
               .hideAvatar=${true}
+              .showNeed=${true}
               .commitmentHash=${hash}
             ></commitment-detail>`
         )}

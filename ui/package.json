@@ -1,6 +1,6 @@
 {
   "name": "@darksoil/assemble",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "scripts": {
     "start": "vite --clearScreen false --port $UI_PORT --force",
     "build": "npm run format && tsc && npm run analyze -- --exclude dist",

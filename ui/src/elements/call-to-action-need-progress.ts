@@ -1,7 +1,6 @@
 import { hashProperty, sharedStyles } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
-  AsyncReadable,
   StoreSubscriber,
   joinAsync,
   pipe,

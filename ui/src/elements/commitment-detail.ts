@@ -13,14 +13,8 @@ import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash, EntryHash, Record } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import {
-  mdiAlertCircleOutline,
-  mdiCancel,
-  mdiDelete,
-  mdiPencil,
-} from '@mdi/js';
+import { mdiCancel } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
@@ -51,6 +45,9 @@ export class CommitmentDetail extends LitElement {
 
   @property()
   hideAvatar: boolean = false;
+
+  @property()
+  showNeed: boolean = false;
 
   /**
    * @internal
@@ -105,9 +102,9 @@ export class CommitmentDetail extends LitElement {
               `}
           <div class="column" style="gap: 8px; flex: 1">
             <span
-              >${msg('committed to contribute')}${displayAmount
+              >${msg('Committed to contribute')}${displayAmount
                 ? html`&nbsp;${commitment.entry.amount}`
-                : ''}</span
+                : ''}${this.showNeed ? ` "${need.description}"` : ``}</span
             >
             <span class="placeholder"
               >${commitment.entry.comment || msg('No comment')}</span

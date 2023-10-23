@@ -2008,6 +2008,78 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/elements/call-to-action-unsatisfied-needs-summary.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CallToActionUnsatisfiedNeedsSummary",
+          "members": [
+            {
+              "kind": "field",
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "attribute": "callToActionHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderUnsatisfiedNeedsSummary",
+              "parameters": [
+                {
+                  "name": "callToAction",
+                  "type": {
+                    "text": "EntryRecord<CallToAction>"
+                  }
+                },
+                {
+                  "name": "needs",
+                  "type": {
+                    "text": "Array<[Need, number]>"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "callToActionHash",
+              "type": {
+                "text": "ActionHash"
+              },
+              "fieldName": "callToActionHash"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "call-to-action-unsatisfied-needs-summary",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CallToActionUnsatisfiedNeedsSummary",
+          "declaration": {
+            "name": "CallToActionUnsatisfiedNeedsSummary",
+            "module": "src/elements/call-to-action-unsatisfied-needs-summary.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "call-to-action-unsatisfied-needs-summary",
+          "declaration": {
+            "name": "CallToActionUnsatisfiedNeedsSummary",
+            "module": "src/elements/call-to-action-unsatisfied-needs-summary.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/elements/call-to-action-unsatisfied-needs.ts",
       "declarations": [
         {
@@ -2254,6 +2326,15 @@
               "attribute": "hideAvatar"
             },
             {
+              "kind": "field",
+              "name": "showNeed",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "attribute": "showNeed"
+            },
+            {
               "kind": "method",
               "name": "renderDetail",
               "parameters": [
@@ -2299,6 +2380,14 @@
               },
               "default": "false",
               "fieldName": "hideAvatar"
+            },
+            {
+              "name": "showNeed",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "showNeed"
             }
           ],
           "superclass": {
