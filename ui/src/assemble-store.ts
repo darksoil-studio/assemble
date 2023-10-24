@@ -8,6 +8,7 @@ import {
 } from '@holochain-open-dev/stores';
 import { LazyHoloHashMap } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
+import { mdiWallSconceRoundVariantOutline } from '@mdi/js';
 
 import { AssembleClient } from './assemble-client.js';
 
@@ -119,8 +120,10 @@ export class AssembleStore {
             const commitments = await toPromise(
               sliceAndJoin(this.commitments, commitmentHashes)
             );
-
-            const amountContributed = Array.from(commitments.values()).reduce(
+            const commitmentsForNeed = Array.from(commitments.values()).filter(
+              c => c.entry.need_index === commitment.entry.need_index
+            );
+            const amountContributed = commitmentsForNeed.reduce(
               (acc, next) => acc + next.entry.amount,
               0
             );
