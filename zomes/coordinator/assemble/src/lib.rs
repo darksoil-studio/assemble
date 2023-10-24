@@ -60,6 +60,24 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
         return Ok(());
     }
 
+    let satisfaction_hashes =
+        get_satisfactions_for_call_to_action(commitment.call_to_action_hash.clone())?;
+    let need_is_already_satisfied = satisfaction_hashes
+        .clone()
+        .into_iter()
+        .map(|hash| get_satisfaction(hash))
+        .collect::<ExternResult<Vec<Option<Record>>>>()?
+        .into_iter()
+        .filter_map(|o| o)
+        .map(|record| Satisfaction::try_from(record))
+        .collect::<ExternResult<Vec<Satisfaction>>>()?
+        .into_iter()
+        .find(|s| s.need_index == commitment.need_index);
+
+    if need_is_already_satisfied.is_some() {
+        return Ok(());
+    }
+
     let commitments_hashes = get_commitments_for_call_to_action(commitment.call_to_action_hash)?;
     let mut set: HashSet<ActionHash> = HashSet::from_iter(commitments_hashes);
     set.insert(action_hash);
