@@ -99,7 +99,7 @@ pub fn delete_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<()> {
         }
     }
 
-    delete_entry(satisfaction_hash)?;
+    // delete_entry(satisfaction_hash)?;
 
     Ok(())
 }

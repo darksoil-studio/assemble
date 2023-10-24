@@ -82,11 +82,36 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
     let mut set: HashSet<ActionHash> = HashSet::from_iter(commitments_hashes);
     set.insert(action_hash);
 
+    let my_pub_key = agent_info()?.agent_initial_pubkey;
+
     let commitments_hashes: Vec<ActionHash> = set.into_iter().collect();
     let amount_contributed = commitments_hashes
         .clone()
         .into_iter()
-        .map(|hash| get_commitment(hash))
+        .map(|hash| {
+            let response = call_remote(
+                my_pub_key.clone(),
+                "cancellations",
+                FunctionName::from("get_cancellations_for"),
+                None,
+                hash.clone(),
+            )?;
+            match response {
+                ZomeCallResponse::Ok(result) => {
+                    let hashes: Vec<ActionHash> =
+                        result.decode().map_err(|err| wasm_error!(err))?;
+                    Ok((hash, hashes))
+                }
+                _ => Err(wasm_error!(WasmErrorInner::Guest(format!(
+                    "Error getting the cancellations for commitment: {:?}",
+                    response
+                )))),
+            }
+        })
+        .collect::<ExternResult<Vec<(ActionHash, Vec<ActionHash>)>>>()?
+        .into_iter()
+        .filter(|(_h, cancellations)| cancellations.len() == 0)
+        .map(|(hash, _)| get_commitment(hash))
         .collect::<ExternResult<Vec<Option<Record>>>>()?
         .into_iter()
         .filter_map(|c| c)
