@@ -41,6 +41,7 @@
       import '../src/elements/call-to-action-need-form.ts';
       import '../src/elements/call-to-action-needs-form.ts';
       import '../src/elements/call-to-action-unsatisfied-needs.ts';
+      import '../src/elements/call-to-action-unsatisfied-needs-summary.ts';
       import '../src/elements/call-to-action-satisfied-needs.ts';
       import '../src/elements/call-to-action-need-progress.ts';
       import '../src/elements/call-to-action-progress.ts';
@@ -198,6 +199,10 @@
                             .callToActionHash=${this._selectedCallToActionHash}
                           >
                           </my-commitments-for-call-to-action>
+                          <call-to-action-unsatisfied-needs-summary
+                            .callToActionHash=${this._selectedCallToActionHash}
+                          >
+                          </call-to-action-unsatisfied-needs-summary>
                         </div>
                       `
                     : html``}
