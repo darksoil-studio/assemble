@@ -12,14 +12,15 @@
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "files": ["dist"],
+  "files": ["dist", "locales"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holochain-open-dev/assemble.git"
   },
   "exports": {
     ".": "./dist/index.js",
-    "./dist/*": "./dist/*"
+    "./locales/*": "./dist/*",
+    "./locales/*": "./locales/*"
   },
   "dependencies": {
     "@holochain-open-dev/cancellations": "^0.1.1",

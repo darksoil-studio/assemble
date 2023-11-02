@@ -18,6 +18,7 @@ node_modules/
 # build
 /_site/
 dist/
+locales/
 /out-tsc/
 
 storybook-static
