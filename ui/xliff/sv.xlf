@@ -2,21 +2,6 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
 <file target-language="sv" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
-<trans-unit id="s78059a39fcc1c450">
-  <source>The requested collective commitment doesn't exist</source>
-</trans-unit>
-<trans-unit id="s6352abc70758f14d">
-  <source>Error fetching the collective commitment</source>
-</trans-unit>
-<trans-unit id="se6fb40782781915e">
-  <source>No collective commitments found for this call to action</source>
-</trans-unit>
-<trans-unit id="s1e6b21317c21ec5a">
-  <source>Error fetching the collective commitments</source>
-</trans-unit>
-<trans-unit id="se3a5dc492aac3b97">
-  <source>No collective commitments found for this satisfaction</source>
-</trans-unit>
 <trans-unit id="s3139c52a1117c905">
   <source>Assembly</source>
 </trans-unit>
@@ -182,9 +167,6 @@
 <trans-unit id="s3ccb73a74da91bf0">
   <source>The requested commitment doesn't exist</source>
 </trans-unit>
-<trans-unit id="s941fda22ffe6b0d6">
-  <source>Error creating the collective commitment</source>
-</trans-unit>
 <trans-unit id="s524827c85a293dab">
   <source>Create Assembly</source>
 </trans-unit>
@@ -193,12 +175,6 @@
 </trans-unit>
 <trans-unit id="s2873489db50fee52">
   <source>Edit Call To Action</source>
-</trans-unit>
-<trans-unit id="scbf29ce484222325">
-  <source></source>
-</trans-unit>
-<trans-unit id="s1079bae18b525f49">
-  <source>Add Needs</source>
 </trans-unit>
 <trans-unit id="s33f85f24c0f5f008">
   <source>Save</source>
@@ -220,6 +196,24 @@
 </trans-unit>
 <trans-unit id="s62a1100d991c6f2c">
   <source>Error fetching the satisfaction</source>
+</trans-unit>
+<trans-unit id="s43eb64ba7056a741">
+  <source>The requested assembly doesn't exist</source>
+</trans-unit>
+<trans-unit id="s5259c79873512bfc">
+  <source>Error fetching the assembly</source>
+</trans-unit>
+<trans-unit id="sf5fd459d08e41134">
+  <source>No assemblies found for this call to action</source>
+</trans-unit>
+<trans-unit id="sabf9ff4d7b13d288">
+  <source>Error fetching the assemblies</source>
+</trans-unit>
+<trans-unit id="saf9aab12d5299951">
+  <source>No assemblies found for this satisfaction</source>
+</trans-unit>
+<trans-unit id="sa38fc58e91a0562d">
+  <source>Error creating the assembly</source>
 </trans-unit>
 </body>
 </file>

@@ -76,14 +76,14 @@ export class AssemblyDetail extends LitElement {
 
         if (!assembly)
           return html`<span
-            >${msg("The requested collective commitment doesn't exist")}</span
+            >${msg("The requested assembly doesn't exist")}</span
           >`;
 
         return this.renderDetail(assembly);
       case 'error':
         return html`<sl-card>
           <display-error
-            .headline=${msg('Error fetching the collective commitment')}
+            .headline=${msg('Error fetching the assembly')}
             .error=${this._assembly.value.error.data.data}
           ></display-error>
         </sl-card>`;

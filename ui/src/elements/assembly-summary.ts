@@ -73,13 +73,13 @@ export class AssemblySummary extends LitElement {
       case 'complete':
         if (!this._assembly.value.value)
           return html`<span
-            >${msg("The requested collective commitment doesn't exist")}</span
+            >${msg("The requested assembly doesn't exist")}</span
           >`;
 
         return this.renderSummary(this._assembly.value.value);
       case 'error':
         return html`<display-error
-          .headline=${msg('Error fetching the collective commitment')}
+          .headline=${msg('Error fetching the assembly')}
           .error=${this._assembly.value.error.data.data}
         ></display-error>`;
     }

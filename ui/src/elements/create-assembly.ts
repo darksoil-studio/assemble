@@ -98,7 +98,7 @@ export class CreateAssembly extends LitElement {
       this.form.reset();
     } catch (e: any) {
       console.error(e);
-      notifyError(msg('Error creating the collective commitment'));
+      notifyError(msg('Error creating the assembly'));
     }
     this.committing = false;
   }

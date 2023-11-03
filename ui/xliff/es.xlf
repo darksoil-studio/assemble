@@ -2,224 +2,289 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
 <file target-language="es" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
-<trans-unit id="s78059a39fcc1c450">
-  <source>The requested collective commitment doesn't exist</source>
-</trans-unit>
-<trans-unit id="s6352abc70758f14d">
-  <source>Error fetching the collective commitment</source>
-</trans-unit>
-<trans-unit id="se6fb40782781915e">
-  <source>No collective commitments found for this call to action</source>
-</trans-unit>
-<trans-unit id="s1e6b21317c21ec5a">
-  <source>Error fetching the collective commitments</source>
-</trans-unit>
-<trans-unit id="se3a5dc492aac3b97">
-  <source>No collective commitments found for this satisfaction</source>
-</trans-unit>
 <trans-unit id="s3139c52a1117c905">
   <source>Assembly</source>
+  <target>Pacto</target>
 </trans-unit>
 <trans-unit id="s10aa05aa50d278b9">
   <source>Requires admin approval</source>
+  <target>Requiere aprovación del administrador</target>
 </trans-unit>
 <trans-unit id="s75f8021355029843">
   <source>Need description*</source>
+  <target>Descripción de la necesidad*</target>
 </trans-unit>
 <trans-unit id="s695afc099cb2281c">
   <source>Min. required</source>
+  <target>Mín. requerido</target>
 </trans-unit>
 <trans-unit id="s2b9e39425bfcc804">
   <source>Max. possible</source>
+  <target>Máx. posible</target>
 </trans-unit>
 <trans-unit id="sb65d8265eefc5783">
   <source>Only one.</source>
+  <target>Solamente uno.</target>
 </trans-unit>
 <trans-unit id="s10f50336534b13d7">
   <source>No min. or max.</source>
+  <target>No hay mín. ni máx.</target>
 </trans-unit>
 <trans-unit id="s04dc5daea8ffcb1b">
   <source>Min.</source>
+  <target>Mín.</target>
 </trans-unit>
 <trans-unit id="s49b4a5aecfdd8e35">
   <source>Max.</source>
+  <target>Máx.</target>
 </trans-unit>
 <trans-unit id="s1244485ebc6b7d0a">
   <source>Min. and Max.</source>
+  <target>Mín. y Máx.</target>
 </trans-unit>
 <trans-unit id="sf44cc868276931a1">
   <source>The requested call to action was not found.</source>
+  <target>La llamada a la acción no fue encontrada.</target>
 </trans-unit>
 <trans-unit id="s7e7b17262f41a198">
   <source>Error fetching the commitments for this call to action</source>
+  <target>Error buscando los compromisos para esta llamada a la acción</target>
 </trans-unit>
 <trans-unit id="s0d9e6884f8c4ba1a">
   <source>Needs</source>
+  <target>Necesidades</target>
 </trans-unit>
 <trans-unit id="s30c6728e592f4560">
   <source>Add Need</source>
+  <target>Añadir Necesidad</target>
 </trans-unit>
 <trans-unit id="s2a71fae095e55879">
   <source>There are no needs yet.</source>
+  <target>Aún no hay ninguna necesidad.</target>
 </trans-unit>
 <trans-unit id="s2d49e7bc149b45f6">
   <source>This call to action doesn't have any required needs.</source>
+  <target>Esta llamada a la acción no tiene ninguna necesidad requerida.</target>
 </trans-unit>
 <trans-unit id="s08b06007b5567108">
   <source>of</source>
+  <target>de</target>
 </trans-unit>
 <trans-unit id="sb75af2a639e7fa01">
   <source>Error fetching the progress of the call</source>
+  <target>Error cargando el progreso de la llamada a la acción</target>
 </trans-unit>
 <trans-unit id="s40326a98f486d818">
   <source>Error creating the commitment</source>
+  <target>Error creando el compromiso</target>
 </trans-unit>
 <trans-unit id="s6d52cebcaa70b474">
   <source>Commitment to Contribute</source>
+  <target>Compromiso a Contribuir</target>
 </trans-unit>
 <trans-unit id="sba98a7152d80b949">
   <source>Amount</source>
+  <target>Cantidad</target>
 </trans-unit>
 <trans-unit id="saf84ec86139d349e">
   <source>Comment</source>
+  <target>Comentario</target>
 </trans-unit>
 <trans-unit id="s661045907dd942bc">
   <source>Commit</source>
+  <target>Compromiso</target>
 </trans-unit>
 <trans-unit id="sce13ce26519c5565">
   <source>Error creating the satisfaction</source>
+  <target>Error creando la satisfacción</target>
 </trans-unit>
 <trans-unit id="sf587cc61d3dfb90e">
   <source>Satisfy Need</source>
+  <target>Satisfacer esta necesidad</target>
 </trans-unit>
 <trans-unit id="sb1a3927bb18ccaf2">
   <source>Are you sure? There are no commitments to contribute to this need yet.</source>
+  <target>Estás seguro? Aún no hay ningún ninguna contribución para esta necesidad.</target>
 </trans-unit>
 <trans-unit id="sef2cd24ab375df7e">
   <source>Select the commitments that satisfy this need.</source>
+  <target>Selecciona los compromisos que satisfacen esta necesidad.</target>
 </trans-unit>
 <trans-unit id="sf67e6e365e1dd961">
   <source>committed to contribute</source>
+  <target>se comprometió a contribuir</target>
 </trans-unit>
 <trans-unit id="s950600ee56db1843">
   <source>No comment</source>
+  <target>Sin comentario</target>
 </trans-unit>
 <trans-unit id="s3e07827b85a6779a">
   <source>Contribute</source>
+  <target>Contribuir</target>
 </trans-unit>
 <trans-unit id="s39f1f603c775a5b3">
   <source>There are no satisfied needs.</source>
+  <target>No hay ninguna necesidad satisfecha.</target>
 </trans-unit>
 <trans-unit id="sba6d2aebd8696a70">
   <source>Satisfied By</source>
+  <target>Satisfecha Por</target>
 </trans-unit>
 <trans-unit id="s6a952825a82ea974">
   <source>This need was satisfied with no contributions.</source>
+  <target>Esta necesidad fue satisfecha sin ninguna contribución.</target>
 </trans-unit>
 <trans-unit id="s8217b4cf2a9d5a97">
   <source>Additional Contributions</source>
+  <target>Contribuciones Adicionales</target>
 </trans-unit>
 <trans-unit id="sabfa03dfc4fa6bda">
   <source>There are no additional contributions.</source>
+  <target>No hay ninguna contribución adicional.</target>
 </trans-unit>
 <trans-unit id="sd63b87e98ed1536f">
   <source>There are no contributions yet.</source>
+  <target>Aún no hay ninguna contribución.</target>
 </trans-unit>
 <trans-unit id="se7229fcfe421ebe1">
   <source>Max. possible contributions reached</source>
+  <target>Se ha alcanzado el número de contribuciones máx.</target>
 </trans-unit>
 <trans-unit id="s9dc338f31cc6c22c">
   <source>The requested call to action doesn't exist</source>
+  <target>La llamada a la acción no existe</target>
 </trans-unit>
 <trans-unit id="s5cdaaf1e8ed09fa1">
   <source>Error fetching the call to action</source>
+  <target>Error cargando la llamada a la acción</target>
 </trans-unit>
 <trans-unit id="sa7f40d9c3baa9830">
   <source>There are no unsatisfied needs.</source>
+  <target>No hay ninguna necesidad no satisfecha</target>
 </trans-unit>
 <trans-unit id="s2bcc52b8378d6fd3">
   <source>Cancel Contribution</source>
+  <target>Cancelar Contribución</target>
 </trans-unit>
 <trans-unit id="s09e0eab6e02bc393">
   <source>This will notify all event participants.</source>
+  <target>Se enviará una notificación a todos los participantes del evento.</target>
 </trans-unit>
 <trans-unit id="s5f8492d41fc62041">
   <source>Committed to contribute</source>
+  <target>Se ha comprometido a contribuir</target>
 </trans-unit>
 <trans-unit id="s2ceb11be2290bb1b">
   <source>Cancel</source>
+  <target>Cancelar</target>
 </trans-unit>
 <trans-unit id="s07834954afa4b6d9">
   <source>Contribution was cancelled</source>
+  <target>La contribución ha sido cancelada</target>
 </trans-unit>
 <trans-unit id="sd9c91e17e3d7bcbd">
   <source>Error fetching the commitment</source>
+  <target>Error buscando el compromiso</target>
 </trans-unit>
 <trans-unit id="s993dbfafb7511653">
   <source>Error accepting the commitment</source>
+  <target>Error aceptando el compromiso</target>
 </trans-unit>
 <trans-unit id="sb4ee10dd8a1622bc">
   <source>No one has contributed to this need yet.</source>
+  <target>Aún no hay ninguna contribución para esta necesidad.</target>
 </trans-unit>
 <trans-unit id="sfdebb1ce66502f94">
   <source>Contributions</source>
+  <target>Contribuciones</target>
 </trans-unit>
 <trans-unit id="s64dbbddf00d4c5ee">
   <source>Cancelled Commitments</source>
+  <target>Compromisos Cancelados</target>
 </trans-unit>
 <trans-unit id="s906fe9255792554f">
   <source>There are no cancelled commitments.</source>
+  <target>No hay ningún compromiso cancelado.</target>
 </trans-unit>
 <trans-unit id="sf6178cb3480a86ce">
   <source>No call to actions found for this call to action</source>
+  <target>No se ha encontrado ninguna llamada a la acción para esta llamada a la acción</target>
 </trans-unit>
 <trans-unit id="s983762ecac7f91d6">
   <source>Error fetching the call to actions</source>
+  <target>Error buscando la llamada a la acción</target>
 </trans-unit>
 <trans-unit id="s63d894b1ddb06289">
   <source>Description</source>
+  <target>Descripción</target>
 </trans-unit>
 <trans-unit id="s3ccb73a74da91bf0">
   <source>The requested commitment doesn't exist</source>
-</trans-unit>
-<trans-unit id="s941fda22ffe6b0d6">
-  <source>Error creating the collective commitment</source>
+  <target>El compromiso no existe</target>
 </trans-unit>
 <trans-unit id="s524827c85a293dab">
   <source>Create Assembly</source>
+  <target>Crear Pacto</target>
 </trans-unit>
 <trans-unit id="s28c37787e4765e58">
   <source>Error creating the call to action</source>
+  <target>Error creando la llamada a la acción</target>
 </trans-unit>
 <trans-unit id="s2873489db50fee52">
   <source>Edit Call To Action</source>
-</trans-unit>
-<trans-unit id="scbf29ce484222325">
-  <source></source>
-</trans-unit>
-<trans-unit id="s1079bae18b525f49">
-  <source>Add Needs</source>
+  <target>Editar Llamada a la Acción</target>
 </trans-unit>
 <trans-unit id="s33f85f24c0f5f008">
   <source>Save</source>
+  <target>Guardar</target>
 </trans-unit>
 <trans-unit id="s258f7773578f509b">
   <source>Edit Satisfaction</source>
+  <target>Editar Satisacción</target>
 </trans-unit>
 <trans-unit id="sb97c2f40b5f2dd89">
   <source>You don't have any contributions.</source>
+  <target>No has hecho ninguna contribución.</target>
 </trans-unit>
 <trans-unit id="se87af0982795d20a">
   <source>Error fetching the commitments</source>
+  <target>Error buscando los compromisos.</target>
 </trans-unit>
 <trans-unit id="s1d5bb8155f842a8d">
   <source>Satisfaction</source>
+  <target>Satisfacción</target>
 </trans-unit>
 <trans-unit id="sfff952497e3fb6d1">
   <source>The requested satisfaction doesn't exist</source>
+  <target>La satisfacción no existe</target>
 </trans-unit>
 <trans-unit id="s62a1100d991c6f2c">
   <source>Error fetching the satisfaction</source>
+  <target>Error buscando la satisfacción</target>
+</trans-unit>
+<trans-unit id="s43eb64ba7056a741">
+  <source>The requested assembly doesn't exist</source>
+  <target>El pacto no existe</target>
+</trans-unit>
+<trans-unit id="s5259c79873512bfc">
+  <source>Error fetching the assembly</source>
+  <target>Error buscando el pacto</target>
+</trans-unit>
+<trans-unit id="sf5fd459d08e41134">
+  <source>No assemblies found for this call to action</source>
+  <target>No hay ningún pacto para esta llamada a la acción</target>
+</trans-unit>
+<trans-unit id="sabf9ff4d7b13d288">
+  <source>Error fetching the assemblies</source>
+  <target>Error buscando los pactos</target>
+</trans-unit>
+<trans-unit id="saf9aab12d5299951">
+  <source>No assemblies found for this satisfaction</source>
+  <target>No se ha encontrado ningún pacto para esta satisfacción</target>
+</trans-unit>
+<trans-unit id="sa38fc58e91a0562d">
+  <source>Error creating the assembly</source>
+  <target>Error creando el pacto</target>
 </trans-unit>
 </body>
 </file>

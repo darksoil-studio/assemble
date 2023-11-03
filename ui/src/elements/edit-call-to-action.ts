@@ -113,7 +113,6 @@ export class EditCallToAction extends LitElement {
                 >
                   <sl-input
                     name="needs"
-                    .label=${msg('')}
                     .defaultValue=${this.currentRecord.entry.needs[index]}
                   ></sl-input>
                   <sl-icon-button
@@ -134,7 +133,7 @@ export class EditCallToAction extends LitElement {
                   Math.max(...this._needsFields) + 1,
                 ];
               }}
-              >${msg('Add Needs')}</sl-button
+              >${msg('Add Need')}</sl-button
             >
           </div>
         </div>

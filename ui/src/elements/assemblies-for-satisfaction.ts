@@ -54,7 +54,7 @@ export class AssembliesForSatisfaction extends LitElement {
           .src=${wrapPathInSvg(mdiInformationOutline)}
         ></sl-icon>
         <span class="placeholder"
-          >${msg('No collective commitments found for this satisfaction')}</span
+          >${msg('No assemblies found for this satisfaction')}</span
         >
       </div>`;
 
@@ -80,7 +80,7 @@ export class AssembliesForSatisfaction extends LitElement {
         return this.renderList(this._assemblies.value.value);
       case 'error':
         return html`<display-error
-          .headline=${msg('Error fetching the collective commitments')}
+          .headline=${msg('Error fetching the assemblies')}
           .error=${this._assemblies.value.error.data.data}
         ></display-error>`;
     }
