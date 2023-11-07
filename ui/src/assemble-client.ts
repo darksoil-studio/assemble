@@ -1,5 +1,11 @@
 import { EntryRecord, ZomeClient } from '@holochain-open-dev/utils';
-import { ActionHash, AppAgentClient, Record } from '@holochain/client';
+import {
+  ActionHash,
+  AppAgentClient,
+  Delete,
+  Record,
+  SignedActionHashed,
+} from '@holochain/client';
 
 import {
   AssembleSignal,
@@ -29,11 +35,11 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
     return new EntryRecord(record);
   }
 
-  async getCallToAction(
+  async getLatestCallToAction(
     callToActionHash: ActionHash
   ): Promise<EntryRecord<CallToAction> | undefined> {
     const record: Record = await this.callZome(
-      'get_call_to_action',
+      'get_latest_call_to_action',
       callToActionHash
     );
     return record ? new EntryRecord(record) : undefined;
@@ -58,12 +64,11 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getCallToActionsForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<EntryRecord<CallToAction>>> {
-    const records: Record[] = await this.callZome(
+  ): Promise<Array<ActionHash>> {
+    return this.callZome(
       'get_call_to_actions_for_call_to_action',
       callToActionHash
     );
-    return records.map(r => new EntryRecord(r));
   }
   /** Commitment */
 
@@ -104,11 +109,11 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
     return new EntryRecord(record);
   }
 
-  async getSatisfaction(
+  async getLatestSatisfaction(
     satisfactionHash: ActionHash
   ): Promise<EntryRecord<Satisfaction> | undefined> {
     const record: Record = await this.callZome(
-      'get_satisfaction',
+      'get_latest_satisfaction',
       satisfactionHash
     );
     return record ? new EntryRecord(record) : undefined;
@@ -142,6 +147,12 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   deleteSatisfaction(satisfactionHash: ActionHash): Promise<ActionHash> {
     return this.callZome('delete_satisfaction', satisfactionHash);
+  }
+
+  getSatisfactionDeletes(
+    satisfactionHash: ActionHash
+  ): Promise<Array<SignedActionHashed<Delete>>> {
+    return this.callZome('get_satisfaction_deletes', satisfactionHash);
   }
 
   /** Assembly */

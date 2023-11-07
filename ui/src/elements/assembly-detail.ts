@@ -1,23 +1,17 @@
-import {
-  hashProperty,
-  sharedStyles,
-  wrapPathInSvg,
-} from '@holochain-open-dev/elements';
+import { hashProperty, sharedStyles } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import { StoreSubscriber } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
-import { ActionHash, EntryHash, Record } from '@holochain/client';
+import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
-import { mdiAlertCircleOutline, mdiDelete, mdiPencil } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { LitElement, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
@@ -84,7 +78,7 @@ export class AssemblyDetail extends LitElement {
         return html`<sl-card>
           <display-error
             .headline=${msg('Error fetching the assembly')}
-            .error=${this._assembly.value.error.data.data}
+            .error=${this._assembly.value.error}
           ></display-error>
         </sl-card>`;
     }

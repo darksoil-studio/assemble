@@ -22,24 +22,16 @@ pub fn create_call_to_action(call_to_action: CallToAction) -> ExternResult<Recor
 }
 
 #[hdk_extern]
-pub fn get_call_to_action(
-    original_call_to_action_hash: ActionHash,
-) -> ExternResult<Option<Record>> {
-    get_latest_call_to_action(original_call_to_action_hash)
-}
-fn get_latest_call_to_action(call_to_action_hash: ActionHash) -> ExternResult<Option<Record>> {
-    let details = get_details(call_to_action_hash, GetOptions::default())?.ok_or(wasm_error!(
-        WasmErrorInner::Guest("CallToAction not found".into())
-    ))?;
+pub fn get_latest_call_to_action(call_to_action_hash: ActionHash) -> ExternResult<Option<Record>> {
+    let Some(details )= get_details(call_to_action_hash, GetOptions::default())? else {
+        return Ok(None);
+    };
     let record_details = match details {
         Details::Entry(_) => Err(wasm_error!(WasmErrorInner::Guest(
             "Malformed details".into()
         ))),
         Details::Record(record_details) => Ok(record_details),
     }?;
-    if record_details.deletes.len() > 0 {
-        return Ok(None);
-    }
     match record_details.updates.last() {
         Some(update) => get_latest_call_to_action(update.action_address().clone()),
         None => Ok(Some(record_details.record)),

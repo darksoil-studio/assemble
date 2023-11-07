@@ -9,10 +9,11 @@ import {
   AsyncReadable,
   StoreSubscriber,
   joinAsync,
+  mapAndJoin,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
-import { EntryRecord } from '@holochain-open-dev/utils';
+import { EntryRecord, slice } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
@@ -61,18 +62,19 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     this,
     () =>
       joinAsync([
-        this.assembleStore.callToActions.get(this.callToActionHash),
+        this.assembleStore.callToActions.get(this.callToActionHash)
+          .latestVersion,
+        this.assembleStore.callToActions.get(this.callToActionHash).needs
+          .satisfied,
         pipe(
-          this.assembleStore.uncancelledCommitmentsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .commitments.uncancelled,
+          m => mapAndJoin(m, c => c.entry)
         ),
         pipe(
-          this.assembleStore.satisfactionsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.satisfactions, hashes)
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .satisfactions,
+          m => mapAndJoin(m, c => c.latestVersion)
         ),
       ]),
     () => [this.callToActionHash]
@@ -285,18 +287,10 @@ export class CallToActionSatisfiedNeeds extends LitElement {
         `;
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
-        const commitments = this._callToActionInfo.value.value[1];
-        const satisfactions = this._callToActionInfo.value.value[2];
+        const satisfiedNeeds = this._callToActionInfo.value.value[1];
+        const commitments = this._callToActionInfo.value.value[2];
+        const satisfactions = this._callToActionInfo.value.value[3];
 
-        const satisfiedNeeds = callToAction.entry.needs
-          .map((need, i) => [need, i] as [Need, number])
-          .filter(
-            ([need, i]) =>
-              need.min_necessary === 0 ||
-              !!Array.from(satisfactions.values()).find(
-                s => s.entry.need_index === i
-              )
-          ) as Array<[Need, number]>;
         return html`
           <create-commitment .callToAction=${callToAction}></create-commitment>
           <create-satisfaction
@@ -315,7 +309,7 @@ export class CallToActionSatisfiedNeeds extends LitElement {
           .headline=${msg(
             'Error fetching the commitments for this call to action'
           )}
-          .error=${this._callToActionInfo.value.error.data.data}
+          .error=${this._callToActionInfo.value.error}
         ></display-error>`;
     }
   }

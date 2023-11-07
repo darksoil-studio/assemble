@@ -80,7 +80,7 @@ export class AssemblySummary extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the assembly')}
-          .error=${this._assembly.value.error.data.data}
+          .error=${this._assembly.value.error}
         ></display-error>`;
     }
   }

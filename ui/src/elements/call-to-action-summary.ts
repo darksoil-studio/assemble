@@ -44,7 +44,8 @@ export class CallToActionSummary extends LitElement {
    */
   _callToAction = new StoreSubscriber(
     this,
-    () => this.assembleStore.callToActions.get(this.callToActionHash),
+    () =>
+      this.assembleStore.callToActions.get(this.callToActionHash).latestVersion,
     () => [this.callToActionHash]
   );
 
@@ -55,12 +56,10 @@ export class CallToActionSummary extends LitElement {
     this,
     () =>
       joinAsync([
-        this.assembleStore.commitmentsForCallToAction.get(
-          this.callToActionHash
-        ),
-        this.assembleStore.satisfactionsForCallToAction.get(
-          this.callToActionHash
-        ),
+        this.assembleStore.callToActions.get(this.callToActionHash).commitments
+          .uncancelled,
+        this.assembleStore.callToActions.get(this.callToActionHash)
+          .satisfactions,
       ]),
     () => [this.callToActionHash]
   );
@@ -113,7 +112,7 @@ export class CallToActionSummary extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the call to action')}
-          .error=${this._callToAction.value.error.data.data}
+          .error=${this._callToAction.value.error}
         ></display-error>`;
     }
   }

@@ -1,16 +1,19 @@
 import { CancellationsStore } from '@holochain-open-dev/cancellations';
 import {
   joinAsync,
-  lazyLoadAndPoll,
+  mapAndJoin,
   pipe,
-  sliceAndJoin,
+  deletesForEntryStore,
+  immutableEntryStore,
+  latestVersionOfEntryStore,
+  liveLinksTargetsStore,
   toPromise,
 } from '@holochain-open-dev/stores';
-import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+import { LazyHoloHashMap, slice } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
-import { mdiWallSconceRoundVariantOutline } from '@mdi/js';
 
 import { AssembleClient } from './assemble-client.js';
+import { Need } from './types.js';
 
 export class AssembleStore {
   constructor(
@@ -23,7 +26,7 @@ export class AssembleStore {
         try {
           const commitmentHash = signal.action.hashed.content.base_address;
           const commitment = await toPromise(
-            this.commitments.get(commitmentHash)
+            this.commitments.get(commitmentHash).entry
           );
 
           // TODO: better check on whether what was cancelled was a commitment
@@ -31,14 +34,19 @@ export class AssembleStore {
 
           const callToActionHash = commitment.entry.call_to_action_hash;
           const callToAction = await toPromise(
-            this.callToActions.get(callToActionHash)
+            this.callToActions.get(callToActionHash).latestVersion
           );
 
           const need = callToAction.entry.needs[commitment.entry.need_index];
           if (!need.requires_admin_approval) {
             // Create a new satisfaction if there are already enough commitments
-            let commitmentHashes = await toPromise(
-              this.uncancelledCommitmentsForCallToAction.get(callToActionHash)
+            let commitmentHashes = Array.from(
+              (
+                await toPromise(
+                  this.callToActions.get(callToActionHash).commitments
+                    .uncancelled
+                )
+              ).keys()
             );
             commitmentHashes = [
               ...commitmentHashes.filter(
@@ -47,7 +55,10 @@ export class AssembleStore {
               commitmentHash,
             ];
             const commitments = await toPromise(
-              sliceAndJoin(this.commitments, commitmentHashes)
+              mapAndJoin(
+                slice(this.commitments, commitmentHashes),
+                c => c.entry
+              )
             );
 
             const amountContributed = Array.from(commitments.values()).reduce(
@@ -57,11 +68,18 @@ export class AssembleStore {
 
             if (amountContributed >= need.min_necessary) {
               const satisfactionsForCallToAction = await toPromise(
-                sliceAndJoin(
-                  this.satisfactions,
-                  await toPromise(
-                    this.satisfactionsForCallToAction.get(callToActionHash)
-                  )
+                mapAndJoin(
+                  slice(
+                    this.satisfactions,
+                    Array.from(
+                      (
+                        await toPromise(
+                          this.callToActions.get(callToActionHash).satisfactions
+                        )
+                      ).keys()
+                    )
+                  ),
+                  s => s.latestVersion
                 )
               );
 
@@ -89,36 +107,48 @@ export class AssembleStore {
         try {
           const commitmentHash = signal.app_entry.cancelled_hash;
           const commitment = await toPromise(
-            this.commitments.get(commitmentHash)
+            this.commitments.get(commitmentHash).entry
           );
 
           // TODO: better check on whether what was cancelled was a commitment
           if (!commitment.entry.amount) return;
           const callToActionHash = commitment.entry.call_to_action_hash;
           const callToAction = await toPromise(
-            this.callToActions.get(callToActionHash)
+            this.callToActions.get(callToActionHash).latestVersion
           );
 
           const need = callToAction.entry.needs[commitment.entry.need_index];
           if (need.requires_admin_approval) {
             // If the admins need to approve this need, delete satisfactions
-            const satisfactionsForCommitment = await toPromise(
-              this.satisfactionsForCommitment.get(commitmentHash)
+            const satisfactionsForCommitment = Array.from(
+              (
+                await toPromise(
+                  this.commitments.get(commitmentHash).satisfactions
+                )
+              ).keys()
             );
 
             for (const satisfactionHash of satisfactionsForCommitment) {
-              await this.client.deleteSatisfaction(satisfactionHash);
+              await this.client.deleteSatisfaction(satisfactionHash); // TODO: HEEEEERE
             }
           } else {
             // Only delete the satisfaction if there are not enough commitments to satisfy the need
-            let commitmentHashes = await toPromise(
-              this.uncancelledCommitmentsForCallToAction.get(callToActionHash)
+            let commitmentHashes = Array.from(
+              (
+                await toPromise(
+                  this.callToActions.get(callToActionHash).commitments
+                    .uncancelled
+                )
+              ).keys()
             );
             commitmentHashes = commitmentHashes.filter(
               h => h.toString() !== commitmentHash.toString()
             );
             const commitments = await toPromise(
-              sliceAndJoin(this.commitments, commitmentHashes)
+              mapAndJoin(
+                slice(this.commitments, commitmentHashes),
+                c => c.entry
+              )
             );
             const commitmentsForNeed = Array.from(commitments.values()).filter(
               c => c.entry.need_index === commitment.entry.need_index
@@ -130,11 +160,18 @@ export class AssembleStore {
 
             if (amountContributed < need.min_necessary) {
               const satisfactionsForCallToAction = await toPromise(
-                sliceAndJoin(
-                  this.satisfactions,
-                  await toPromise(
-                    this.satisfactionsForCallToAction.get(callToActionHash)
-                  )
+                mapAndJoin(
+                  slice(
+                    this.satisfactions,
+                    Array.from(
+                      (
+                        await toPromise(
+                          this.callToActions.get(callToActionHash).satisfactions
+                        )
+                      ).keys()
+                    )
+                  ),
+                  s => s.latestVersion
                 )
               );
 
@@ -159,123 +196,143 @@ export class AssembleStore {
 
   /** Call To Action */
 
-  callToActions = new LazyHoloHashMap((callToActionHash: ActionHash) =>
-    pipe(
-      lazyLoadAndPoll(
-        async () => this.client.getCallToAction(callToActionHash),
-        4000
+  callToActions = new LazyHoloHashMap((callToActionHash: ActionHash) => {
+    const commitments = liveLinksTargetsStore(
+      this.client,
+      callToActionHash,
+      () => this.client.getCommitmentsForCallToAction(callToActionHash),
+      'CallToActionToCommitments'
+    );
+    const withCancellations = pipe(commitments, commitmentsHashes =>
+      mapAndJoin(slice(this.commitments, commitmentsHashes), s => s.isCancelled)
+    );
+    const satisfactionsHashes = liveLinksTargetsStore(
+      this.client,
+      callToActionHash,
+      () => this.client.getSatisfactionsForCallToAction(callToActionHash),
+      'CallToActionToSatisfactions'
+    );
+    const latestVersion = latestVersionOfEntryStore(this.client, () =>
+      this.client.getLatestCallToAction(callToActionHash)
+    );
+    const needs = joinAsync([
+      latestVersion,
+      pipe(satisfactionsHashes, hashes =>
+        mapAndJoin(slice(this.satisfactions, hashes), s => s.latestVersion)
       ),
-      c => {
-        if (!c) throw new Error('Call to action was not found');
-        return c;
-      }
-    )
-  );
+    ]);
+    return {
+      latestVersion,
+      needs: {
+        satisfied: pipe(needs, ([callToAction, satisfactions]) =>
+          callToAction.entry.needs
+            .map((n, i) => [n, i] as [Need, number])
+            .filter(
+              ([n, i]) =>
+                n.min_necessary === 0 ||
+                !!Array.from(satisfactions.values()).find(
+                  s => s.entry.need_index === i
+                )
+            )
+        ),
+        unsatisfied: pipe(needs, ([callToAction, satisfactions]) =>
+          callToAction.entry.needs
+            .map((n, i) => [n, i] as [Need, number])
+            .filter(
+              ([n, i]) =>
+                n.min_necessary > 0 &&
+                !Array.from(satisfactions.values()).find(
+                  s => s.entry.need_index === i
+                )
+            )
+        ),
+      },
+      commitments: {
+        cancelled: pipe(
+          withCancellations,
+          commitments =>
+            Array.from(commitments.entries())
+              .filter(([_commitmentHash, isCancelled]) => isCancelled)
+              .map(([c]) => c),
+          hashes => slice(this.commitments, hashes)
+        ),
+        uncancelled: pipe(
+          withCancellations,
+          commitments =>
+            Array.from(commitments.entries())
+              .filter(([_commitmentHash, isCancelled]) => !isCancelled)
+              .map(([c]) => c),
+          hashes => slice(this.commitments, hashes)
+        ),
+      },
+      satisfactions: pipe(satisfactionsHashes, hashes =>
+        slice(this.satisfactions, hashes)
+      ),
+      assemblies: pipe(
+        liveLinksTargetsStore(
+          this.client,
+          callToActionHash,
+          () => this.client.getAssembliesForCallToAction(callToActionHash),
+          'CallToActionToAssemblies'
+        ),
+        hashes => slice(this.assemblies, hashes)
+      ),
+    };
+  });
 
   callToActionsForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
-      lazyLoadAndPoll(async () => {
-        const records = await this.client.getCallToActionsForCallToAction(
-          callToActionHash
-        );
-        return records.map(r => r.actionHash);
-      }, 4000)
+      liveLinksTargetsStore(
+        this.client,
+        callToActionHash,
+        () => this.client.getCallToActionsForCallToAction(callToActionHash),
+        'CallToActionToCallToActions'
+      )
   );
 
   /** Commitment */
 
-  commitments = new LazyHoloHashMap((commitmentHash: ActionHash) =>
-    lazyLoadAndPoll(async () => {
-      const c = await this.client.getCommitment(commitmentHash);
-
-      if (!c) throw new Error('Commitment was not found');
-      return c;
-    }, 4000)
-  );
-
-  commitmentsForCallToAction = new LazyHoloHashMap(
-    (callToActionHash: ActionHash) =>
-      lazyLoadAndPoll(
-        async () => this.client.getCommitmentsForCallToAction(callToActionHash),
-        4000
-      )
-  );
-
-  uncancelledCommitmentsForCallToAction = new LazyHoloHashMap(
-    (callToActionHash: ActionHash) =>
-      pipe(
-        this.commitmentsForCallToAction.get(callToActionHash),
-        commitmentsHashes =>
-          joinAsync(
-            commitmentsHashes.map(c =>
-              this.cancellationsStore.cancellationsFor.get(c)
-            )
-          ),
-        (cancellations, commitmentsHashes) =>
-          commitmentsHashes.filter((c, i) => cancellations[i].length === 0)
-      )
-  );
-
-  cancelledCommitmentsForCallToAction = new LazyHoloHashMap(
-    (callToActionHash: ActionHash) =>
-      pipe(
-        this.commitmentsForCallToAction.get(callToActionHash),
-        commitmentsHashes =>
-          joinAsync(
-            commitmentsHashes.map(c =>
-              this.cancellationsStore.cancellationsFor.get(c)
-            )
-          ),
-        (cancellations, commitmentsHashes) =>
-          commitmentsHashes.filter((c, i) => cancellations[i].length > 0)
-      )
-  );
+  commitments = new LazyHoloHashMap((commitmentHash: ActionHash) => ({
+    entry: immutableEntryStore(() => this.client.getCommitment(commitmentHash)),
+    cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),
+    isCancelled: pipe(
+      this.cancellationsStore.cancellationsFor.get(commitmentHash),
+      c => c.length > 0
+    ),
+    satisfactions: pipe(
+      liveLinksTargetsStore(
+        this.client,
+        commitmentHash,
+        () => this.client.getSatisfactionsForCallToAction(commitmentHash),
+        'CommitmentToSatisfactions'
+      ),
+      hashes => slice(this.satisfactions, hashes)
+    ),
+  }));
 
   /** Satisfaction */
 
-  satisfactions = new LazyHoloHashMap((satisfactionHash: ActionHash) =>
-    lazyLoadAndPoll(
-      async () => this.client.getSatisfaction(satisfactionHash),
-      4000
-    )
-  );
-
-  satisfactionsForCallToAction = new LazyHoloHashMap(
-    (callToActionHash: ActionHash) =>
-      lazyLoadAndPoll(
-        async () =>
-          this.client.getSatisfactionsForCallToAction(callToActionHash),
-        4000
-      )
-  );
-
-  satisfactionsForCommitment = new LazyHoloHashMap(
-    (commitmentHash: ActionHash) =>
-      lazyLoadAndPoll(
-        async () => this.client.getSatisfactionsForCommitment(commitmentHash),
-        4000
-      )
-  );
+  satisfactions = new LazyHoloHashMap((satisfactionHash: ActionHash) => ({
+    latestVersion: latestVersionOfEntryStore(this.client, () =>
+      this.client.getLatestSatisfaction(satisfactionHash)
+    ),
+    deletes: deletesForEntryStore(this.client, satisfactionHash, () =>
+      this.client.getSatisfactionDeletes(satisfactionHash)
+    ),
+    assemblies: pipe(
+      liveLinksTargetsStore(
+        this.client,
+        satisfactionHash,
+        () => this.client.getAssembliesForSatisfaction(satisfactionHash),
+        'SatisfactionToAssemblies'
+      ),
+      hashes => slice(this.assemblies, hashes)
+    ),
+  }));
 
   /** Assembly */
 
   assemblies = new LazyHoloHashMap((assemblyHash: ActionHash) =>
-    lazyLoadAndPoll(async () => this.client.getAssembly(assemblyHash), 4000)
-  );
-
-  assembliesForCallToAction = new LazyHoloHashMap(
-    (callToActionHash: ActionHash) =>
-      lazyLoadAndPoll(
-        async () => this.client.getAssembliesForCallToAction(callToActionHash),
-        4000
-      )
-  );
-
-  assembliesForSatisfaction = new LazyHoloHashMap(
-    (satisfactionHash: ActionHash) =>
-      lazyLoadAndPoll(
-        async () => this.client.getAssembliesForSatisfaction(satisfactionHash),
-        4000
-      )
+    immutableEntryStore(() => this.client.getAssembly(assemblyHash))
   );
 }

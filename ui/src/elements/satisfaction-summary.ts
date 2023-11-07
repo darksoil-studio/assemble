@@ -36,7 +36,8 @@ export class SatisfactionSummary extends LitElement {
    */
   _satisfaction = new StoreSubscriber(
     this,
-    () => this.assembleStore.satisfactions.get(this.satisfactionHash),
+    () =>
+      this.assembleStore.satisfactions.get(this.satisfactionHash).latestVersion,
     () => [this.satisfactionHash]
   );
 
@@ -62,7 +63,7 @@ export class SatisfactionSummary extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the satisfaction')}
-          .error=${this._satisfaction.value.error.data.data}
+          .error=${this._satisfaction.value.error}
         ></display-error>`;
     }
   }

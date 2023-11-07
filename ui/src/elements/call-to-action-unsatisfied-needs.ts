@@ -6,13 +6,14 @@ import {
 } from '@holochain-open-dev/elements';
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
-  AsyncReadable,
   StoreSubscriber,
   joinAsync,
+  joinAsyncMap,
+  mapAndJoin,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
-import { EntryRecord } from '@holochain-open-dev/utils';
+import { EntryRecord, slice } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
@@ -26,17 +27,17 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import { LitElement, TemplateResult, css, html } from 'lit';
+import { LitElement, PropertyValueMap, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
 import { assembleStoreContext } from '../context.js';
-import { CallToAction, Commitment, Need, Satisfaction } from '../types.js';
+import { CallToAction, Commitment, Need } from '../types.js';
 import './call-to-action-need-progress.js';
 import './commitment-detail.js';
 import './create-commitment.js';
-import { CreateCommitment } from './create-commitment.js';
 import './create-satisfaction.js';
+import { CreateCommitment } from './create-commitment.js';
 import { CreateSatisfaction } from './create-satisfaction.js';
 
 /**
@@ -65,29 +66,36 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     this,
     () =>
       joinAsync([
-        this.assembleStore.callToActions.get(this.callToActionHash),
+        this.assembleStore.callToActions.get(this.callToActionHash)
+          .latestVersion,
+        this.assembleStore.callToActions.get(this.callToActionHash).needs
+          .unsatisfied,
         pipe(
-          this.assembleStore.uncancelledCommitmentsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .commitments.uncancelled,
+          m => mapAndJoin(m, c => c.entry)
         ),
         pipe(
-          this.assembleStore.cancelledCommitmentsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
-        ),
-        pipe(
-          this.assembleStore.satisfactionsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.satisfactions, hashes)
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .commitments.cancelled,
+          m => mapAndJoin(m, c => c.entry)
         ),
       ]),
     () => [this.callToActionHash]
   );
 
+  // protected firstUpdated(
+  //   _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
+  // ): void {
+  //   // @ts-ignore
+  //   __debugStore(
+  //     this.assembleStore.callToActions.get(this.callToActionHash).needs
+  //       .satisfied
+  //   );
+  //   this.assembleStore.callToActions
+  //     .get(this.callToActionHash)
+  //     .needs.satisfied.subscribe(v => console.log(v));
+  // }
   /**
    * @internal
    */
@@ -252,19 +260,10 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
         `;
       case 'complete':
         const callToAction = this._callToActionInfo.value.value[0];
-        const commitments = this._callToActionInfo.value.value[1];
-        const cancelledCommitments = this._callToActionInfo.value.value[2];
-        const satisfactions = this._callToActionInfo.value.value[3];
+        const unsatisfiedNeeds = this._callToActionInfo.value.value[1];
+        const commitments = this._callToActionInfo.value.value[2];
+        const cancelledCommitments = this._callToActionInfo.value.value[3];
 
-        const unsatisfiedNeeds = callToAction.entry.needs
-          .map((need, i) => [need, i] as [Need, number])
-          .filter(
-            ([need, i]) =>
-              need.min_necessary > 0 &&
-              !Array.from(satisfactions.values()).find(
-                s => s.entry.need_index === i
-              )
-          ) as Array<[Need, number]>;
         return html`
           <create-commitment .callToAction=${callToAction}></create-commitment>
           <create-satisfaction
@@ -286,7 +285,7 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
           .headline=${msg(
             'Error fetching the commitments for this call to action'
           )}
-          .error=${this._callToActionInfo.value.error.data.data}
+          .error=${this._callToActionInfo.value.error}
         ></display-error>`;
     }
   }

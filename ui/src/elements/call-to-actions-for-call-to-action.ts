@@ -85,7 +85,7 @@ export class CallToActionsForCallToAction extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the call to actions')}
-          .error=${this._callToActions.value.error.data.data}
+          .error=${this._callToActions.value.error}
         ></display-error>`;
     }
   }

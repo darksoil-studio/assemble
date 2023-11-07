@@ -7,6 +7,7 @@ import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
   StoreSubscriber,
   joinAsync,
+  mapAndJoin,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
@@ -47,12 +48,12 @@ export class CallToActionUnsatisfiedNeedsSummary extends LitElement {
     this,
     () =>
       joinAsync([
-        this.assembleStore.callToActions.get(this.callToActionHash),
+        this.assembleStore.callToActions.get(this.callToActionHash)
+          .latestVersion,
         pipe(
-          this.assembleStore.satisfactionsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.satisfactions, hashes)
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .satisfactions,
+          satisfactions => mapAndJoin(satisfactions, s => s.latestVersion)
         ),
       ]),
     () => [this.callToActionHash]
@@ -123,7 +124,7 @@ export class CallToActionUnsatisfiedNeedsSummary extends LitElement {
           .headline=${msg(
             'Error fetching the commitments for this call to action'
           )}
-          .error=${this._callToActionInfo.value.error.data.data}
+          .error=${this._callToActionInfo.value.error}
         ></display-error>`;
     }
   }

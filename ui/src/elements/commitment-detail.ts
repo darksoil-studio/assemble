@@ -57,11 +57,11 @@ export class CommitmentDetail extends LitElement {
     () =>
       joinAsync([
         pipe(
-          this.assembleStore.commitments.get(this.commitmentHash),
+          this.assembleStore.commitments.get(this.commitmentHash).entry,
           commitment =>
             this.assembleStore.callToActions.get(
               commitment.entry.call_to_action_hash
-            ),
+            ).latestVersion,
           (callToAction, commitment) =>
             [callToAction, commitment] as [
               EntryRecord<CallToAction>,
@@ -162,7 +162,7 @@ export class CommitmentDetail extends LitElement {
           <display-error
             tooltip
             .headline=${msg('Error fetching the commitment')}
-            .error=${this._commitment.value.error.data.data}
+            .error=${this._commitment.value.error}
           ></display-error>
         </sl-card>`;
     }

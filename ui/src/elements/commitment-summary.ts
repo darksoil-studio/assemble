@@ -36,7 +36,7 @@ export class CommitmentSummary extends LitElement {
    */
   _commitment = new StoreSubscriber(
     this,
-    () => this.assembleStore.commitments.get(this.commitmentHash),
+    () => this.assembleStore.commitments.get(this.commitmentHash).entry,
     () => [this.commitmentHash]
   );
 
@@ -73,7 +73,7 @@ export class CommitmentSummary extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the commitment')}
-          .error=${this._commitment.value.error.data.data}
+          .error=${this._commitment.value.error}
         ></display-error>`;
     }
   }

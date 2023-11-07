@@ -3,10 +3,10 @@ pub mod call_to_action;
 pub mod commitment;
 pub mod satisfaction;
 use assemble_integrity::*;
-use call_to_action::get_call_to_action;
+use call_to_action::get_latest_call_to_action;
 use commitment::{get_commitment, get_commitments_for_call_to_action};
 use hdk::prelude::*;
-use satisfaction::{get_satisfaction, get_satisfactions_for_call_to_action};
+use satisfaction::{get_latest_satisfaction, get_satisfactions_for_call_to_action};
 #[hdk_extern]
 pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
     Ok(InitCallbackResult::Pass)
@@ -46,10 +46,10 @@ pub fn post_commit(committed_actions: Vec<SignedActionHashed>) {
 }
 
 fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -> ExternResult<()> {
-    let call_to_action_record =
-        get_call_to_action(commitment.call_to_action_hash.clone())?.ok_or(wasm_error!(
-            WasmErrorInner::Guest("Could not find call to action for this commitment".into())
-        ))?;
+    let call_to_action_record = get_latest_call_to_action(commitment.call_to_action_hash.clone())?
+        .ok_or(wasm_error!(WasmErrorInner::Guest(
+            "Could not find call to action for this commitment".into()
+        )))?;
     let call_to_action = CallToAction::try_from(call_to_action_record.entry().as_option().ok_or(
         wasm_error!(WasmErrorInner::Guest(
             "CallToAction record has no entry".into()
@@ -65,7 +65,7 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
     let need_is_already_satisfied = satisfaction_hashes
         .clone()
         .into_iter()
-        .map(|hash| get_satisfaction(hash))
+        .map(|hash| get_latest_satisfaction(hash))
         .collect::<ExternResult<Vec<Option<Record>>>>()?
         .into_iter()
         .filter_map(|o| o)
@@ -152,10 +152,10 @@ fn check_if_call_to_action_is_fulfilled(
     action_hash: ActionHash,
     satisfaction: Satisfaction,
 ) -> ExternResult<()> {
-    let call_to_action_record = get_call_to_action(satisfaction.call_to_action_hash.clone())?
-        .ok_or(wasm_error!(WasmErrorInner::Guest(
-            "Could not find call to action for this satisfaction".into()
-        )))?;
+    let call_to_action_record =
+        get_latest_call_to_action(satisfaction.call_to_action_hash.clone())?.ok_or(wasm_error!(
+            WasmErrorInner::Guest("Could not find call to action for this satisfaction".into())
+        ))?;
     let call_to_action = CallToAction::try_from(call_to_action_record.entry().as_option().ok_or(
         wasm_error!(WasmErrorInner::Guest(
             "CallToAction record has no entry".into()
@@ -172,7 +172,7 @@ fn check_if_call_to_action_is_fulfilled(
     let satisfactions = satisfactions_hashes
         .clone()
         .into_iter()
-        .map(|hash| get_satisfaction(hash))
+        .map(|hash| get_latest_satisfaction(hash))
         .collect::<ExternResult<Vec<Option<Record>>>>()?
         .into_iter()
         .filter_map(|c| c)

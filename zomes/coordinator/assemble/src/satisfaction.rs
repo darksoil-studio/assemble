@@ -25,10 +25,7 @@ pub fn create_satisfaction(satisfaction: Satisfaction) -> ExternResult<Record> {
     Ok(record)
 }
 #[hdk_extern]
-pub fn get_satisfaction(original_satisfaction_hash: ActionHash) -> ExternResult<Option<Record>> {
-    get_latest_satisfaction(original_satisfaction_hash)
-}
-fn get_latest_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Option<Record>> {
+pub fn get_latest_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Option<Record>> {
     let details = get_details(satisfaction_hash, GetOptions::default())?.ok_or(wasm_error!(
         WasmErrorInner::Guest("Satisfaction not found".into())
     ))?;
@@ -67,7 +64,7 @@ pub fn update_satisfaction(input: UpdateSatisfactionInput) -> ExternResult<Recor
 
 #[hdk_extern]
 pub fn delete_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<()> {
-    let Some(satisfaction_record) = get_satisfaction(satisfaction_hash.clone())? else {
+    let Some(satisfaction_record) = get_latest_satisfaction(satisfaction_hash.clone())? else {
       return Err(wasm_error!(WasmErrorInner::Guest("Satisfaction not found".into())));
     };
     let satisfaction = Satisfaction::try_from(satisfaction_record.entry().as_option().ok_or(
@@ -130,4 +127,19 @@ pub fn get_satisfactions_for_commitment(
         .filter_map(|link| link.target.into_action_hash())
         .collect();
     Ok(action_hashes)
+}
+
+#[hdk_extern]
+pub fn get_satisfaction_deletes(
+    satisfaction_hash: ActionHash,
+) -> ExternResult<Vec<SignedActionHashed>> {
+    let details = get_details(satisfaction_hash, GetOptions::default())?
+        .ok_or(wasm_error!(WasmErrorInner::Guest("NOT_FOUND".into())))?;
+    let record_details = match details {
+        Details::Entry(_) => Err(wasm_error!(WasmErrorInner::Guest(
+            "Malformed details".into()
+        ))),
+        Details::Record(record_details) => Ok(record_details),
+    }?;
+    Ok(record_details.deletes)
 }

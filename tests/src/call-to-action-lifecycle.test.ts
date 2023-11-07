@@ -43,9 +43,17 @@ test('call to action: create and fulfill', async t => {
       );
 
       let satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 0);
+      assert.equal(satisfactions.size, 0);
+      let unsatisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.unsatisfied
+      );
+      assert.equal(unsatisfiedNeeds.length, 2);
+      let satisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.satisfied
+      );
+      assert.equal(satisfiedNeeds.length, 1);
 
       await bob.store.client.createCommitment({
         call_to_action_hash,
@@ -60,14 +68,22 @@ test('call to action: create and fulfill', async t => {
       );
 
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 1);
+      assert.equal(satisfactions.size, 1);
+      unsatisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.unsatisfied
+      );
+      assert.equal(unsatisfiedNeeds.length, 1);
+      satisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.satisfied
+      );
+      assert.equal(satisfiedNeeds.length, 2);
 
       let assemblies = await toPromise(
-        alice.store.assembliesForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).assemblies
       );
-      assert.equal(assemblies.length, 0);
+      assert.equal(assemblies.size, 0);
 
       await bob.store.client.createCommitment({
         call_to_action_hash,
@@ -82,9 +98,9 @@ test('call to action: create and fulfill', async t => {
       );
 
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 1);
+      assert.equal(satisfactions.size, 1);
 
       await alice.store.client.createCommitment({
         call_to_action_hash,
@@ -99,14 +115,22 @@ test('call to action: create and fulfill', async t => {
       );
 
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 2);
+      assert.equal(satisfactions.size, 2);
+      unsatisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.unsatisfied
+      );
+      assert.equal(unsatisfiedNeeds.length, 0);
+      satisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.satisfied
+      );
+      assert.equal(satisfiedNeeds.length, 3);
 
       assemblies = await toPromise(
-        alice.store.assembliesForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).assemblies
       );
-      assert.equal(assemblies.length, 1);
+      assert.equal(assemblies.size, 1);
     },
     true,
     { timeout: 30_000 }
@@ -151,9 +175,9 @@ test('call to action: create, cancel commitment and fulfill', async t => {
       );
 
       let satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 0);
+      assert.equal(satisfactions.size, 0);
 
       const bobsCommitment = await bob.store.client.createCommitment({
         call_to_action_hash,
@@ -168,9 +192,17 @@ test('call to action: create, cancel commitment and fulfill', async t => {
       );
 
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 1);
+      assert.equal(satisfactions.size, 1);
+      let unsatisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.unsatisfied
+      );
+      assert.equal(unsatisfiedNeeds.length, 1);
+      let satisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.satisfied
+      );
+      assert.equal(satisfiedNeeds.length, 2);
 
       await bob.store.cancellationsStore.client.createCancellation(
         bobsCommitment.actionHash,
@@ -183,9 +215,17 @@ test('call to action: create, cancel commitment and fulfill', async t => {
         alice.player.cells[0].cell_id[0]
       );
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 0);
+      assert.equal(satisfactions.size, 0);
+      unsatisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.unsatisfied
+      );
+      assert.equal(unsatisfiedNeeds.length, 2);
+      satisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.satisfied
+      );
+      assert.equal(satisfiedNeeds.length, 1);
 
       await alice.store.client.createCommitment({
         call_to_action_hash,
@@ -199,9 +239,17 @@ test('call to action: create, cancel commitment and fulfill', async t => {
       );
 
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 1);
+      assert.equal(satisfactions.size, 1);
+      unsatisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.unsatisfied
+      );
+      assert.equal(unsatisfiedNeeds.length, 1);
+      satisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.satisfied
+      );
+      assert.equal(satisfiedNeeds.length, 2);
 
       await bob.store.client.createCommitment({
         call_to_action_hash,
@@ -216,14 +264,22 @@ test('call to action: create, cancel commitment and fulfill', async t => {
       );
 
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 2);
+      assert.equal(satisfactions.size, 2);
+      unsatisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.unsatisfied
+      );
+      assert.equal(unsatisfiedNeeds.length, 0);
+      satisfiedNeeds = await toPromise(
+        alice.store.callToActions.get(call_to_action_hash).needs.satisfied
+      );
+      assert.equal(satisfiedNeeds.length, 3);
 
       let assemblies = await toPromise(
-        alice.store.assembliesForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).assemblies
       );
-      assert.equal(assemblies.length, 1);
+      assert.equal(assemblies.size, 1);
     },
     true,
     { timeout: 30_000 }
@@ -256,9 +312,9 @@ test("call to action: needs that require approval can't be satifisfied by non-ad
       );
 
       let satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 0);
+      assert.equal(satisfactions.size, 0);
 
       const commitment = await bob.store.client.createCommitment({
         call_to_action_hash,
@@ -273,9 +329,9 @@ test("call to action: needs that require approval can't be satifisfied by non-ad
       );
 
       satisfactions = await toPromise(
-        alice.store.satisfactionsForCallToAction.get(call_to_action_hash)
+        alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
-      assert.equal(satisfactions.length, 0);
+      assert.equal(satisfactions.size, 0);
 
       try {
         await bob.store.client.createSatisfaction({
@@ -300,9 +356,9 @@ test("call to action: needs that require approval can't be satifisfied by non-ad
       );
 
       let assemblies = await toPromise(
-        bob.store.assembliesForCallToAction.get(call_to_action_hash)
+        bob.store.callToActions.get(call_to_action_hash).assemblies
       );
-      assert.equal(assemblies.length, 1);
+      assert.equal(assemblies.size, 1);
     },
     true,
     { timeout: 30_000 }

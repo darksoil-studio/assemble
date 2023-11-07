@@ -7,6 +7,7 @@ import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
   StoreSubscriber,
   joinAsync,
+  mapAndJoin,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
@@ -50,11 +51,9 @@ export class MyCommitmentsForCallToAction extends LitElement {
     this,
     () =>
       pipe(
-        this.assembleStore.uncancelledCommitmentsForCallToAction.get(
-          this.callToActionHash
-        ),
-        commitments =>
-          sliceAndJoin(this.assembleStore.commitments, commitments),
+        this.assembleStore.callToActions.get(this.callToActionHash).commitments
+          .uncancelled,
+        commitments => mapAndJoin(commitments, c => c.entry),
         commitments =>
           Array.from(commitments.values()).filter(
             c =>
@@ -64,17 +63,23 @@ export class MyCommitmentsForCallToAction extends LitElement {
         myCommitments =>
           joinAsync(
             myCommitments.map(c =>
-              this.assembleStore.satisfactionsForCommitment.get(c.actionHash)
+              pipe(
+                this.assembleStore.commitments.get(c.actionHash).satisfactions,
+                s => mapAndJoin(s, s => s.latestVersion)
+              )
             )
           ),
-        _ => this.assembleStore.callToActions.get(this.callToActionHash),
+        _ =>
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .latestVersion,
         (callToAction, satisfactions, commitments) =>
           commitments
             .filter(c => !this.hideNeeds.includes(c.entry.need_index))
             .filter(
               (c, i) =>
                 !callToAction.entry.needs[c.entry.need_index]
-                  .requires_admin_approval || satisfactions[i].length > 0
+                  .requires_admin_approval ||
+                Array.from(satisfactions[i].values()).length > 0
             )
             .map(c => c.actionHash)
       ),
@@ -123,7 +128,7 @@ export class MyCommitmentsForCallToAction extends LitElement {
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the commitments')}
-          .error=${this._myCommitments.value.error.data.data}
+          .error=${this._myCommitments.value.error}
         ></display-error>`;
     }
   }

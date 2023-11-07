@@ -42,7 +42,7 @@ export class AssembliesForSatisfaction extends LitElement {
   _assemblies = new StoreSubscriber(
     this,
     () =>
-      this.assembleStore.assembliesForSatisfaction.get(this.satisfactionHash),
+      this.assembleStore.satisfactions.get(this.satisfactionHash).assemblies,
     () => [this.satisfactionHash]
   );
 
@@ -77,11 +77,11 @@ export class AssembliesForSatisfaction extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        return this.renderList(this._assemblies.value.value);
+        return this.renderList(Array.from(this._assemblies.value.value.keys()));
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the assemblies')}
-          .error=${this._assemblies.value.error.data.data}
+          .error=${this._assemblies.value.error}
         ></display-error>`;
     }
   }

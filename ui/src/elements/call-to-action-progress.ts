@@ -4,6 +4,7 @@ import '@holochain-open-dev/profiles/dist/elements/agent-avatar.js';
 import {
   StoreSubscriber,
   joinAsync,
+  mapAndJoin,
   pipe,
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
@@ -43,18 +44,17 @@ export class CallToActionProgress extends LitElement {
     this,
     () =>
       joinAsync([
-        this.assembleStore.callToActions.get(this.callToActionHash),
+        this.assembleStore.callToActions.get(this.callToActionHash)
+          .latestVersion,
         pipe(
-          this.assembleStore.uncancelledCommitmentsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.commitments, hashes)
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .commitments.uncancelled,
+          m => mapAndJoin(m, c => c.entry)
         ),
         pipe(
-          this.assembleStore.satisfactionsForCallToAction.get(
-            this.callToActionHash
-          ),
-          hashes => sliceAndJoin(this.assembleStore.satisfactions, hashes)
+          this.assembleStore.callToActions.get(this.callToActionHash)
+            .satisfactions,
+          map => mapAndJoin(map, s => s.latestVersion)
         ),
       ]),
     () => [this.callToActionHash]
@@ -129,7 +129,7 @@ export class CallToActionProgress extends LitElement {
         return html`<display-error
           tooltip
           .headline=${msg('Error fetching the progress of the call')}
-          .error=${this._callToActionInfo.value.error.data.data}
+          .error=${this._callToActionInfo.value.error}
         ></display-error>`;
     }
   }
