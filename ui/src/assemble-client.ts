@@ -111,12 +111,12 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getLatestSatisfaction(
     satisfactionHash: ActionHash
-  ): Promise<EntryRecord<Satisfaction> | undefined> {
+  ): Promise<EntryRecord<Satisfaction>> {
     const record: Record = await this.callZome(
       'get_latest_satisfaction',
       satisfactionHash
     );
-    return record ? new EntryRecord(record) : undefined;
+    return new EntryRecord(record);
   }
 
   async updateSatisfaction(

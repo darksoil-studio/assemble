@@ -303,7 +303,7 @@ export class AssembleStore {
       liveLinksTargetsStore(
         this.client,
         commitmentHash,
-        () => this.client.getSatisfactionsForCallToAction(commitmentHash),
+        () => this.client.getSatisfactionsForCommitment(commitmentHash),
         'CommitmentToSatisfactions'
       ),
       hashes => slice(this.satisfactions, hashes)

@@ -66,9 +66,8 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
         .clone()
         .into_iter()
         .map(|hash| get_latest_satisfaction(hash))
-        .collect::<ExternResult<Vec<Option<Record>>>>()?
+        .collect::<ExternResult<Vec<Record>>>()?
         .into_iter()
-        .filter_map(|o| o)
         .map(|record| Satisfaction::try_from(record))
         .collect::<ExternResult<Vec<Satisfaction>>>()?
         .into_iter()
@@ -173,9 +172,8 @@ fn check_if_call_to_action_is_fulfilled(
         .clone()
         .into_iter()
         .map(|hash| get_latest_satisfaction(hash))
-        .collect::<ExternResult<Vec<Option<Record>>>>()?
+        .collect::<ExternResult<Vec<Record>>>()?
         .into_iter()
-        .filter_map(|c| c)
         .map(|record| Satisfaction::try_from(record))
         .collect::<ExternResult<Vec<Satisfaction>>>()?;
 

@@ -25,7 +25,7 @@ pub fn create_satisfaction(satisfaction: Satisfaction) -> ExternResult<Record> {
     Ok(record)
 }
 #[hdk_extern]
-pub fn get_latest_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Option<Record>> {
+pub fn get_latest_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Record> {
     let details = get_details(satisfaction_hash, GetOptions::default())?.ok_or(wasm_error!(
         WasmErrorInner::Guest("Satisfaction not found".into())
     ))?;
@@ -35,12 +35,9 @@ pub fn get_latest_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Op
         ))),
         Details::Record(record_details) => Ok(record_details),
     }?;
-    if record_details.deletes.len() > 0 {
-        return Ok(None);
-    }
     match record_details.updates.last() {
         Some(update) => get_latest_satisfaction(update.action_address().clone()),
-        None => Ok(Some(record_details.record)),
+        None => Ok(record_details.record),
     }
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -64,9 +61,7 @@ pub fn update_satisfaction(input: UpdateSatisfactionInput) -> ExternResult<Recor
 
 #[hdk_extern]
 pub fn delete_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<()> {
-    let Some(satisfaction_record) = get_latest_satisfaction(satisfaction_hash.clone())? else {
-      return Err(wasm_error!(WasmErrorInner::Guest("Satisfaction not found".into())));
-    };
+    let satisfaction_record = get_latest_satisfaction(satisfaction_hash.clone())?;
     let satisfaction = Satisfaction::try_from(satisfaction_record.entry().as_option().ok_or(
         wasm_error!(WasmErrorInner::Guest("Could not find satisfaction".into())),
     )?)?;

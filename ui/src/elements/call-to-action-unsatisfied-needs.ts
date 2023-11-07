@@ -8,12 +8,10 @@ import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import {
   StoreSubscriber,
   joinAsync,
-  joinAsyncMap,
   mapAndJoin,
   pipe,
-  sliceAndJoin,
 } from '@holochain-open-dev/stores';
-import { EntryRecord, slice } from '@holochain-open-dev/utils';
+import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
 import { consume } from '@lit-labs/context';
 import { localized, msg } from '@lit/localize';
@@ -84,18 +82,6 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     () => [this.callToActionHash]
   );
 
-  // protected firstUpdated(
-  //   _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
-  // ): void {
-  //   // @ts-ignore
-  //   __debugStore(
-  //     this.assembleStore.callToActions.get(this.callToActionHash).needs
-  //       .satisfied
-  //   );
-  //   this.assembleStore.callToActions
-  //     .get(this.callToActionHash)
-  //     .needs.satisfied.subscribe(v => console.log(v));
-  // }
   /**
    * @internal
    */
