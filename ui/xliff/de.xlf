@@ -8,7 +8,7 @@
 </trans-unit>
 <trans-unit id="s10aa05aa50d278b9">
   <source>Requires admin approval</source>
-  <target>Benötigt Zustimmung des Administrators</target>
+  <target>Benötigt Zustimmung einer Person mit Admin Berechtigung</target>
 </trans-unit>
 <trans-unit id="s75f8021355029843">
   <source>Needs description*</source>
