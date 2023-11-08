@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file target-language="de" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s3139c52a1117c905">
+  <source>Assembly</source>
+  <target>Zusammenkunft</target>
+</trans-unit>
+<trans-unit id="s10aa05aa50d278b9">
+  <source>Requires admin approval</source>
+  <target>Benötigt Zustimmung des Administrators</target>
+</trans-unit>
+<trans-unit id="s75f8021355029843">
+  <source>Needs description*</source>
+  <target>Benötigt Beschreibung*</target>
+</trans-unit>
+<trans-unit id="s695afc099cb2281c">
+  <source>Min. required</source>
+  <target>Min. benötigt</target>
+</trans-unit>
+<trans-unit id="s2b9e39425bfcc804">
+  <source>Max. possible</source>
+  <target>Max. möglich</target>
+</trans-unit>
+<trans-unit id="sb65d8265eefc5783">
+  <source>Only one.</source>
+  <target>Nur eins.</target>
+</trans-unit>
+<trans-unit id="s10f50336534b13d7">
+  <source>No min. or max.</source>
+  <target>Kein min. oder max.</target>
+</trans-unit>
+<trans-unit id="s04dc5daea8ffcb1b">
+  <source>Min.</source>
+  <target>Min.</target>
+</trans-unit>
+<trans-unit id="s49b4a5aecfdd8e35">
+  <source>Max.</source>
+  <target>Max.</target>
+</trans-unit>
+<trans-unit id="s1244485ebc6b7d0a">
+  <source>Min. and Max.</source>
+  <target>Min. und Max.</target>
+</trans-unit>
+<trans-unit id="sf44cc868276931a1">
+  <source>The requested call to action was not found.</source>
+  <target>Der gesuchte Aufruf wurde nicht gefunden</target>
+</trans-unit>
+<trans-unit id="s7e7b17262f41a198">
+  <source>Error fetching the commitments for this call to action</source>
+  <target>Verpflichtungen laden fehlgeschlagen.</target>
+</trans-unit>
+<trans-unit id="s0d9e6884f8c4ba1a">
+  <source>Needs</source>
+  <target>Anforderungen</target>
+</trans-unit>
+<trans-unit id="s30c6728e592f4560">
+  <source>Add Need</source>
+  <target>Anforderung hinzufügen</target>
+</trans-unit>
+<trans-unit id="s2a71fae095e55879">
+  <source>There are no needs yet.</source>
+  <target>Noch keine Anforderungen.</target>
+</trans-unit>
+<trans-unit id="s2d49e7bc149b45f6">
+  <source>This call to action doesn't have any required needs.</source>
+  <target>Dieser Aufruf hat keine Anforderungen.</target>
+</trans-unit>
+<trans-unit id="s08b06007b5567108">
+  <source>of</source>
+  <target>des</target>
+</trans-unit>
+<trans-unit id="sb75af2a639e7fa01">
+  <source>Error fetching the progress of the call</source>
+  <target>Fortschritt laden fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="s40326a98f486d818">
+  <source>Error creating the commitment</source>
+  <target>Verpflichtung erzeugen fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="s6d52cebcaa70b474">
+  <source>Commitment to Contribute</source>
+  <target>Verpflichtung mitzuwirken</target>
+</trans-unit>
+<trans-unit id="sba98a7152d80b949">
+  <source>Amount</source>
+  <target>Menge</target>
+</trans-unit>
+<trans-unit id="saf84ec86139d349e">
+  <source>Comment</source>
+  <target>Kommentar</target>
+</trans-unit>
+<trans-unit id="s661045907dd942bc">
+  <source>Commit</source>
+  <target>Verpflichtung eingehen</target>
+</trans-unit>
+<trans-unit id="sce13ce26519c5565">
+  <source>Error creating the satisfaction</source>
+  <target>Pflichterfüllung hinzufügen fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="sf587cc61d3dfb90e">
+  <source>Satisfy Need</source>
+  <target>Anforderung erfüllen</target>
+</trans-unit>
+<trans-unit id="sb1a3927bb18ccaf2">
+  <source>Are you sure? There are no commitments to contribute to this need yet.</source>
+  <target>Bist du sicher? Es hat sich noch niemand verpflichtet, diese Anforderung zu erfüllen.</target>
+</trans-unit>
+<trans-unit id="sef2cd24ab375df7e">
+  <source>Select the commitments that satisfy this need.</source>
+  <target>Wähle die Verpflichtungen, die diese Anforderungen erfüllen.</target>
+</trans-unit>
+<trans-unit id="sf67e6e365e1dd961">
+  <source>committed to contribute</source>
+  <target>hat sich verpflichtet, beizutragen</target>
+</trans-unit>
+<trans-unit id="s950600ee56db1843">
+  <source>No comment</source>
+  <target>Kein Kommentar</target>
+</trans-unit>
+<trans-unit id="s3e07827b85a6779a">
+  <source>Contribute</source>
+  <target>Beitragen</target>
+</trans-unit>
+<trans-unit id="s39f1f603c775a5b3">
+  <source>There are no satisfied needs.</source>
+  <target>Keine erfüllten Anforderungen.</target>
+</trans-unit>
+<trans-unit id="sba6d2aebd8696a70">
+  <source>Satisfied By</source>
+  <target>Erfüllt durch</target>
+</trans-unit>
+<trans-unit id="s6a952825a82ea974">
+  <source>This need was satisfied with no contributions.</source>
+  <target>Diese Anforderungen wurde erfüllt, ohne dass sich jemand dazu verpflichted hat.</target>
+</trans-unit>
+<trans-unit id="s8217b4cf2a9d5a97">
+  <source>Additional Contributions</source>
+  <target>Zusätzliche Verpflichtungen</target>
+</trans-unit>
+<trans-unit id="sabfa03dfc4fa6bda">
+  <source>There are no additional contributions.</source>
+  <target>Es gibt keine zusätzlichen Verpflichtungen.</target>
+</trans-unit>
+<trans-unit id="sd63b87e98ed1536f">
+  <source>There are no contributions yet.</source>
+  <target>Es gibt noch keine Verpflichtungen.</target>
+</trans-unit>
+<trans-unit id="se7229fcfe421ebe1">
+  <source>Max. possible contributions reached</source>
+  <target>Maximale Anzahl Verpflichtungen erreicht</target>
+</trans-unit>
+<trans-unit id="s9dc338f31cc6c22c">
+  <source>The requested call to action doesn't exist</source>
+  <target>Der angeforderte Aufruf existiert nicht</target>
+</trans-unit>
+<trans-unit id="s5cdaaf1e8ed09fa1">
+  <source>Error fetching the call to action</source>
+  <target>Aufruf laden fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="sa7f40d9c3baa9830">
+  <source>There are no unsatisfied needs.</source>
+  <target>Es gibt keine unerfüllten Anforderungen.</target>
+</trans-unit>
+<trans-unit id="s2bcc52b8378d6fd3">
+  <source>Cancel Contribution</source>
+  <target>Verpflichtung zurückziehen</target>
+</trans-unit>
+<trans-unit id="s09e0eab6e02bc393">
+  <source>This will notify all event participants.</source>
+  <target>Dies wird alle Event-Teilnehmer benachrichtigen.</target>
+</trans-unit>
+<trans-unit id="s5f8492d41fc62041">
+  <source>Committed to contribute</source>
+  <target>Zur Erfüllung verpflichtet</target>
+</trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+  <target>Abbrechen</target>
+</trans-unit>
+<trans-unit id="s07834954afa4b6d9">
+  <source>Contribution was cancelled</source>
+  <target>Verpflichtung wurde zurückgezogen</target>
+</trans-unit>
+<trans-unit id="sd9c91e17e3d7bcbd">
+  <source>Error fetching the commitment</source>
+  <target>Verpflichtung laden fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="s993dbfafb7511653">
+  <source>Error accepting the commitment</source>
+  <target>Verpflichtung akzeptieren fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="sb4ee10dd8a1622bc">
+  <source>No one has contributed to this need yet.</source>
+  <target>Es hat noch niemand zu dieser Anforderung beigetragen.</target>
+</trans-unit>
+<trans-unit id="sfdebb1ce66502f94">
+  <source>Contributions</source>
+  <target>Beiträge</target>
+</trans-unit>
+<trans-unit id="s64dbbddf00d4c5ee">
+  <source>Cancelled Commitments</source>
+  <target>Zurückgezogene Verpflichtungen</target>
+</trans-unit>
+<trans-unit id="s906fe9255792554f">
+  <source>There are no cancelled commitments.</source>
+  <target>Es gibt keine zurückgezogenen Verpflichtungen.</target>
+</trans-unit>
+<trans-unit id="sf6178cb3480a86ce">
+  <source>No call to actions found for this call to action</source>
+  <target>Keine Aufrufe gefunden für diesen Aufruf</target>
+</trans-unit>
+<trans-unit id="s983762ecac7f91d6">
+  <source>Error fetching the call to actions</source>
+  <target>Aufrufe laden ist fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="s63d894b1ddb06289">
+  <source>Description</source>
+  <target>Beschreibung</target>
+</trans-unit>
+<trans-unit id="s3ccb73a74da91bf0">
+  <source>The requested commitment doesn't exist</source>
+  <target>Die angeforderte Verpflichtung existiert nicht</target>
+</trans-unit>
+<trans-unit id="s524827c85a293dab">
+  <source>Create Assembly</source>
+  <target>Zusammenkunft erstellen</target>
+</trans-unit>
+<trans-unit id="s28c37787e4765e58">
+  <source>Error creating the call to action</source>
+  <target>Aufforderung erstellen fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="s2873489db50fee52">
+  <source>Edit Call To Action</source>
+  <target>Aufforderung bearbeiten</target>
+</trans-unit>
+<trans-unit id="s33f85f24c0f5f008">
+  <source>Save</source>
+  <target>Speichern</target>
+</trans-unit>
+<trans-unit id="s258f7773578f509b">
+  <source>Edit Satisfaction</source>
+  <target>Pflichterfüllung bearbeiten</target>
+</trans-unit>
+<trans-unit id="sb97c2f40b5f2dd89">
+  <source>You don't have any contributions.</source>
+  <target>Du hast noch keine Beiträge.</target>
+</trans-unit>
+<trans-unit id="se87af0982795d20a">
+  <source>Error fetching the commitments</source>
+  <target>Verpflichtungen laden fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="s1d5bb8155f842a8d">
+  <source>Satisfaction</source>
+  <target>Pflichterfüllung</target>
+</trans-unit>
+<trans-unit id="sfff952497e3fb6d1">
+  <source>The requested satisfaction doesn't exist</source>
+  <target>Die angefragte Pflichterfüllung existiert nicht</target>
+</trans-unit>
+<trans-unit id="s62a1100d991c6f2c">
+  <source>Error fetching the satisfaction</source>
+  <target>Pflichterfüllung laden fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="s43eb64ba7056a741">
+  <source>The requested assembly doesn't exist</source>
+  <target>Die angeforderte Zusammenkunft existiert nicht</target>
+</trans-unit>
+<trans-unit id="s5259c79873512bfc">
+  <source>Error fetching the assembly</source>
+  <target>Zusammenkunft laden fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="sf5fd459d08e41134">
+  <source>No assemblies found for this call to action</source>
+  <target>Keine Zusammenkünfte gefunden für diesen Aufruf</target>
+</trans-unit>
+<trans-unit id="sabf9ff4d7b13d288">
+  <source>Error fetching the assemblies</source>
+  <target>Zusammenkünfte laden fehlgeschlagen</target>
+</trans-unit>
+<trans-unit id="saf9aab12d5299951">
+  <source>No assemblies found for this satisfaction</source>
+  <target>Keine Zusammenkünfte gefunden für diese Pflichterfüllung</target>
+</trans-unit>
+<trans-unit id="sa38fc58e91a0562d">
+  <source>Error creating the assembly</source>
+  <target>Zusammenkunft erstellen fehlgeschlagen</target>
+</trans-unit>
+</body>
+</file>
+</xliff>
