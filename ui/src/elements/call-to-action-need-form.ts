@@ -134,7 +134,7 @@ export class CallToActionNeedForm extends LitElement implements FormField {
                   name="description"
                   required
                   style="flex: 1"
-                  .placeholder=${msg('Need description*')}
+                  .placeholder=${msg('Needs description*')}
                   .defaultValue=${this.defaultValue?.description || ''}
                 ></sl-input>
               `}
