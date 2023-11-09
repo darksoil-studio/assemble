@@ -1,4 +1,4 @@
-import { provide } from '@lit-labs/context';
+import { provide } from '@lit/context';
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 

@@ -1,12 +1,12 @@
 import { CancellationsStore } from '@holochain-open-dev/cancellations';
 import {
-  joinAsync,
-  mapAndJoin,
-  pipe,
   deletesForEntryStore,
   immutableEntryStore,
+  joinAsync,
   latestVersionOfEntryStore,
   liveLinksTargetsStore,
+  mapAndJoin,
+  pipe,
   toPromise,
 } from '@holochain-open-dev/stores';
 import { LazyHoloHashMap, slice } from '@holochain-open-dev/utils';
@@ -250,16 +250,16 @@ export class AssembleStore {
       commitments: {
         cancelled: pipe(
           withCancellations,
-          commitments =>
-            Array.from(commitments.entries())
+          commitmentsToIsCancelledMap =>
+            Array.from(commitmentsToIsCancelledMap.entries())
               .filter(([_commitmentHash, isCancelled]) => isCancelled)
               .map(([c]) => c),
           hashes => slice(this.commitments, hashes)
         ),
         uncancelled: pipe(
           withCancellations,
-          commitments =>
-            Array.from(commitments.entries())
+          commitmentsToIsCancelledMap =>
+            Array.from(commitmentsToIsCancelledMap.entries())
               .filter(([_commitmentHash, isCancelled]) => !isCancelled)
               .map(([c]) => c),
           hashes => slice(this.commitments, hashes)
@@ -296,7 +296,7 @@ export class AssembleStore {
     entry: immutableEntryStore(() => this.client.getCommitment(commitmentHash)),
     cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),
     isCancelled: pipe(
-      this.cancellationsStore.cancellationsFor.get(commitmentHash),
+      this.cancellationsStore.cancellationsFor.get(commitmentHash).live,
       c => c.length > 0
     ),
     satisfactions: pipe(

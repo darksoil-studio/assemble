@@ -1,6 +1,6 @@
 {
   "name": "@darksoil/assemble",
-  "version": "0.3.12",
+  "version": "0.4.0",
   "scripts": {
     "start": "vite --clearScreen false --port $UI_PORT --force",
     "build": "npm run format && tsc && npm run analyze -- --exclude dist",
@@ -23,18 +23,18 @@
     "./locales/*": "./locales/*"
   },
   "dependencies": {
-    "@holochain-open-dev/cancellations": "^0.1.1",
-    "@holochain-open-dev/elements": "^0.7.0",
-    "@holochain-open-dev/profiles": "^0.16.1",
+    "@holochain-open-dev/cancellations": "^0.2.1",
+    "@holochain-open-dev/elements": "^0.8.2",
+    "@holochain-open-dev/profiles": "^0.17.1",
     "@holochain-open-dev/stores": "^0.7.11",
     "@holochain-open-dev/utils": "^0.16.2",
     "@holochain/client": "^0.16.1",
-    "@lit-labs/context": "^0.2.0",
-    "@lit/localize": "^0.11.4",
+    "@lit/context": "^1.0.0",
+    "@lit/localize": "^0.12.0",
     "@mdi/js": "^7.2.0",
     "@msgpack/msgpack": "^2.7.2",
     "@shoelace-style/shoelace": "^2.10.0",
-    "lit": "^2.6.1"
+    "lit": "^3.0.0"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.5.7",

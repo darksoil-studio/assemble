@@ -15,7 +15,7 @@ import {
   EntryHash,
   Record,
 } from '@holochain/client';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';

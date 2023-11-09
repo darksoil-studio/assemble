@@ -9,7 +9,7 @@ import {
   sliceAndJoin,
 } from '@holochain-open-dev/stores';
 import { ActionHash } from '@holochain/client';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
 import '@shoelace-style/shoelace/dist/components/card/card.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';

@@ -7,7 +7,7 @@ import '@holochain-open-dev/elements/dist/elements/display-error.js';
 import { StoreSubscriber } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash, EntryHash, Record } from '@holochain/client';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete, mdiPencil } from '@mdi/js';
 import SlAlert from '@shoelace-style/shoelace/dist/components/alert/alert.js';

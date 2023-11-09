@@ -5,11 +5,10 @@ import {
   joinAsync,
   mapAndJoin,
   pipe,
-  sliceAndJoin,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';

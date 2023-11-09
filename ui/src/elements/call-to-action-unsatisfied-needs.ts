@@ -13,7 +13,7 @@ import {
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
 import { mdiInformationOutline } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
@@ -25,7 +25,7 @@ import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
 import '@shoelace-style/shoelace/dist/components/progress-bar/progress-bar.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
-import { LitElement, PropertyValueMap, css, html } from 'lit';
+import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
@@ -34,8 +34,8 @@ import { CallToAction, Commitment, Need } from '../types.js';
 import './call-to-action-need-progress.js';
 import './commitment-detail.js';
 import './create-commitment.js';
-import './create-satisfaction.js';
 import { CreateCommitment } from './create-commitment.js';
+import './create-satisfaction.js';
 import { CreateSatisfaction } from './create-satisfaction.js';
 
 /**

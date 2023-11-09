@@ -2168,7 +2168,7 @@ dependencies = [
 [[package]]
 name = "hc_zome_cancellations_coordinator"
 version = "0.0.1"
-source = "git+https://github.com/holochain-open-dev/cancellations?branch=main#158a9b64b68149b6149b21e8a1c1b464a8cbe694"
+source = "git+https://github.com/holochain-open-dev/cancellations?branch=main#42a8308bb9f79bd4aca741000a62064c13cf8832"
 dependencies = [
  "hc_zome_cancellations_integrity",
  "hdk 0.2.2",
@@ -2178,7 +2178,7 @@ dependencies = [
 [[package]]
 name = "hc_zome_cancellations_integrity"
 version = "0.0.1"
-source = "git+https://github.com/holochain-open-dev/cancellations?branch=main#158a9b64b68149b6149b21e8a1c1b464a8cbe694"
+source = "git+https://github.com/holochain-open-dev/cancellations?branch=main#42a8308bb9f79bd4aca741000a62064c13cf8832"
 dependencies = [
  "hdi 0.3.2",
  "serde",

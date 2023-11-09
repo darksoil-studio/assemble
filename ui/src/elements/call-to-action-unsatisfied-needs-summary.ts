@@ -9,15 +9,14 @@ import {
   joinAsync,
   mapAndJoin,
   pipe,
-  sliceAndJoin,
 } from '@holochain-open-dev/stores';
 import { EntryRecord } from '@holochain-open-dev/utils';
 import { ActionHash } from '@holochain/client';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
 import { mdiInformationOutline } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/skeleton/skeleton.js';
-import { LitElement, css, html } from 'lit';
+import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import { AssembleStore } from '../assemble-store.js';
@@ -47,22 +46,12 @@ export class CallToActionUnsatisfiedNeedsSummary extends LitElement {
   _callToActionInfo = new StoreSubscriber(
     this,
     () =>
-      joinAsync([
-        this.assembleStore.callToActions.get(this.callToActionHash)
-          .latestVersion,
-        pipe(
-          this.assembleStore.callToActions.get(this.callToActionHash)
-            .satisfactions,
-          satisfactions => mapAndJoin(satisfactions, s => s.latestVersion)
-        ),
-      ]),
+      this.assembleStore.callToActions.get(this.callToActionHash).needs
+        .unsatisfied,
     () => [this.callToActionHash]
   );
 
-  renderUnsatisfiedNeedsSummary(
-    callToAction: EntryRecord<CallToAction>,
-    needs: Array<[Need, number]>
-  ) {
+  renderUnsatisfiedNeedsSummary(needs: Array<[Need, number]>) {
     if (needs.length === 0)
       return html` <div
         style="flex: 1; display: flex; align-items: center; flex-direction: column; margin: 48px; gap: 16px"
@@ -103,21 +92,8 @@ export class CallToActionUnsatisfiedNeedsSummary extends LitElement {
           </div>
         `;
       case 'complete':
-        const callToAction = this._callToActionInfo.value.value[0];
-        const satisfactions = this._callToActionInfo.value.value[1];
-
-        const unsatisfiedNeeds = callToAction.entry.needs
-          .map((need, i) => [need, i] as [Need, number])
-          .filter(
-            ([need, i]) =>
-              need.min_necessary > 0 &&
-              !Array.from(satisfactions.values()).find(
-                s => s.entry.need_index === i
-              )
-          ) as Array<[Need, number]>;
         return this.renderUnsatisfiedNeedsSummary(
-          callToAction,
-          unsatisfiedNeeds
+          this._callToActionInfo.value.value
         );
       case 'error':
         return html`<display-error

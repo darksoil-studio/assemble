@@ -4,6 +4,158 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "locales/ca.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "templates",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n      's04dc5daea8ffcb1b': `Mín.`,\n's07834954afa4b6d9': `La contribució ha esta cancel·lada`,\n's08b06007b5567108': `de`,\n's09e0eab6e02bc393': `S'enviarà una alerta a tots els participants de l'event.`,\n's0d9e6884f8c4ba1a': `Necessitats`,\n's10aa05aa50d278b9': `Requereix aprovació de l'administrador`,\n's10f50336534b13d7': `No hi ha mín. ni máx.`,\n's1244485ebc6b7d0a': `Mín. i Máx.`,\n's1d5bb8155f842a8d': `Satisfacció`,\n's258f7773578f509b': `Editar la Satisfacció`,\n's2873489db50fee52': `Editar la Crida a l'Acció`,\n's28c37787e4765e58': `Error creant la crida a l'acció`,\n's2a71fae095e55879': `Encara no hi ha cap necessitat.`,\n's2b9e39425bfcc804': `Màx. possible`,\n's2bcc52b8378d6fd3': `Cancel·lar la Contribució`,\n's2ceb11be2290bb1b': `Cancel·lar`,\n's2d49e7bc149b45f6': `Aquesta crida a l'acció no te cap necessitat requerida.`,\n's30c6728e592f4560': `Afegir Necessitat`,\n's3139c52a1117c905': `Pacte`,\n's33f85f24c0f5f008': `Guardar`,\n's39f1f603c775a5b3': `No hi ha cap necessitat satisfeta.`,\n's3ccb73a74da91bf0': `No s'ha trobat el compromís`,\n's3e07827b85a6779a': `Contribuïr`,\n's40326a98f486d818': `Error creant el compromís`,\n's43eb64ba7056a741': `No s'ha trobat el pacte`,\n's49b4a5aecfdd8e35': `Màx.`,\n's524827c85a293dab': `Crear Pacte`,\n's5259c79873512bfc': `Error buscant el pacte`,\n's5cdaaf1e8ed09fa1': `Error buscant la crida a l'acció`,\n's5f8492d41fc62041': `S'ha compromés a contribuir`,\n's62a1100d991c6f2c': `Error buscant la satisfacció`,\n's63d894b1ddb06289': `Descripció`,\n's64dbbddf00d4c5ee': `Compromisos Cancel·lats`,\n's661045907dd942bc': `Compromís`,\n's695afc099cb2281c': `Mín. requerit`,\n's6a952825a82ea974': `Aquesta necessitat s'ha satisfet sense contribucions.`,\n's6d52cebcaa70b474': `Comprometre'm a Contribuir`,\n's75f8021355029843': `Descripció de la necessitat*`,\n's7e7b17262f41a198': `Error buscant els compromisos per a aquesta crida a l'acció`,\n's8217b4cf2a9d5a97': `Contribucions Addicionals`,\n's906fe9255792554f': `No hi ha cap compromís cancel·lat.`,\n's950600ee56db1843': `Sense comentari`,\n's983762ecac7f91d6': `Error buscant la crida a l'acció`,\n's993dbfafb7511653': `Error acceptant el compromís`,\n's9dc338f31cc6c22c': `La crida a l'acció no existeix`,\n'sa38fc58e91a0562d': `Error creant el pacte`,\n'sa7f40d9c3baa9830': `No hi ha cap necessitat no satisfeta.`,\n'sabf9ff4d7b13d288': `Error buscant els pactes`,\n'sabfa03dfc4fa6bda': `No hi ha cap contribució addicional.`,\n'saf84ec86139d349e': `Comentari`,\n'saf9aab12d5299951': `No s'ha trobat cap pacte per a aquest satisfacció`,\n'sb1a3927bb18ccaf2': `Estás segur? Encara no hi ha cap compromís a contribuir per a aquesta necessitat.`,\n'sb4ee10dd8a1622bc': `Encara no hi ha cap contribució per a aquesta necessitat.`,\n'sb65d8265eefc5783': `Només un.`,\n'sb75af2a639e7fa01': `Error carregant el progrés de la crida a l'acció`,\n'sb97c2f40b5f2dd89': `No tens cap contribució.`,\n'sba6d2aebd8696a70': `Satisfeta Per`,\n'sba98a7152d80b949': `Quantitat`,\n'sce13ce26519c5565': `Error creant la satisfacció`,\n'sd63b87e98ed1536f': `Encara no hi ha cap contribució.`,\n'sd9c91e17e3d7bcbd': `Error buscant el compromís`,\n'se7229fcfe421ebe1': `S'ha arribat al màx. de contribucions possibles`,\n'se87af0982795d20a': `Error buscant els compromisos`,\n'sef2cd24ab375df7e': `Selecciona els compromisos que satisfan aquesta necessitat.`,\n'sf44cc868276931a1': `No s'ha trobat la crida a l'acció`,\n'sf587cc61d3dfb90e': `Satisfer Necessitat`,\n'sf5fd459d08e41134': `No s'ha trobat cap pacte per a aquesta crida a l'acció`,\n'sf6178cb3480a86ce': `No s'ha trobat cap crida a l'acció per a aquesta crida a l'acció`,\n'sf67e6e365e1dd961': `s'ha compromés a contribuir`,\n'sfdebb1ce66502f94': `Contribucions`,\n'sfff952497e3fb6d1': `No s'ha trobat la satisfacció`,\n    }"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "templates",
+          "declaration": {
+            "name": "templates",
+            "module": "locales/ca.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "locales/de.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "templates",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n      's04dc5daea8ffcb1b': `Min.`,\n's07834954afa4b6d9': `Verpflichtung wurde zurückgezogen`,\n's08b06007b5567108': `des`,\n's09e0eab6e02bc393': `Dies wird alle Event-Teilnehmer benachrichtigen.`,\n's0d9e6884f8c4ba1a': `Anforderungen`,\n's10aa05aa50d278b9': `Benötigt Zustimmung einer Person mit Admin Berechtigung`,\n's10f50336534b13d7': `Kein min. oder max.`,\n's1244485ebc6b7d0a': `Min. und Max.`,\n's1d5bb8155f842a8d': `Pflichterfüllung`,\n's258f7773578f509b': `Pflichterfüllung bearbeiten`,\n's2873489db50fee52': `Aufforderung bearbeiten`,\n's28c37787e4765e58': `Aufforderung erstellen fehlgeschlagen`,\n's2a71fae095e55879': `Noch keine Anforderungen.`,\n's2b9e39425bfcc804': `Max. möglich`,\n's2bcc52b8378d6fd3': `Verpflichtung zurückziehen`,\n's2ceb11be2290bb1b': `Abbrechen`,\n's2d49e7bc149b45f6': `Dieser Aufruf hat keine Anforderungen.`,\n's30c6728e592f4560': `Anforderung hinzufügen`,\n's3139c52a1117c905': `Zusammenkunft`,\n's33f85f24c0f5f008': `Speichern`,\n's39f1f603c775a5b3': `Keine erfüllten Anforderungen.`,\n's3ccb73a74da91bf0': `Die angeforderte Verpflichtung existiert nicht`,\n's3e07827b85a6779a': `Beitragen`,\n's40326a98f486d818': `Verpflichtung erzeugen fehlgeschlagen`,\n's43eb64ba7056a741': `Die angeforderte Zusammenkunft existiert nicht`,\n's49b4a5aecfdd8e35': `Max.`,\n's524827c85a293dab': `Zusammenkunft erstellen`,\n's5259c79873512bfc': `Zusammenkunft laden fehlgeschlagen`,\n's5cdaaf1e8ed09fa1': `Aufruf laden fehlgeschlagen`,\n's5f8492d41fc62041': `Zur Erfüllung verpflichtet`,\n's62a1100d991c6f2c': `Pflichterfüllung laden fehlgeschlagen`,\n's63d894b1ddb06289': `Beschreibung`,\n's64dbbddf00d4c5ee': `Zurückgezogene Verpflichtungen`,\n's661045907dd942bc': `Verpflichtung eingehen`,\n's695afc099cb2281c': `Min. benötigt`,\n's6a952825a82ea974': `Diese Anforderungen wurde erfüllt, ohne dass sich jemand dazu verpflichted hat.`,\n's6d52cebcaa70b474': `Verpflichtung mitzuwirken`,\n's75f8021355029843': `Benötigt Beschreibung*`,\n's7e7b17262f41a198': `Verpflichtungen laden fehlgeschlagen.`,\n's8217b4cf2a9d5a97': `Zusätzliche Verpflichtungen`,\n's906fe9255792554f': `Es gibt keine zurückgezogenen Verpflichtungen.`,\n's950600ee56db1843': `Kein Kommentar`,\n's983762ecac7f91d6': `Aufrufe laden ist fehlgeschlagen`,\n's993dbfafb7511653': `Verpflichtung akzeptieren fehlgeschlagen`,\n's9dc338f31cc6c22c': `Der angeforderte Aufruf existiert nicht`,\n'sa38fc58e91a0562d': `Zusammenkunft erstellen fehlgeschlagen`,\n'sa7f40d9c3baa9830': `Es gibt keine unerfüllten Anforderungen.`,\n'sabf9ff4d7b13d288': `Zusammenkünfte laden fehlgeschlagen`,\n'sabfa03dfc4fa6bda': `Es gibt keine zusätzlichen Verpflichtungen.`,\n'saf84ec86139d349e': `Kommentar`,\n'saf9aab12d5299951': `Keine Zusammenkünfte gefunden für diese Pflichterfüllung`,\n'sb1a3927bb18ccaf2': `Bist du sicher? Es hat sich noch niemand verpflichtet, diese Anforderung zu erfüllen.`,\n'sb4ee10dd8a1622bc': `Es hat noch niemand zu dieser Anforderung beigetragen.`,\n'sb65d8265eefc5783': `Nur eins.`,\n'sb75af2a639e7fa01': `Fortschritt laden fehlgeschlagen`,\n'sb97c2f40b5f2dd89': `Du hast noch keine Beiträge.`,\n'sba6d2aebd8696a70': `Erfüllt durch`,\n'sba98a7152d80b949': `Menge`,\n'sce13ce26519c5565': `Pflichterfüllung hinzufügen fehlgeschlagen`,\n'sd63b87e98ed1536f': `Es gibt noch keine Verpflichtungen.`,\n'sd9c91e17e3d7bcbd': `Verpflichtung laden fehlgeschlagen`,\n'se7229fcfe421ebe1': `Maximale Anzahl Verpflichtungen erreicht`,\n'se87af0982795d20a': `Verpflichtungen laden fehlgeschlagen`,\n'sef2cd24ab375df7e': `Wähle die Verpflichtungen, die diese Anforderungen erfüllen.`,\n'sf44cc868276931a1': `Der gesuchte Aufruf wurde nicht gefunden`,\n'sf587cc61d3dfb90e': `Anforderung erfüllen`,\n'sf5fd459d08e41134': `Keine Zusammenkünfte gefunden für diesen Aufruf`,\n'sf6178cb3480a86ce': `Keine Aufrufe gefunden für diesen Aufruf`,\n'sf67e6e365e1dd961': `hat sich verpflichtet, beizutragen`,\n'sfdebb1ce66502f94': `Beiträge`,\n'sfff952497e3fb6d1': `Die angefragte Pflichterfüllung existiert nicht`,\n    }"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "templates",
+          "declaration": {
+            "name": "templates",
+            "module": "locales/de.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "locales/es.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "templates",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n      's04dc5daea8ffcb1b': `Mín.`,\n's07834954afa4b6d9': `La contribución ha sido cancelada`,\n's08b06007b5567108': `de`,\n's09e0eab6e02bc393': `Se enviará una notificación a todos los participantes del evento.`,\n's0d9e6884f8c4ba1a': `Necesidades`,\n's10aa05aa50d278b9': `Requiere aprovación del administrador`,\n's10f50336534b13d7': `No hay mín. ni máx.`,\n's1244485ebc6b7d0a': `Mín. y Máx.`,\n's1d5bb8155f842a8d': `Satisfacción`,\n's258f7773578f509b': `Editar Satisacción`,\n's2873489db50fee52': `Editar Llamada a la Acción`,\n's28c37787e4765e58': `Error creando la llamada a la acción`,\n's2a71fae095e55879': `Aún no hay ninguna necesidad.`,\n's2b9e39425bfcc804': `Máx. posible`,\n's2bcc52b8378d6fd3': `Cancelar Contribución`,\n's2ceb11be2290bb1b': `Cancelar`,\n's2d49e7bc149b45f6': `Esta llamada a la acción no tiene ninguna necesidad requerida.`,\n's30c6728e592f4560': `Añadir Necesidad`,\n's3139c52a1117c905': `Pacto`,\n's33f85f24c0f5f008': `Guardar`,\n's39f1f603c775a5b3': `No hay ninguna necesidad satisfecha.`,\n's3ccb73a74da91bf0': `El compromiso no existe`,\n's3e07827b85a6779a': `Contribuir`,\n's40326a98f486d818': `Error creando el compromiso`,\n's43eb64ba7056a741': `El pacto no existe`,\n's49b4a5aecfdd8e35': `Máx.`,\n's524827c85a293dab': `Crear Pacto`,\n's5259c79873512bfc': `Error buscando el pacto`,\n's5cdaaf1e8ed09fa1': `Error cargando la llamada a la acción`,\n's5f8492d41fc62041': `Se ha comprometido a contribuir`,\n's62a1100d991c6f2c': `Error buscando la satisfacción`,\n's63d894b1ddb06289': `Descripción`,\n's64dbbddf00d4c5ee': `Compromisos Cancelados`,\n's661045907dd942bc': `Compromiso`,\n's695afc099cb2281c': `Mín. requerido`,\n's6a952825a82ea974': `Esta necesidad fue satisfecha sin ninguna contribución.`,\n's6d52cebcaa70b474': `Compromiso a Contribuir`,\n's75f8021355029843': `Descripción de la necesidad*`,\n's7e7b17262f41a198': `Error buscando los compromisos para esta llamada a la acción`,\n's8217b4cf2a9d5a97': `Contribuciones Adicionales`,\n's906fe9255792554f': `No hay ningún compromiso cancelado.`,\n's950600ee56db1843': `Sin comentario`,\n's983762ecac7f91d6': `Error buscando la llamada a la acción`,\n's993dbfafb7511653': `Error aceptando el compromiso`,\n's9dc338f31cc6c22c': `La llamada a la acción no existe`,\n'sa38fc58e91a0562d': `Error creando el pacto`,\n'sa7f40d9c3baa9830': `No hay ninguna necesidad no satisfecha`,\n'sabf9ff4d7b13d288': `Error buscando los pactos`,\n'sabfa03dfc4fa6bda': `No hay ninguna contribución adicional.`,\n'saf84ec86139d349e': `Comentario`,\n'saf9aab12d5299951': `No se ha encontrado ningún pacto para esta satisfacción`,\n'sb1a3927bb18ccaf2': `Estás seguro? Aún no hay ningún ninguna contribución para esta necesidad.`,\n'sb4ee10dd8a1622bc': `Aún no hay ninguna contribución para esta necesidad.`,\n'sb65d8265eefc5783': `Solamente uno.`,\n'sb75af2a639e7fa01': `Error cargando el progreso de la llamada a la acción`,\n'sb97c2f40b5f2dd89': `No has hecho ninguna contribución.`,\n'sba6d2aebd8696a70': `Satisfecha Por`,\n'sba98a7152d80b949': `Cantidad`,\n'sce13ce26519c5565': `Error creando la satisfacción`,\n'sd63b87e98ed1536f': `Aún no hay ninguna contribución.`,\n'sd9c91e17e3d7bcbd': `Error buscando el compromiso`,\n'se7229fcfe421ebe1': `Se ha alcanzado el número de contribuciones máx.`,\n'se87af0982795d20a': `Error buscando los compromisos.`,\n'sef2cd24ab375df7e': `Selecciona los compromisos que satisfacen esta necesidad.`,\n'sf44cc868276931a1': `La llamada a la acción no fue encontrada.`,\n'sf587cc61d3dfb90e': `Satisfacer esta necesidad`,\n'sf5fd459d08e41134': `No hay ningún pacto para esta llamada a la acción`,\n'sf6178cb3480a86ce': `No se ha encontrado ninguna llamada a la acción para esta llamada a la acción`,\n'sf67e6e365e1dd961': `se comprometió a contribuir`,\n'sfdebb1ce66502f94': `Contribuciones`,\n'sfff952497e3fb6d1': `La satisfacción no existe`,\n    }"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "templates",
+          "declaration": {
+            "name": "templates",
+            "module": "locales/es.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "locales/locales.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "sourceLocale",
+          "default": "`en`",
+          "description": "The locale code that templates in this source code are written in."
+        },
+        {
+          "kind": "variable",
+          "name": "targetLocales",
+          "type": {
+            "text": "array"
+          },
+          "default": "[\n  `ca`,\n  `de`,\n  `es`,\n  `sv`,\n]",
+          "description": "The other locale codes that this application is localized into. Sorted\nlexicographically."
+        },
+        {
+          "kind": "variable",
+          "name": "allLocales",
+          "type": {
+            "text": "array"
+          },
+          "default": "[\n  `ca`,\n  `de`,\n  `en`,\n  `es`,\n  `sv`,\n]",
+          "description": "All valid project locale codes. Sorted lexicographically."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "sourceLocale",
+          "declaration": {
+            "name": "sourceLocale",
+            "module": "locales/locales.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "targetLocales",
+          "declaration": {
+            "name": "targetLocales",
+            "module": "locales/locales.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "allLocales",
+          "declaration": {
+            "name": "allLocales",
+            "module": "locales/locales.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "locales/sv.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "templates",
+          "type": {
+            "text": "object"
+          },
+          "default": "{\n      's04dc5daea8ffcb1b': `Minst`,\n's07834954afa4b6d9': `Bidrag var borttaget`,\n's08b06007b5567108': `av`,\n's09e0eab6e02bc393': `Detta kommer att notifiera alla event deltagare`,\n's0d9e6884f8c4ba1a': `Behov`,\n's10aa05aa50d278b9': `Kräver administratörsgodkänning`,\n's10f50336534b13d7': `Inget min eller max`,\n's1244485ebc6b7d0a': `Minst och max`,\n's1d5bb8155f842a8d': `Tillfredställande`,\n's258f7773578f509b': `Redigera tillfredställande`,\n's2873489db50fee52': `Redigera händelseförslaget`,\n's28c37787e4765e58': `Fel vid skapandet av händelseförslag`,\n's2a71fae095e55879': `Det finns inga behov än.`,\n's2b9e39425bfcc804': `Max. möjliga`,\n's2bcc52b8378d6fd3': `Ta bort bidrag`,\n's2ceb11be2290bb1b': `Ta bort`,\n's2d49e7bc149b45f6': `Detta händelseförslaget har inga behovskrav`,\n's30c6728e592f4560': `Lägg till behov`,\n's3139c52a1117c905': `Sammansättning`,\n's33f85f24c0f5f008': `Spara`,\n's39f1f603c775a5b3': `Det finns inga tillfredställda behov.`,\n's3ccb73a74da91bf0': `Det sökta åtagandet finns inte`,\n's3e07827b85a6779a': `Bidra`,\n's40326a98f486d818': `Fel vid skapade av åtagandet`,\n's43eb64ba7056a741': `Den efterfrågade sammansättningen finns inte`,\n's49b4a5aecfdd8e35': `Max`,\n's524827c85a293dab': `Skapa sammansättning`,\n's5259c79873512bfc': `Fel vid hämtning av sammansättningen`,\n's5cdaaf1e8ed09fa1': `Fel vid hämtning av händelseförslaget`,\n's5f8492d41fc62041': `Åtagen att bidra`,\n's62a1100d991c6f2c': `Fel vid hämtning av tillfredställandet`,\n's63d894b1ddb06289': `Beskrivning`,\n's64dbbddf00d4c5ee': `Borttagna åtaganden`,\n's661045907dd942bc': `Åtag`,\n's695afc099cb2281c': `Min. behövda`,\n's6a952825a82ea974': `Detta behov tillfredställdes utan bidrag.`,\n's6d52cebcaa70b474': `Åtag bidragande`,\n's75f8021355029843': `Behöver beskrivning*`,\n's7e7b17262f41a198': `Fel vid hämtning av åtagande för detta händelseförslaget`,\n's8217b4cf2a9d5a97': `Ytterligare bidrag`,\n's906fe9255792554f': `Det finns ingan borttagna åtagande.`,\n's950600ee56db1843': `Ingen kommentar`,\n's983762ecac7f91d6': `Fel vid hämtning av `,\n's993dbfafb7511653': `Fel vid godkännande av åtagande`,\n's9dc338f31cc6c22c': `Det efterfrågade händelseförslaget finns inte`,\n'sa38fc58e91a0562d': `Fel vid skapandet av sammansättningen`,\n'sa7f40d9c3baa9830': `Det finns inga otillfredställda behov.`,\n'sabf9ff4d7b13d288': `Fel vid hämtning av sammanstättningarna`,\n'sabfa03dfc4fa6bda': `Det finns inga ytterligare bidrag.`,\n'saf84ec86139d349e': `Kommentar`,\n'saf9aab12d5299951': `Inga sammansättningar hittade för detta tillfredställande`,\n'sb1a3927bb18ccaf2': `Är du säker? Det finns inga åtagande för att bidra till detta behov än.`,\n'sb4ee10dd8a1622bc': `Ingen har bidragit till detta behov än.`,\n'sb65d8265eefc5783': `Endast en.`,\n'sb75af2a639e7fa01': `Fel vid hämtning av förslagsutvecklingen`,\n'sb97c2f40b5f2dd89': `Du har inga bidrag.`,\n'sba6d2aebd8696a70': `Tillfredställs av`,\n'sba98a7152d80b949': `Mängd`,\n'sce13ce26519c5565': `Fel vid skapande av tillfredställande`,\n'sd63b87e98ed1536f': `Det finns inga bidrag än.`,\n'sd9c91e17e3d7bcbd': `Fel vid hämtning av åtagande`,\n'se7229fcfe421ebe1': `Max möjliga bidrag nådda`,\n'se87af0982795d20a': `Fel vid hämtninga av åtagandena`,\n'sef2cd24ab375df7e': `Välj vilket åtagande som tillfredställer detta behov.`,\n'sf44cc868276931a1': `Den efterfrågade händelseförslaget hittades inte.`,\n'sf587cc61d3dfb90e': `Tillfredställ behov`,\n'sf5fd459d08e41134': `Inga sammansättningar hittades för detta händelseförslaget`,\n'sf6178cb3480a86ce': `Inga händelseförslag hittade för denna händelse`,\n'sf67e6e365e1dd961': `Åtagen att bidra`,\n'sfdebb1ce66502f94': `Bidrag`,\n'sfff952497e3fb6d1': `Det efterfrågade uppfyllandet finns inte`,\n    }"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "templates",
+          "declaration": {
+            "name": "templates",
+            "module": "locales/sv.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/assemble-client.ts",
       "declarations": [
         {
@@ -31,7 +183,7 @@
             },
             {
               "kind": "method",
-              "name": "getCallToAction",
+              "name": "getLatestCallToAction",
               "return": {
                 "type": {
                   "text": "Promise<EntryRecord<CallToAction> | undefined>"
@@ -91,7 +243,7 @@
               "name": "getCallToActionsForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<EntryRecord<CallToAction>>>"
+                  "text": "Promise<Array<ActionHash>>"
                 }
               },
               "parameters": [
@@ -175,10 +327,10 @@
             },
             {
               "kind": "method",
-              "name": "getSatisfaction",
+              "name": "getLatestSatisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<EntryRecord<Satisfaction> | undefined>"
+                  "text": "Promise<EntryRecord<Satisfaction>>"
                 }
               },
               "parameters": [
@@ -253,6 +405,23 @@
               "return": {
                 "type": {
                   "text": "Promise<ActionHash>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "satisfactionHash",
+                  "type": {
+                    "text": "ActionHash"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getSatisfactionDeletes",
+              "return": {
+                "type": {
+                  "text": "Promise<Array<SignedActionHashed<Delete>>>"
                 }
               },
               "parameters": [
@@ -363,66 +532,31 @@
             {
               "kind": "field",
               "name": "callToActions",
-              "default": "new LazyHoloHashMap((callToActionHash: ActionHash) =>\n    pipe(\n      lazyLoadAndPoll(\n        async () => this.client.getCallToAction(callToActionHash),\n        4000\n      ),\n      c => {\n        if (!c) throw new Error('Call to action was not found');\n        return c;\n      }\n    )\n  )",
+              "default": "new LazyHoloHashMap((callToActionHash: ActionHash) => {\n    const commitments = liveLinksTargetsStore(\n      this.client,\n      callToActionHash,\n      () => this.client.getCommitmentsForCallToAction(callToActionHash),\n      'CallToActionToCommitments'\n    );\n    const withCancellations = pipe(commitments, commitmentsHashes =>\n      mapAndJoin(slice(this.commitments, commitmentsHashes), s => s.isCancelled)\n    );\n    const satisfactionsHashes = liveLinksTargetsStore(\n      this.client,\n      callToActionHash,\n      () => this.client.getSatisfactionsForCallToAction(callToActionHash),\n      'CallToActionToSatisfactions'\n    );\n    const latestVersion = latestVersionOfEntryStore(this.client, () =>\n      this.client.getLatestCallToAction(callToActionHash)\n    );\n    const needs = joinAsync([\n      latestVersion,\n      pipe(satisfactionsHashes, hashes =>\n        mapAndJoin(slice(this.satisfactions, hashes), s => s.latestVersion)\n      ),\n    ]);\n    return {\n      latestVersion,\n      needs: {\n        satisfied: pipe(needs, ([callToAction, satisfactions]) =>\n          callToAction.entry.needs\n            .map((n, i) => [n, i] as [Need, number])\n            .filter(\n              ([n, i]) =>\n                n.min_necessary === 0 ||\n                !!Array.from(satisfactions.values()).find(\n                  s => s.entry.need_index === i\n                )\n            )\n        ),\n        unsatisfied: pipe(needs, ([callToAction, satisfactions]) =>\n          callToAction.entry.needs\n            .map((n, i) => [n, i] as [Need, number])\n            .filter(\n              ([n, i]) =>\n                n.min_necessary > 0 &&\n                !Array.from(satisfactions.values()).find(\n                  s => s.entry.need_index === i\n                )\n            )\n        ),\n      },\n      commitments: {\n        cancelled: pipe(\n          withCancellations,\n          commitmentsToIsCancelledMap =>\n            Array.from(commitmentsToIsCancelledMap.entries())\n              .filter(([_commitmentHash, isCancelled]) => isCancelled)\n              .map(([c]) => c),\n          hashes => slice(this.commitments, hashes)\n        ),\n        uncancelled: pipe(\n          withCancellations,\n          commitmentsToIsCancelledMap =>\n            Array.from(commitmentsToIsCancelledMap.entries())\n              .filter(([_commitmentHash, isCancelled]) => !isCancelled)\n              .map(([c]) => c),\n          hashes => slice(this.commitments, hashes)\n        ),\n      },\n      satisfactions: pipe(satisfactionsHashes, hashes =>\n        slice(this.satisfactions, hashes)\n      ),\n      assemblies: pipe(\n        liveLinksTargetsStore(\n          this.client,\n          callToActionHash,\n          () => this.client.getAssembliesForCallToAction(callToActionHash),\n          'CallToActionToAssemblies'\n        ),\n        hashes => slice(this.assemblies, hashes)\n      ),\n    };\n  })",
               "description": "Call To Action"
             },
             {
               "kind": "field",
               "name": "callToActionsForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(async () => {\n        const records = await this.client.getCallToActionsForCallToAction(\n          callToActionHash\n        );\n        return records.map(r => r.actionHash);\n      }, 4000)\n  )"
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      liveLinksTargetsStore(\n        this.client,\n        callToActionHash,\n        () => this.client.getCallToActionsForCallToAction(callToActionHash),\n        'CallToActionToCallToActions'\n      )\n  )"
             },
             {
               "kind": "field",
               "name": "commitments",
-              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) =>\n    lazyLoadAndPoll(async () => {\n      const c = await this.client.getCommitment(commitmentHash);\n\n      if (!c) throw new Error('Commitment was not found');\n      return c;\n    }, 4000)\n  )",
+              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) => ({\n    entry: immutableEntryStore(() => this.client.getCommitment(commitmentHash)),\n    cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),\n    isCancelled: pipe(\n      this.cancellationsStore.cancellationsFor.get(commitmentHash).live,\n      c => c.length > 0\n    ),\n    satisfactions: pipe(\n      liveLinksTargetsStore(\n        this.client,\n        commitmentHash,\n        () => this.client.getSatisfactionsForCommitment(commitmentHash),\n        'CommitmentToSatisfactions'\n      ),\n      hashes => slice(this.satisfactions, hashes)\n    ),\n  }))",
               "description": "Commitment"
             },
             {
               "kind": "field",
-              "name": "commitmentsForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () => this.client.getCommitmentsForCallToAction(callToActionHash),\n        4000\n      )\n  )"
-            },
-            {
-              "kind": "field",
-              "name": "uncancelledCommitmentsForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      pipe(\n        this.commitmentsForCallToAction.get(callToActionHash),\n        commitmentsHashes =>\n          joinAsync(\n            commitmentsHashes.map(c =>\n              this.cancellationsStore.cancellationsFor.get(c)\n            )\n          ),\n        (cancellations, commitmentsHashes) =>\n          commitmentsHashes.filter((c, i) => cancellations[i].length === 0)\n      )\n  )"
-            },
-            {
-              "kind": "field",
-              "name": "cancelledCommitmentsForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      pipe(\n        this.commitmentsForCallToAction.get(callToActionHash),\n        commitmentsHashes =>\n          joinAsync(\n            commitmentsHashes.map(c =>\n              this.cancellationsStore.cancellationsFor.get(c)\n            )\n          ),\n        (cancellations, commitmentsHashes) =>\n          commitmentsHashes.filter((c, i) => cancellations[i].length > 0)\n      )\n  )"
-            },
-            {
-              "kind": "field",
               "name": "satisfactions",
-              "default": "new LazyHoloHashMap((satisfactionHash: ActionHash) =>\n    lazyLoadAndPoll(\n      async () => this.client.getSatisfaction(satisfactionHash),\n      4000\n    )\n  )",
+              "default": "new LazyHoloHashMap((satisfactionHash: ActionHash) => ({\n    latestVersion: latestVersionOfEntryStore(this.client, () =>\n      this.client.getLatestSatisfaction(satisfactionHash)\n    ),\n    deletes: deletesForEntryStore(this.client, satisfactionHash, () =>\n      this.client.getSatisfactionDeletes(satisfactionHash)\n    ),\n    assemblies: pipe(\n      liveLinksTargetsStore(\n        this.client,\n        satisfactionHash,\n        () => this.client.getAssembliesForSatisfaction(satisfactionHash),\n        'SatisfactionToAssemblies'\n      ),\n      hashes => slice(this.assemblies, hashes)\n    ),\n  }))",
               "description": "Satisfaction"
             },
             {
               "kind": "field",
-              "name": "satisfactionsForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () =>\n          this.client.getSatisfactionsForCallToAction(callToActionHash),\n        4000\n      )\n  )"
-            },
-            {
-              "kind": "field",
-              "name": "satisfactionsForCommitment",
-              "default": "new LazyHoloHashMap(\n    (commitmentHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () => this.client.getSatisfactionsForCommitment(commitmentHash),\n        4000\n      )\n  )"
-            },
-            {
-              "kind": "field",
               "name": "assemblies",
-              "default": "new LazyHoloHashMap((assemblyHash: ActionHash) =>\n    lazyLoadAndPoll(async () => this.client.getAssembly(assemblyHash), 4000)\n  )",
+              "default": "new LazyHoloHashMap((assemblyHash: ActionHash) =>\n    immutableEntryStore(() => this.client.getAssembly(assemblyHash))\n  )",
               "description": "Assembly"
-            },
-            {
-              "kind": "field",
-              "name": "assembliesForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () => this.client.getAssembliesForCallToAction(callToActionHash),\n        4000\n      )\n  )"
-            },
-            {
-              "kind": "field",
-              "name": "assembliesForSatisfaction",
-              "default": "new LazyHoloHashMap(\n    (satisfactionHash: ActionHash) =>\n      lazyLoadAndPoll(\n        async () => this.client.getAssembliesForSatisfaction(satisfactionHash),\n        4000\n      )\n  )"
             }
           ]
         }
@@ -2027,12 +2161,6 @@
               "kind": "method",
               "name": "renderUnsatisfiedNeedsSummary",
               "parameters": [
-                {
-                  "name": "callToAction",
-                  "type": {
-                    "text": "EntryRecord<CallToAction>"
-                  }
-                },
                 {
                   "name": "needs",
                   "type": {

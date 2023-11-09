@@ -7,7 +7,7 @@ import {
   wrapPathInSvg,
 } from '@holochain-open-dev/elements';
 import { EntryRecord } from '@holochain-open-dev/utils';
-import { consume } from '@lit-labs/context';
+import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
 import { mdiAlertCircleOutline, mdiDelete } from '@mdi/js';
 import '@shoelace-style/shoelace/dist/components/alert/alert.js';
