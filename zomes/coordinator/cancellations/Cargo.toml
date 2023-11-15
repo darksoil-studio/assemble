@@ -10,5 +10,5 @@ name = "cancellations"
 [dependencies]
 hdk = { workspace = true }
 serde = { workspace = true }
-hc_zome_cancellations_integrity = { git = "https://github.com/holochain-open-dev/cancellations", branch = "main" }
-hc_zome_cancellations_coordinator = { git = "https://github.com/holochain-open-dev/cancellations", branch = "main" }
+hc_zome_cancellations_integrity = { git = "https://github.com/holochain-open-dev/cancellations", branch = "for-hdk-v0.2.3-rc.0" }
+hc_zome_cancellations_coordinator = { git = "https://github.com/holochain-open-dev/cancellations", branch = "for-hdk-v0.2.3-rc.0" }
