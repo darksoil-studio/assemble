@@ -219,7 +219,11 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
                 </div>
               </div>
             </sl-details>
-            <sl-details .summary=${msg('Cancelled Commitments')}>
+            <sl-details
+              .summary=${`${msg('Cancelled Commitments')} (${
+                cancelledCommitments.length
+              })`}
+            >
               <div class="column" style="flex: 1; gap: 8px">
                 ${this.renderCommitmentsForNeed(
                   i,
@@ -238,10 +242,17 @@ export class CallToActionUnsatisfiedNeeds extends LitElement {
     switch (this._callToActionInfo.value.status) {
       case 'pending':
         return html`
-          <div class="column" style="gap: 8px">
-            <sl-skeleton></sl-skeleton>
-            <sl-skeleton></sl-skeleton>
-            <sl-skeleton></sl-skeleton>
+          <div class="column" style="gap: 16px">
+            ${Array(3)
+              .fill(0)
+              .map(
+                () =>
+                  html`
+                    <sl-skeleton
+                      style="height: 200px; --border-radius: 8px"
+                    ></sl-skeleton>
+                  `
+              )}
           </div>
         `;
       case 'complete':

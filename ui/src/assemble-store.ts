@@ -297,7 +297,7 @@ export class AssembleStore {
     cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),
     isCancelled: pipe(
       this.cancellationsStore.cancellationsFor.get(commitmentHash).live,
-      c => c.length > 0
+      c => c.size > 0
     ),
     satisfactions: pipe(
       liveLinksTargetsStore(

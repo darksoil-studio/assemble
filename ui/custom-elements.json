@@ -543,7 +543,7 @@
             {
               "kind": "field",
               "name": "commitments",
-              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) => ({\n    entry: immutableEntryStore(() => this.client.getCommitment(commitmentHash)),\n    cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),\n    isCancelled: pipe(\n      this.cancellationsStore.cancellationsFor.get(commitmentHash).live,\n      c => c.length > 0\n    ),\n    satisfactions: pipe(\n      liveLinksTargetsStore(\n        this.client,\n        commitmentHash,\n        () => this.client.getSatisfactionsForCommitment(commitmentHash),\n        'CommitmentToSatisfactions'\n      ),\n      hashes => slice(this.satisfactions, hashes)\n    ),\n  }))",
+              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) => ({\n    entry: immutableEntryStore(() => this.client.getCommitment(commitmentHash)),\n    cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),\n    isCancelled: pipe(\n      this.cancellationsStore.cancellationsFor.get(commitmentHash).live,\n      c => c.size > 0\n    ),\n    satisfactions: pipe(\n      liveLinksTargetsStore(\n        this.client,\n        commitmentHash,\n        () => this.client.getSatisfactionsForCommitment(commitmentHash),\n        'CommitmentToSatisfactions'\n      ),\n      hashes => slice(this.satisfactions, hashes)\n    ),\n  }))",
               "description": "Commitment"
             },
             {

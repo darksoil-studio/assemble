@@ -1,6 +1,6 @@
 {
   "name": "@darksoil/assemble",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "scripts": {
     "start": "vite --clearScreen false --port $UI_PORT --force",
     "build": "npm run format && tsc && npm run analyze -- --exclude dist",
@@ -23,7 +23,7 @@
     "./locales/*": "./locales/*"
   },
   "dependencies": {
-    "@holochain-open-dev/cancellations": "^0.2.1",
+    "@holochain-open-dev/cancellations": "^0.3.0",
     "@holochain-open-dev/elements": "^0.8.2",
     "@holochain-open-dev/profiles": "^0.17.1",
     "@holochain-open-dev/stores": "^0.7.11",

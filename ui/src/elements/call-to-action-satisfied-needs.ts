@@ -279,10 +279,17 @@ export class CallToActionSatisfiedNeeds extends LitElement {
     switch (this._callToActionInfo.value.status) {
       case 'pending':
         return html`
-          <div class="column" style="gap: 8px">
-            <sl-skeleton></sl-skeleton>
-            <sl-skeleton></sl-skeleton>
-            <sl-skeleton></sl-skeleton>
+          <div class="column" style="gap: 16px">
+            ${Array(3)
+              .fill(0)
+              .map(
+                () =>
+                  html`
+                    <sl-skeleton
+                      style="height: 200px; --border-radius: 8px"
+                    ></sl-skeleton>
+                  `
+              )}
           </div>
         `;
       case 'complete':

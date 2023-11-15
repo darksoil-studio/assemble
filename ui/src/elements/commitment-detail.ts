@@ -156,7 +156,11 @@ export class CommitmentDetail extends LitElement {
         const commitment = this._commitment.value.value[0][1];
         const cancellations = this._commitment.value.value[1];
 
-        return this.renderDetail(commitment, callToAction, cancellations);
+        return this.renderDetail(
+          commitment,
+          callToAction,
+          Array.from(cancellations.keys())
+        );
       case 'error':
         return html`<sl-card>
           <display-error
