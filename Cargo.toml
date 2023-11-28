@@ -11,5 +11,5 @@ resolver = "2"
 [workspace.dependencies]
 hdi = "0.3.2"
 hdk = "0.2.2"
-version = "0.2.2"
+holochain = "0.2.3"
 serde = "=1.0.166"

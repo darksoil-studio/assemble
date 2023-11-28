@@ -63,15 +63,10 @@ pub fn delete_call_to_action(original_call_to_action_hash: ActionHash) -> Extern
 #[hdk_extern]
 pub fn get_call_to_actions_for_call_to_action(
     call_to_action_hash: ActionHash,
-) -> ExternResult<Vec<ActionHash>> {
-    let links = get_links(
+) -> ExternResult<Vec<Link>> {
+    get_links(
         call_to_action_hash,
         LinkTypes::CallToActionToCallToActions,
         None,
-    )?;
-    let action_hashes: Vec<ActionHash> = links
-        .into_iter()
-        .filter_map(|link| link.target.into_action_hash())
-        .collect();
-    Ok(action_hashes)
+    )
 }

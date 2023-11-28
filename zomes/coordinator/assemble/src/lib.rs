@@ -7,36 +7,12 @@ use call_to_action::get_latest_call_to_action;
 use commitment::{get_commitment, get_commitments_for_call_to_action};
 use hdk::prelude::*;
 use satisfaction::{get_latest_satisfaction, get_satisfactions_for_call_to_action};
+
 #[hdk_extern]
 pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
     Ok(InitCallbackResult::Pass)
 }
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(tag = "type")]
-pub enum Signal {
-    LinkCreated {
-        action: SignedActionHashed,
-        link_type: LinkTypes,
-    },
-    LinkDeleted {
-        action: SignedActionHashed,
-        create_link_action: SignedActionHashed,
-        link_type: LinkTypes,
-    },
-    EntryCreated {
-        action: SignedActionHashed,
-        app_entry: EntryTypes,
-    },
-    EntryUpdated {
-        action: SignedActionHashed,
-        app_entry: EntryTypes,
-        original_app_entry: EntryTypes,
-    },
-    EntryDeleted {
-        action: SignedActionHashed,
-        original_app_entry: EntryTypes,
-    },
-}
+
 #[hdk_extern(infallible)]
 pub fn post_commit(committed_actions: Vec<SignedActionHashed>) {
     for action in committed_actions {
@@ -46,7 +22,80 @@ pub fn post_commit(committed_actions: Vec<SignedActionHashed>) {
     }
 }
 
-fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -> ExternResult<()> {
+// #[hdk_extern(infallible)]
+// fn create_satisfactions_or_assemblies_for_my_incosistent_calls_to_action(
+//     _: Option<Schedule>,
+// ) -> Option<Schedule> {
+//     if let Err(err) = inner_create_satisfactions_or_assemblies_for_my_incosistent_calls_to_action()
+//     {
+//         error!("Error trying to create satisfasctions or assemblies for my inconsisten calls to action: {:?}", err);
+//     }
+
+//     Some(Schedule::Persisted(String::from("1 * * * *")))
+// }
+
+// fn query_my_calls_to_action() -> ExternResult<Vec<Record>> {
+//     let filter = ChainQueryFilter::new().entry_type(UnitEntryTypes::CallToAction.try_into()?);
+//     let my_calls_to_action = query(filter)?;
+
+//     let mut my_calls_to_action_hashes: HashSet<ActionHash> = my_calls_to_action
+//         .into_iter()
+//         .map(|r| r.action_address().clone())
+//         .collect();
+
+//     let filter = ChainQueryFilter::new()
+//         .entry_type(UnitEntryTypes::Commitment.try_into()?)
+//         .include_entries(true);
+//     let my_commitments = query(filter)?;
+//     let calls_to_actions_from_my_commitments: Set<ActionHash> = my_commitments
+//         .into_iter()
+//         .filter_map(|r| r.entry().as_option())
+//         .filter_map(|e| Commitment::try_from(e).ok())
+//         .map(|c| c.call_to_action_hash)
+//         .collect();
+//     my_calls_to_action_hashes.append(calls_to_actions_from_my_commitments);
+
+//     let filter = ChainQueryFilter::new()
+//         .entry_type(UnitEntryTypes::Satisfaction.try_into()?)
+//         .include_entries(true);
+//     let my_satisfactions = query(filter)?;
+//     let calls_to_actions_from_my_satisfactions: Set<ActionHash> = my_satisfactions
+//         .into_iter()
+//         .filter_map(|r| r.entry().as_option())
+//         .filter_map(|e| Satisfaction::try_from(e).ok())
+//         .map(|c| c.call_to_action_hash)
+//         .collect();
+//     my_calls_to_action_hashes.append(calls_to_actions_from_my_satisfactions);
+
+//     let filter = ChainQueryFilter::new()
+//         .entry_type(UnitEntryTypes::Assembly.try_into()?)
+//         .include_entries(true);
+//     let my_assemblies = query(filter)?;
+//     let calls_to_actions_from_my_assemblies: Set<ActionHash> = my_assemblies
+//         .into_iter()
+//         .filter_map(|r| r.entry().as_option())
+//         .filter_map(|e| Satisfaction::try_from(e).ok())
+//         .map(|c| c.call_to_action_hash)
+//         .collect();
+//     my_calls_to_action_hashes.append(calls_to_actions_from_my_assemblies);
+
+//     Ok(my_calls_to_action)
+// }
+
+// fn inner_create_satisfactions_or_assemblies_for_my_incosistent_calls_to_action() -> ExternResult<()>
+// {
+//     Ok(())
+// }
+
+// fn check_if_need_is_satisfied_with_commitments(
+//     commitments_hashes: Vec<ActionHash>,
+// ) -> ExternResult<()> {
+// }
+
+fn check_if_need_is_satisfied_with_new_commitment(
+    commitment_hash: ActionHash,
+    commitment: Commitment,
+) -> ExternResult<()> {
     let call_to_action_record = get_latest_call_to_action(commitment.call_to_action_hash.clone())?
         .ok_or(wasm_error!(WasmErrorInner::Guest(
             "Could not find call to action for this commitment".into()
@@ -66,6 +115,7 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
     let need_is_already_satisfied = satisfaction_hashes
         .clone()
         .into_iter()
+        .filter_map(|l| l.target.into_action_hash())
         .map(|hash| get_latest_satisfaction(hash))
         .collect::<ExternResult<Vec<Record>>>()?
         .into_iter()
@@ -78,9 +128,13 @@ fn check_if_need_is_satisfied(action_hash: ActionHash, commitment: Commitment) -
         return Ok(());
     }
 
-    let commitments_hashes = get_commitments_for_call_to_action(commitment.call_to_action_hash)?;
+    let commitments_links = get_commitments_for_call_to_action(commitment.call_to_action_hash)?;
+    let commitments_hashes: Vec<ActionHash> = commitments_links
+        .into_iter()
+        .filter_map(|l| l.target.into_action_hash())
+        .collect();
     let mut set: HashSet<ActionHash> = HashSet::from_iter(commitments_hashes);
-    set.insert(action_hash);
+    set.insert(commitment_hash);
 
     let my_pub_key = agent_info()?.agent_initial_pubkey;
 
@@ -162,8 +216,12 @@ fn check_if_call_to_action_is_fulfilled(
         )),
     )?)?;
 
-    let satisfactions_hashes =
+    let satisfactions_links =
         get_satisfactions_for_call_to_action(satisfaction.call_to_action_hash)?;
+    let satisfactions_hashes: Vec<ActionHash> = satisfactions_links
+        .into_iter()
+        .filter_map(|l| l.target.into_action_hash())
+        .collect();
 
     let mut set: HashSet<ActionHash> = HashSet::from_iter(satisfactions_hashes);
     set.insert(action_hash);
@@ -212,6 +270,33 @@ fn check_if_call_to_action_is_fulfilled(
     Ok(())
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(tag = "type")]
+pub enum Signal {
+    LinkCreated {
+        action: SignedActionHashed,
+        link_type: LinkTypes,
+    },
+    LinkDeleted {
+        action: SignedActionHashed,
+        create_link_action: SignedActionHashed,
+        link_type: LinkTypes,
+    },
+    EntryCreated {
+        action: SignedActionHashed,
+        app_entry: EntryTypes,
+    },
+    EntryUpdated {
+        action: SignedActionHashed,
+        app_entry: EntryTypes,
+        original_app_entry: EntryTypes,
+    },
+    EntryDeleted {
+        action: SignedActionHashed,
+        original_app_entry: EntryTypes,
+    },
+}
+
 fn signal_action(action: SignedActionHashed) -> ExternResult<()> {
     match action.hashed.content.clone() {
         Action::CreateLink(create_link) => {
@@ -233,7 +318,11 @@ fn signal_action(action: SignedActionHashed) -> ExternResult<()> {
                     if let Ok(Some(link_type)) =
                         LinkTypes::from_type(create_link.zome_index, create_link.link_type)
                     {
-                        emit_signal(Signal::LinkDeleted { action, link_type, create_link_action: record.signed_action })?;
+                        emit_signal(Signal::LinkDeleted {
+                            action,
+                            link_type,
+                            create_link_action: record.signed_action,
+                        })?;
                     }
                     Ok(())
                 }
@@ -248,9 +337,10 @@ fn signal_action(action: SignedActionHashed) -> ExternResult<()> {
             if let Ok(Some(app_entry)) = get_entry_for_action(&action.hashed.hash) {
                 match app_entry.clone() {
                     EntryTypes::Commitment(commitment) => {
-                        if let Err(err) =
-                            check_if_need_is_satisfied(action.hashed.hash.clone(), commitment)
-                        {
+                        if let Err(err) = check_if_need_is_satisfied_with_new_commitment(
+                            action.hashed.hash.clone(),
+                            commitment,
+                        ) {
                             error!("Error trying to satisfy a need {:?}", err);
                         }
                     }

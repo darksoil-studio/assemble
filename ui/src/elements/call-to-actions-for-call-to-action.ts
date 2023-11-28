@@ -79,7 +79,9 @@ export class CallToActionsForCallToAction extends LitElement {
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
         </div>`;
       case 'complete':
-        return this.renderList(this._callToActions.value.value);
+        return this.renderList(
+          this._callToActions.value.value.map(l => l.target)
+        );
       case 'error':
         return html`<display-error
           .headline=${msg('Error fetching the call to actions')}

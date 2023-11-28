@@ -3,6 +3,7 @@ import {
   ActionHash,
   AppAgentClient,
   Delete,
+  Link,
   Record,
   SignedActionHashed,
 } from '@holochain/client';
@@ -64,7 +65,7 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getCallToActionsForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<ActionHash>> {
+  ): Promise<Array<Link>> {
     return this.callZome(
       'get_call_to_actions_for_call_to_action',
       callToActionHash
@@ -91,7 +92,7 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getCommitmentsForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<ActionHash>> {
+  ): Promise<Array<Link>> {
     return this.callZome(
       'get_commitments_for_call_to_action',
       callToActionHash
@@ -132,7 +133,7 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getSatisfactionsForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<ActionHash>> {
+  ): Promise<Array<Link>> {
     return this.callZome(
       'get_satisfactions_for_call_to_action',
       callToActionHash
@@ -141,7 +142,7 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getSatisfactionsForCommitment(
     commitmentHash: ActionHash
-  ): Promise<Array<ActionHash>> {
+  ): Promise<Array<Link>> {
     return this.callZome('get_satisfactions_for_commitment', commitmentHash);
   }
 
@@ -171,13 +172,13 @@ export class AssembleClient extends ZomeClient<AssembleSignal> {
 
   async getAssembliesForCallToAction(
     callToActionHash: ActionHash
-  ): Promise<Array<ActionHash>> {
+  ): Promise<Array<Link>> {
     return this.callZome('get_assemblies_for_call_to_action', callToActionHash);
   }
 
   async getAssembliesForSatisfaction(
     satisfactionHash: ActionHash
-  ): Promise<Array<ActionHash>> {
+  ): Promise<Array<Link>> {
     return this.callZome('get_assemblies_for_satisfaction', satisfactionHash);
   }
 }

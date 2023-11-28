@@ -25,15 +25,10 @@ pub fn get_commitment(commitment_hash: ActionHash) -> ExternResult<Option<Record
 #[hdk_extern]
 pub fn get_commitments_for_call_to_action(
     call_to_action_hash: ActionHash,
-) -> ExternResult<Vec<ActionHash>> {
-    let links = get_links(
+) -> ExternResult<Vec<Link>> {
+    get_links(
         call_to_action_hash,
         LinkTypes::CallToActionToCommitments,
         None,
-    )?;
-    let action_hashes: Vec<ActionHash> = links
-        .into_iter()
-        .filter_map(|link| link.target.into_action_hash())
-        .collect();
-    Ok(action_hashes)
+    )
 }

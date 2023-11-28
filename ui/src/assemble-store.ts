@@ -4,7 +4,7 @@ import {
   immutableEntryStore,
   joinAsync,
   latestVersionOfEntryStore,
-  liveLinksTargetsStore,
+  liveLinksStore,
   mapAndJoin,
   pipe,
   toPromise,
@@ -197,16 +197,22 @@ export class AssembleStore {
   /** Call To Action */
 
   callToActions = new LazyHoloHashMap((callToActionHash: ActionHash) => {
-    const commitments = liveLinksTargetsStore(
+    const commitments = liveLinksStore(
       this.client,
       callToActionHash,
       () => this.client.getCommitmentsForCallToAction(callToActionHash),
       'CallToActionToCommitments'
     );
-    const withCancellations = pipe(commitments, commitmentsHashes =>
-      mapAndJoin(slice(this.commitments, commitmentsHashes), s => s.isCancelled)
+    const withCancellations = pipe(commitments, commitmentsLinks =>
+      mapAndJoin(
+        slice(
+          this.commitments,
+          commitmentsLinks.map(l => l.target)
+        ),
+        s => s.isCancelled
+      )
     );
-    const satisfactionsHashes = liveLinksTargetsStore(
+    const satisfactionsHashes = liveLinksStore(
       this.client,
       callToActionHash,
       () => this.client.getSatisfactionsForCallToAction(callToActionHash),
@@ -217,8 +223,14 @@ export class AssembleStore {
     );
     const needs = joinAsync([
       latestVersion,
-      pipe(satisfactionsHashes, hashes =>
-        mapAndJoin(slice(this.satisfactions, hashes), s => s.latestVersion)
+      pipe(satisfactionsHashes, links =>
+        mapAndJoin(
+          slice(
+            this.satisfactions,
+            links.map(l => l.target)
+          ),
+          s => s.latestVersion
+        )
       ),
     ]);
     return {
@@ -265,24 +277,31 @@ export class AssembleStore {
           hashes => slice(this.commitments, hashes)
         ),
       },
-      satisfactions: pipe(satisfactionsHashes, hashes =>
-        slice(this.satisfactions, hashes)
+      satisfactions: pipe(satisfactionsHashes, links =>
+        slice(
+          this.satisfactions,
+          links.map(l => l.target)
+        )
       ),
       assemblies: pipe(
-        liveLinksTargetsStore(
+        liveLinksStore(
           this.client,
           callToActionHash,
           () => this.client.getAssembliesForCallToAction(callToActionHash),
           'CallToActionToAssemblies'
         ),
-        hashes => slice(this.assemblies, hashes)
+        links =>
+          slice(
+            this.assemblies,
+            links.map(l => l.target)
+          )
       ),
     };
   });
 
   callToActionsForCallToAction = new LazyHoloHashMap(
     (callToActionHash: ActionHash) =>
-      liveLinksTargetsStore(
+      liveLinksStore(
         this.client,
         callToActionHash,
         () => this.client.getCallToActionsForCallToAction(callToActionHash),
@@ -300,13 +319,17 @@ export class AssembleStore {
       c => c.size > 0
     ),
     satisfactions: pipe(
-      liveLinksTargetsStore(
+      liveLinksStore(
         this.client,
         commitmentHash,
         () => this.client.getSatisfactionsForCommitment(commitmentHash),
         'CommitmentToSatisfactions'
       ),
-      hashes => slice(this.satisfactions, hashes)
+      links =>
+        slice(
+          this.satisfactions,
+          links.map(l => l.target)
+        )
     ),
   }));
 
@@ -320,13 +343,17 @@ export class AssembleStore {
       this.client.getSatisfactionDeletes(satisfactionHash)
     ),
     assemblies: pipe(
-      liveLinksTargetsStore(
+      liveLinksStore(
         this.client,
         satisfactionHash,
         () => this.client.getAssembliesForSatisfaction(satisfactionHash),
         'SatisfactionToAssemblies'
       ),
-      hashes => slice(this.assemblies, hashes)
+      links =>
+        slice(
+          this.assemblies,
+          links.map(l => l.target)
+        )
     ),
   }));
 

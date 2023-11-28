@@ -99,29 +99,17 @@ pub fn delete_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<()> {
 #[hdk_extern]
 pub fn get_satisfactions_for_call_to_action(
     call_to_action_hash: ActionHash,
-) -> ExternResult<Vec<ActionHash>> {
-    let links = get_links(
+) -> ExternResult<Vec<Link>> {
+    get_links(
         call_to_action_hash,
         LinkTypes::CallToActionToSatisfactions,
         None,
-    )?;
-    let action_hashes: Vec<ActionHash> = links
-        .into_iter()
-        .filter_map(|link| link.target.into_action_hash())
-        .collect();
-    Ok(action_hashes)
+    )
 }
 
 #[hdk_extern]
-pub fn get_satisfactions_for_commitment(
-    commitment_hash: ActionHash,
-) -> ExternResult<Vec<ActionHash>> {
-    let links = get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)?;
-    let action_hashes: Vec<ActionHash> = links
-        .into_iter()
-        .filter_map(|link| link.target.into_action_hash())
-        .collect();
-    Ok(action_hashes)
+pub fn get_satisfactions_for_commitment(commitment_hash: ActionHash) -> ExternResult<Vec<Link>> {
+    get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)
 }
 
 #[hdk_extern]

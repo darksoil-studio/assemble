@@ -29,26 +29,15 @@ pub fn get_assembly(assembly_hash: ActionHash) -> ExternResult<Option<Record>> {
 #[hdk_extern]
 pub fn get_assemblies_for_call_to_action(
     call_to_action_hash: ActionHash,
-) -> ExternResult<Vec<ActionHash>> {
-    let links = get_links(
+) -> ExternResult<Vec<Link>> {
+    get_links(
         call_to_action_hash,
         LinkTypes::CallToActionToAssemblies,
         None,
-    )?;
-    let action_hashes: Vec<ActionHash> = links
-        .into_iter()
-        .filter_map(|link| link.target.into_action_hash())
-        .collect();
-    Ok(action_hashes)
+    )
 }
+
 #[hdk_extern]
-pub fn get_assemblies_for_satisfaction(
-    satisfaction_hash: ActionHash,
-) -> ExternResult<Vec<ActionHash>> {
-    let links = get_links(satisfaction_hash, LinkTypes::SatisfactionToAssemblies, None)?;
-    let action_hashes: Vec<ActionHash> = links
-        .into_iter()
-        .filter_map(|link| link.target.into_action_hash())
-        .collect();
-    Ok(action_hashes)
+pub fn get_assemblies_for_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Vec<Link>> {
+    get_links(satisfaction_hash, LinkTypes::SatisfactionToAssemblies, None)
 }

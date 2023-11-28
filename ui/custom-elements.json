@@ -243,7 +243,7 @@
               "name": "getCallToActionsForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<ActionHash>>"
+                  "text": "Promise<Array<Link>>"
                 }
               },
               "parameters": [
@@ -295,7 +295,7 @@
               "name": "getCommitmentsForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<ActionHash>>"
+                  "text": "Promise<Array<Link>>"
                 }
               },
               "parameters": [
@@ -370,7 +370,7 @@
               "name": "getSatisfactionsForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<ActionHash>>"
+                  "text": "Promise<Array<Link>>"
                 }
               },
               "parameters": [
@@ -387,7 +387,7 @@
               "name": "getSatisfactionsForCommitment",
               "return": {
                 "type": {
-                  "text": "Promise<Array<ActionHash>>"
+                  "text": "Promise<Array<Link>>"
                 }
               },
               "parameters": [
@@ -473,7 +473,7 @@
               "name": "getAssembliesForCallToAction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<ActionHash>>"
+                  "text": "Promise<Array<Link>>"
                 }
               },
               "parameters": [
@@ -490,7 +490,7 @@
               "name": "getAssembliesForSatisfaction",
               "return": {
                 "type": {
-                  "text": "Promise<Array<ActionHash>>"
+                  "text": "Promise<Array<Link>>"
                 }
               },
               "parameters": [
@@ -532,24 +532,24 @@
             {
               "kind": "field",
               "name": "callToActions",
-              "default": "new LazyHoloHashMap((callToActionHash: ActionHash) => {\n    const commitments = liveLinksTargetsStore(\n      this.client,\n      callToActionHash,\n      () => this.client.getCommitmentsForCallToAction(callToActionHash),\n      'CallToActionToCommitments'\n    );\n    const withCancellations = pipe(commitments, commitmentsHashes =>\n      mapAndJoin(slice(this.commitments, commitmentsHashes), s => s.isCancelled)\n    );\n    const satisfactionsHashes = liveLinksTargetsStore(\n      this.client,\n      callToActionHash,\n      () => this.client.getSatisfactionsForCallToAction(callToActionHash),\n      'CallToActionToSatisfactions'\n    );\n    const latestVersion = latestVersionOfEntryStore(this.client, () =>\n      this.client.getLatestCallToAction(callToActionHash)\n    );\n    const needs = joinAsync([\n      latestVersion,\n      pipe(satisfactionsHashes, hashes =>\n        mapAndJoin(slice(this.satisfactions, hashes), s => s.latestVersion)\n      ),\n    ]);\n    return {\n      latestVersion,\n      needs: {\n        satisfied: pipe(needs, ([callToAction, satisfactions]) =>\n          callToAction.entry.needs\n            .map((n, i) => [n, i] as [Need, number])\n            .filter(\n              ([n, i]) =>\n                n.min_necessary === 0 ||\n                !!Array.from(satisfactions.values()).find(\n                  s => s.entry.need_index === i\n                )\n            )\n        ),\n        unsatisfied: pipe(needs, ([callToAction, satisfactions]) =>\n          callToAction.entry.needs\n            .map((n, i) => [n, i] as [Need, number])\n            .filter(\n              ([n, i]) =>\n                n.min_necessary > 0 &&\n                !Array.from(satisfactions.values()).find(\n                  s => s.entry.need_index === i\n                )\n            )\n        ),\n      },\n      commitments: {\n        cancelled: pipe(\n          withCancellations,\n          commitmentsToIsCancelledMap =>\n            Array.from(commitmentsToIsCancelledMap.entries())\n              .filter(([_commitmentHash, isCancelled]) => isCancelled)\n              .map(([c]) => c),\n          hashes => slice(this.commitments, hashes)\n        ),\n        uncancelled: pipe(\n          withCancellations,\n          commitmentsToIsCancelledMap =>\n            Array.from(commitmentsToIsCancelledMap.entries())\n              .filter(([_commitmentHash, isCancelled]) => !isCancelled)\n              .map(([c]) => c),\n          hashes => slice(this.commitments, hashes)\n        ),\n      },\n      satisfactions: pipe(satisfactionsHashes, hashes =>\n        slice(this.satisfactions, hashes)\n      ),\n      assemblies: pipe(\n        liveLinksTargetsStore(\n          this.client,\n          callToActionHash,\n          () => this.client.getAssembliesForCallToAction(callToActionHash),\n          'CallToActionToAssemblies'\n        ),\n        hashes => slice(this.assemblies, hashes)\n      ),\n    };\n  })",
+              "default": "new LazyHoloHashMap((callToActionHash: ActionHash) => {\n    const commitments = liveLinksStore(\n      this.client,\n      callToActionHash,\n      () => this.client.getCommitmentsForCallToAction(callToActionHash),\n      'CallToActionToCommitments'\n    );\n    const withCancellations = pipe(commitments, commitmentsLinks =>\n      mapAndJoin(\n        slice(\n          this.commitments,\n          commitmentsLinks.map(l => l.target)\n        ),\n        s => s.isCancelled\n      )\n    );\n    const satisfactionsHashes = liveLinksStore(\n      this.client,\n      callToActionHash,\n      () => this.client.getSatisfactionsForCallToAction(callToActionHash),\n      'CallToActionToSatisfactions'\n    );\n    const latestVersion = latestVersionOfEntryStore(this.client, () =>\n      this.client.getLatestCallToAction(callToActionHash)\n    );\n    const needs = joinAsync([\n      latestVersion,\n      pipe(satisfactionsHashes, links =>\n        mapAndJoin(\n          slice(\n            this.satisfactions,\n            links.map(l => l.target)\n          ),\n          s => s.latestVersion\n        )\n      ),\n    ]);\n    return {\n      latestVersion,\n      needs: {\n        satisfied: pipe(needs, ([callToAction, satisfactions]) =>\n          callToAction.entry.needs\n            .map((n, i) => [n, i] as [Need, number])\n            .filter(\n              ([n, i]) =>\n                n.min_necessary === 0 ||\n                !!Array.from(satisfactions.values()).find(\n                  s => s.entry.need_index === i\n                )\n            )\n        ),\n        unsatisfied: pipe(needs, ([callToAction, satisfactions]) =>\n          callToAction.entry.needs\n            .map((n, i) => [n, i] as [Need, number])\n            .filter(\n              ([n, i]) =>\n                n.min_necessary > 0 &&\n                !Array.from(satisfactions.values()).find(\n                  s => s.entry.need_index === i\n                )\n            )\n        ),\n      },\n      commitments: {\n        cancelled: pipe(\n          withCancellations,\n          commitmentsToIsCancelledMap =>\n            Array.from(commitmentsToIsCancelledMap.entries())\n              .filter(([_commitmentHash, isCancelled]) => isCancelled)\n              .map(([c]) => c),\n          hashes => slice(this.commitments, hashes)\n        ),\n        uncancelled: pipe(\n          withCancellations,\n          commitmentsToIsCancelledMap =>\n            Array.from(commitmentsToIsCancelledMap.entries())\n              .filter(([_commitmentHash, isCancelled]) => !isCancelled)\n              .map(([c]) => c),\n          hashes => slice(this.commitments, hashes)\n        ),\n      },\n      satisfactions: pipe(satisfactionsHashes, links =>\n        slice(\n          this.satisfactions,\n          links.map(l => l.target)\n        )\n      ),\n      assemblies: pipe(\n        liveLinksStore(\n          this.client,\n          callToActionHash,\n          () => this.client.getAssembliesForCallToAction(callToActionHash),\n          'CallToActionToAssemblies'\n        ),\n        links =>\n          slice(\n            this.assemblies,\n            links.map(l => l.target)\n          )\n      ),\n    };\n  })",
               "description": "Call To Action"
             },
             {
               "kind": "field",
               "name": "callToActionsForCallToAction",
-              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      liveLinksTargetsStore(\n        this.client,\n        callToActionHash,\n        () => this.client.getCallToActionsForCallToAction(callToActionHash),\n        'CallToActionToCallToActions'\n      )\n  )"
+              "default": "new LazyHoloHashMap(\n    (callToActionHash: ActionHash) =>\n      liveLinksStore(\n        this.client,\n        callToActionHash,\n        () => this.client.getCallToActionsForCallToAction(callToActionHash),\n        'CallToActionToCallToActions'\n      )\n  )"
             },
             {
               "kind": "field",
               "name": "commitments",
-              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) => ({\n    entry: immutableEntryStore(() => this.client.getCommitment(commitmentHash)),\n    cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),\n    isCancelled: pipe(\n      this.cancellationsStore.cancellationsFor.get(commitmentHash).live,\n      c => c.size > 0\n    ),\n    satisfactions: pipe(\n      liveLinksTargetsStore(\n        this.client,\n        commitmentHash,\n        () => this.client.getSatisfactionsForCommitment(commitmentHash),\n        'CommitmentToSatisfactions'\n      ),\n      hashes => slice(this.satisfactions, hashes)\n    ),\n  }))",
+              "default": "new LazyHoloHashMap((commitmentHash: ActionHash) => ({\n    entry: immutableEntryStore(() => this.client.getCommitment(commitmentHash)),\n    cancellations: this.cancellationsStore.cancellationsFor.get(commitmentHash),\n    isCancelled: pipe(\n      this.cancellationsStore.cancellationsFor.get(commitmentHash).live,\n      c => c.size > 0\n    ),\n    satisfactions: pipe(\n      liveLinksStore(\n        this.client,\n        commitmentHash,\n        () => this.client.getSatisfactionsForCommitment(commitmentHash),\n        'CommitmentToSatisfactions'\n      ),\n      links =>\n        slice(\n          this.satisfactions,\n          links.map(l => l.target)\n        )\n    ),\n  }))",
               "description": "Commitment"
             },
             {
               "kind": "field",
               "name": "satisfactions",
-              "default": "new LazyHoloHashMap((satisfactionHash: ActionHash) => ({\n    latestVersion: latestVersionOfEntryStore(this.client, () =>\n      this.client.getLatestSatisfaction(satisfactionHash)\n    ),\n    deletes: deletesForEntryStore(this.client, satisfactionHash, () =>\n      this.client.getSatisfactionDeletes(satisfactionHash)\n    ),\n    assemblies: pipe(\n      liveLinksTargetsStore(\n        this.client,\n        satisfactionHash,\n        () => this.client.getAssembliesForSatisfaction(satisfactionHash),\n        'SatisfactionToAssemblies'\n      ),\n      hashes => slice(this.assemblies, hashes)\n    ),\n  }))",
+              "default": "new LazyHoloHashMap((satisfactionHash: ActionHash) => ({\n    latestVersion: latestVersionOfEntryStore(this.client, () =>\n      this.client.getLatestSatisfaction(satisfactionHash)\n    ),\n    deletes: deletesForEntryStore(this.client, satisfactionHash, () =>\n      this.client.getSatisfactionDeletes(satisfactionHash)\n    ),\n    assemblies: pipe(\n      liveLinksStore(\n        this.client,\n        satisfactionHash,\n        () => this.client.getAssembliesForSatisfaction(satisfactionHash),\n        'SatisfactionToAssemblies'\n      ),\n      links =>\n        slice(\n          this.assemblies,\n          links.map(l => l.target)\n        )\n    ),\n  }))",
               "description": "Satisfaction"
             },
             {
