@@ -1,4 +1,4 @@
-import { Scenario } from '@holochain/tryorama';
+import { Player, Scenario, dhtSync, pause } from '@holochain/tryorama';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {
@@ -7,6 +7,12 @@ import {
 } from '@holochain-open-dev/cancellations';
 import { AssembleStore } from '../../ui/src/assemble-store.js';
 import { AssembleClient } from '../../ui/src/assemble-client.js';
+
+export async function waitAndDhtSync(players: Player[]) {
+  await pause(4000); // Wait for postcommit things to happen
+  await dhtSync(players, players[0].namedCells.get('assemble_test').cell_id[0]);
+  await pause(4000); // Wait for postcommit things to happen
+}
 
 export async function setup(scenario: Scenario) {
   const testHappUrl =

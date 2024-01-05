@@ -152,8 +152,11 @@ fn check_if_need_is_satisfied_with_new_commitment(
             )?;
             match response {
                 ZomeCallResponse::Ok(result) => {
-                    let hashes: Vec<ActionHash> =
-                        result.decode().map_err(|err| wasm_error!(err))?;
+                    let link: Vec<Link> = result.decode().map_err(|err| wasm_error!(err))?;
+                    let hashes: Vec<ActionHash> = link
+                        .into_iter()
+                        .filter_map(|link| link.target.into_action_hash())
+                        .collect();
                     Ok((hash, hashes))
                 }
                 _ => Err(wasm_error!(WasmErrorInner::Guest(format!(

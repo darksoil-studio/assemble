@@ -1,8 +1,8 @@
 import { test, assert } from 'vitest';
 
-import { dhtSync, pause, runScenario } from '@holochain/tryorama';
+import { pause, runScenario } from '@holochain/tryorama';
 import { toPromise } from '@holochain-open-dev/stores';
-import { setup } from './utils.js';
+import { setup, waitAndDhtSync } from './utils.js';
 import { sampleCallToAction } from '../../ui/src/mocks.js';
 
 test('satisfaction gets created after a minute when there is a race condition between commitments', async t => {
@@ -25,10 +25,7 @@ test('satisfaction gets created after a minute when there is a race condition be
       assert.ok(callToAction);
       const call_to_action_hash = callToAction.actionHash;
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       let satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -58,10 +55,7 @@ test('satisfaction gets created after a minute when there is a race condition be
       );
       assert.equal(satisfactions.size, 0); // This is expected since they haven't had time to gossip
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
       await pause(1.5 * 60 * 1000);
 
       satisfactions = await toPromise(

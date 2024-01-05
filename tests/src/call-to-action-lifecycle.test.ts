@@ -1,8 +1,8 @@
 import { test, assert } from 'vitest';
 
-import { dhtSync, pause, runScenario } from '@holochain/tryorama';
+import { pause, runScenario } from '@holochain/tryorama';
 import { toPromise } from '@holochain-open-dev/stores';
-import { setup } from './utils.js';
+import { setup, waitAndDhtSync } from './utils.js';
 import { sampleCallToAction } from '../../ui/src/mocks.js';
 
 test('call to action: create and fulfill', async t => {
@@ -37,10 +37,7 @@ test('call to action: create and fulfill', async t => {
       assert.ok(callToAction);
       const call_to_action_hash = callToAction.actionHash;
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       let satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -62,10 +59,7 @@ test('call to action: create and fulfill', async t => {
         comment: 'some comment',
       });
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -92,10 +86,9 @@ test('call to action: create and fulfill', async t => {
         comment: 'some comment',
       });
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await pause(100);
+
+      await waitAndDhtSync([alice.player, bob.player]);
 
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -109,10 +102,7 @@ test('call to action: create and fulfill', async t => {
         comment: 'some comment',
       });
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -169,10 +159,7 @@ test('call to action: create, cancel commitment and fulfill', async t => {
       assert.ok(callToAction);
       const call_to_action_hash = callToAction.actionHash;
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       let satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -186,10 +173,7 @@ test('call to action: create, cancel commitment and fulfill', async t => {
         comment: 'some comment',
       });
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -210,10 +194,7 @@ test('call to action: create, cancel commitment and fulfill', async t => {
       );
       await pause(1000);
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
       );
@@ -233,10 +214,7 @@ test('call to action: create, cancel commitment and fulfill', async t => {
         amount: 1,
         comment: 'some comment',
       });
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -258,10 +236,7 @@ test('call to action: create, cancel commitment and fulfill', async t => {
         comment: 'some comment',
       });
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -306,10 +281,7 @@ test("call to action: needs that require approval can't be satifisfied by non-ad
       assert.ok(callToAction);
       const call_to_action_hash = callToAction.actionHash;
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       let satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -323,10 +295,7 @@ test("call to action: needs that require approval can't be satifisfied by non-ad
         comment: 'some comment',
       });
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       satisfactions = await toPromise(
         alice.store.callToActions.get(call_to_action_hash).satisfactions
@@ -350,10 +319,7 @@ test("call to action: needs that require approval can't be satifisfied by non-ad
         need_index: 0,
       });
 
-      await dhtSync(
-        [alice.player, bob.player],
-        alice.player.cells[0].cell_id[0]
-      );
+      await waitAndDhtSync([alice.player, bob.player]);
 
       let assemblies = await toPromise(
         bob.store.callToActions.get(call_to_action_hash).assemblies

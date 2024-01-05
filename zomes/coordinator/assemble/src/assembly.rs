@@ -31,15 +31,15 @@ pub fn get_assemblies_for_call_to_action(
     call_to_action_hash: ActionHash,
 ) -> ExternResult<Vec<Link>> {
     get_links(
-
-GetLinksInputBuilder::try_new(        call_to_action_hash,
-        LinkTypes::CallToActionToAssemblies,)?.build()
+        GetLinksInputBuilder::try_new(call_to_action_hash, LinkTypes::CallToActionToAssemblies)?
+            .build(),
     )
 }
 
 #[hdk_extern]
 pub fn get_assemblies_for_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<Vec<Link>> {
     get_links(
-        
-GetLinksInputBuilder::try_new(        satisfaction_hash, LinkTypes::SatisfactionToAssemblies)?.build() )
+        GetLinksInputBuilder::try_new(satisfaction_hash, LinkTypes::SatisfactionToAssemblies)?
+            .build(),
+    )
 }
