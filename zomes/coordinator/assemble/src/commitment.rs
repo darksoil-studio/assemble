@@ -27,8 +27,7 @@ pub fn get_commitments_for_call_to_action(
     call_to_action_hash: ActionHash,
 ) -> ExternResult<Vec<Link>> {
     get_links(
-        call_to_action_hash,
-        LinkTypes::CallToActionToCommitments,
-        None,
+GetLinksInputBuilder::try_new(        call_to_action_hash,
+        LinkTypes::CallToActionToCommitments,)?.build()
     )
 }

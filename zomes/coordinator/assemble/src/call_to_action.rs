@@ -65,8 +65,8 @@ pub fn get_call_to_actions_for_call_to_action(
     call_to_action_hash: ActionHash,
 ) -> ExternResult<Vec<Link>> {
     get_links(
-        call_to_action_hash,
-        LinkTypes::CallToActionToCallToActions,
-        None,
+
+GetLinksInputBuilder::try_new(        call_to_action_hash,
+        LinkTypes::CallToActionToCallToActions,)?.build()
     )
 }

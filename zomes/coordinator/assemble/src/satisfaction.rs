@@ -67,9 +67,10 @@ pub fn delete_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<()> {
     )?)?;
 
     let links = get_links(
+        GetLinksInputBuilder::try_new(
         satisfaction.call_to_action_hash,
         LinkTypes::CallToActionToSatisfactions,
-        None,
+            )?.build()
     )?;
 
     for link in links {
@@ -81,7 +82,7 @@ pub fn delete_satisfaction(satisfaction_hash: ActionHash) -> ExternResult<()> {
     }
 
     for commitment_hash in satisfaction.commitments_hashes {
-        let links = get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)?;
+        let links = get_links(GetLinksInputBuilder::try_new(commitment_hash, LinkTypes::CommitmentToSatisfactions)?.build())?;
         for link in links {
             if let Some(target) = link.target.into_action_hash() {
                 if target.eq(&satisfaction_hash) {
@@ -101,15 +102,17 @@ pub fn get_satisfactions_for_call_to_action(
     call_to_action_hash: ActionHash,
 ) -> ExternResult<Vec<Link>> {
     get_links(
-        call_to_action_hash,
-        LinkTypes::CallToActionToSatisfactions,
-        None,
+
+GetLinksInputBuilder::try_new(        call_to_action_hash,
+        LinkTypes::CallToActionToSatisfactions,)?.build()
     )
 }
 
 #[hdk_extern]
 pub fn get_satisfactions_for_commitment(commitment_hash: ActionHash) -> ExternResult<Vec<Link>> {
-    get_links(commitment_hash, LinkTypes::CommitmentToSatisfactions, None)
+    get_links(
+        
+GetLinksInputBuilder::try_new(        commitment_hash, LinkTypes::CommitmentToSatisfactions)?.build() )
 }
 
 #[hdk_extern]
